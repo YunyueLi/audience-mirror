@@ -401,14 +401,14 @@ def create_app() -> Any:
             "Web 工作台需要 web extra：python -m pip install -e '.[web]'"
         ) from exc
 
-    app = FastAPI(title="Audience Mirror Workbench", version="0.2.0a2")
+    app = FastAPI(title="Audience Mirror Workbench", version="0.2.0a3")
     records: dict[str, ExperimentRecord] = {"demo": _demo_record(), **_restore_records()}
 
     @app.get("/api/health")
     def health() -> dict[str, Any]:
         return {
             "ok": True,
-            "version": "0.2.0a2",
+            "version": "0.2.0a3",
             "capabilities": {
                 "local_video_decode": bool(importlib.util.find_spec("av") and importlib.util.find_spec("PIL")),
                 "direct_video_url": True,

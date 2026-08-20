@@ -1,8 +1,8 @@
 # 验证计划
 
-版本：Validation Protocol v0.4
-状态：Proposed；执行前需冻结研究问题
-日期：2026-08-20
+版本：Validation Protocol v0.5
+状态：部分执行；公开视频事实 Benchmark 与技术重复已完成，真人招募尚未开始
+日期：2026-08-21
 
 ## 1. 验证目的
 
@@ -136,6 +136,8 @@ Demo 包含两类任务：
 6. 允许研究团队将问题编码为匿名 Human Anchor。
 
 真人参与需有知情同意、退出、数据保留和补偿说明。
+
+工程入口为 `audience-mirror prepare-blind-study`：从一个或两个冻结 Timeline 生成匿名槽位、结果盲法、单版本／AB-BA 反平衡、预注册量表和独立研究者密钥。生成槽位只是研究计划，`human_participants_completed` 固定从 0 开始；具体使用与解盲顺序见[真人盲测包](15-blind-study-packet.md)。
 
 每位真人拥有 human_session_id、assignment_id、exposure_order 与 counterbalance_cell。撤回后立即从分析和报告排除，关联 Claim、缓存和导出制品失效，并记录删除 receipt 或合法保留依据。
 

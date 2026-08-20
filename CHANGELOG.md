@@ -2,6 +2,30 @@
 
 All notable changes to Audience Mirror will be documented here.
 
+## [0.2.0-alpha.3] - 2026-08-21
+
+### Added
+
+- a GitHub Pages-ready, read-only public experience generated entirely from the synthetic fixture, with explicit `static_public_demo` capability reporting and mutation guards;
+- a reproducible `export-static-demo` command, subpath-safe assets and a Pages deployment workflow that publishes only `web/`;
+- a packaged Interface System and browser-visible Component Lab covering design tokens, action/input primitives, keyboard-operable tabs, evidence-native product components, feedback states, light/dark themes and reduced-motion behavior;
+- a deterministic `prepare-blind-study` workflow that produces identity-free participant slots, outcome blinding, balanced AB/BA exposure order, pre-registered measures and an access-separated researcher key without counting planned slots as humans;
+- a versioned public-video benchmark contract and a 31-question Sintel development set covering visual facts, credits OCR, manual captions, temporal localization, ordering and cross-event understanding;
+- deterministic benchmark validation and scoring that reports answer accuracy, interval IoU and evidence grounding separately, while counting unanswered questions as failures;
+- a governed `benchmark run-timeline` baseline using one Codex or Claude Code structured call over semantic Timeline text, with explicit `original_video_seen=false` and `audio_seen=false` provenance;
+- explicit annotation maturity fields so a single-maintainer draft cannot be presented as an independently double-checked or frozen test set;
+- CI and standalone-wheel smoke coverage for the packaged benchmark fixture.
+
+### Verified
+
+- the public bundle reports 0 humans, contains no media URLs or frame URLs, never falls back for write requests and leaves the full local workbench authoritative whenever `/api/*` is available;
+- the product workbench and Component Lab share one token/state contract rather than introducing a CDN or a second branded UI kit; future React migration is explicitly limited to unstyled accessible primitives;
+- a clean standalone wheel includes the Component Lab, public benchmark, stability and blind-study Schemas; its zero-cost Demo, benchmark validation and identity-free blind-packet generation all run outside the source checkout;
+- GPT-5.6 Sol/xhigh completed the 31-question semantic-Timeline-text baseline in one 50,306 ms call: 64.5% macro score, 10 explicit abstentions, 100% visual and credits-OCR scores, and 0% dialogue because neither original video nor audio/subtitles were supplied;
+- the no-caption and manual-caption semantic Timeline conditions each complete three GPT-5.6 Sol/xhigh repetitions: 62.4% versus 81.7% mean macro score, while `human_sample_size` remains 0 and non-target visual regressions remain explicit;
+- one GPT-5.6 Terra/xhigh no-caption sensitivity run scores 64.5%, inside the Sol repeat range; it remains explicitly separate from within-model stability statistics;
+- all 65 local tests pass, including static public-bundle boundaries, structured-output compatibility, abstention accounting, stability／blind-study Schema validation, interface-system contracts, asset alignment and separate evidence-grounding metrics.
+
 ## [0.2.0-alpha.2] - 2026-08-20
 
 ### Added
@@ -87,4 +111,5 @@ First public research and engineering preview.
 
 [0.2.0-alpha.1]: https://github.com/YunyueLi/audience-mirror/releases/tag/v0.2.0-alpha.1
 [0.2.0-alpha.2]: https://github.com/YunyueLi/audience-mirror/releases/tag/v0.2.0-alpha.2
+[0.2.0-alpha.3]: https://github.com/YunyueLi/audience-mirror/releases/tag/v0.2.0-alpha.3
 [0.1.0-alpha]: https://github.com/YunyueLi/audience-mirror/releases/tag/v0.1.0-alpha

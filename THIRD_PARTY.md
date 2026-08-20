@@ -15,6 +15,7 @@ at runtime under their own terms.
 | Google Gemini Files API | Optional native full-video analysis | Explicit per-experiment remote consent; public/internal only in the current adapter; provider terms apply |
 | Claude Code CLI | Optional structured Persona event reasoning | External local executable and authentication; no credentials are stored here |
 | OpenAI Codex CLI | Optional structured Persona event reasoning | External authenticated executable; each call runs ephemerally in a read-only temporary directory; no credentials are stored here |
+| Blender Foundation `Sintel` | Public video benchmark source under CC BY 3.0 | The repository stores only questions, timestamps, source URL, content hash and attribution; no film, audio, subtitle or frame file is redistributed |
 
 ## Intended adapters
 

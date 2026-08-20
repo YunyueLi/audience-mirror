@@ -4,8 +4,9 @@
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![CI](https://github.com/YunyueLi/audience-mirror/actions/workflows/ci.yml/badge.svg)](https://github.com/YunyueLi/audience-mirror/actions/workflows/ci.yml)
+[![Public Demo](https://github.com/YunyueLi/audience-mirror/actions/workflows/pages.yml/badge.svg)](https://github.com/YunyueLi/audience-mirror/actions/workflows/pages.yml)
 
-**Developer Preview `v0.2.0-alpha.2`** — 链接优先的真实视频实验、可回放顺序体验与开放合同预览；不是经过真人验证的预测产品。
+**Developer Preview `v0.2.0-alpha.3` candidate** — 链接优先的真实视频实验、可回放顺序体验、公开视频 Benchmark、组件系统与真人盲测合同；不是经过真人验证的预测产品。
 
 Audience Mirror 是一个开放的“现实之前人群实验层”：让异质 Persona 按顺序进入内容、软件、游戏或社会情境，形成体验、判断、选择并相互影响；每条结论都能回到环境状态、个体 Trace、实验条件和真人校准。这里的 Audience 指面对某项内容、产品、规则或世界的目标人群，不只指影视观众。
 
@@ -18,9 +19,11 @@ to inspectable traces, conditions, and human calibration status.
 
 上图使用仓库自带的合成 Timeline 与合成 Persona，不包含第三方媒体、真人数据或远程模型结果。
 
+**[打开公开体验](https://yunyueli.github.io/audience-mirror/)**：可直接浏览合成实验、证据时间轴、逐段反应、个体 Trace、规模口径、明暗主题和[组件系统](https://yunyueli.github.io/audience-mirror/components.html)。这是只读静态 Demo，只包含确定性合成 Fixture，0 位真人；不会上传链接、调用模型或保存输入。真实视频链接、本地文件、模型 Agent 与 Human Anchors 请使用下方本机工作台。
+
 **影视／IP 是 Audience Mirror 的首个验证环境，不是项目总边界。** 它先用内容体验验证多模态顺序体验与证据链；平台内核保持 Environment、Population、Experience、Decision、Interaction、Trace 和 Calibration 的通用抽象。当前状态为 **Conditional Go（有条件推进）**：值得用 2—4 周完成首个可运行且能与真人结果盲测的参考环境，尚不足以承诺准确预测票房、收入或现实人群比例。
 
-基线日期：2026-08-20。
+基线日期：2026-08-21。
 
 ## 当前可运行基线
 
@@ -46,6 +49,8 @@ GPT-5.6 Sol／xhigh 已在公开合成 Timeline 上完成 1 Persona × 4 Event �
 
 工作台中的校准入口可先加载 `fixtures/public-demo/human-anchors.synthetic.json` 检查合同、撤回排除、A/B 方向和指标展示。该文件全部为合成记录，只是界面 Fixture，不是“真人校准已经完成”的证据。
 
+`audience-mirror prepare-blind-study` 可从一个或两个冻结 Timeline 生成匿名、结果盲法的真人研究包：单版本用于探索性收敛，双版本自动形成尽量均衡的 AB／BA 暴露顺序，并把参与者包与研究者解盲密钥分开。计划槽位始终不计入真人样本；详见[真人盲测包](docs/15-blind-study-packet.md)。
+
 ### 直接运行
 
 要求 Python 3.11 或更高版本。零 Key Demo 无运行时依赖：
@@ -58,6 +63,14 @@ source .venv/bin/activate
 python -m pip install .
 audience-mirror demo
 ```
+
+如需复现公开静态体验的数据包：
+
+```bash
+audience-mirror export-static-demo --output web/static-demo.js
+```
+
+该命令只导出仓库内的合成 Fixture 与确定性运行结果，不读取本机实验、媒体、密钥或真人记录。
 
 安装真实媒体解析和本地工作台：
 
@@ -72,6 +85,13 @@ audience-mirror ingest-video /path/to/public-or-authorized.mp4 \
 audience-mirror environment-spec \
   --timeline artifacts/my-video/timeline.json \
   --output artifacts/my-video/environment.json
+
+# 可选：把有权使用的人工 WebVTT 作为独立证据附加到事件
+audience-mirror attach-subtitles \
+  --timeline artifacts/my-video/timeline.json \
+  --subtitle /path/to/authorized-caption.vtt \
+  --language zh-Hans \
+  --output artifacts/my-video/timeline-with-captions.json
 
 # 打开交互工作台；默认只监听本机
 audience-mirror serve --host 127.0.0.1 --port 8765
@@ -120,8 +140,49 @@ audience-mirror run-agent \
 
 ```bash
 audience-mirror validate timeline fixtures/public-demo/timeline.json
+audience-mirror benchmark validate fixtures/benchmarks/sintel-public-dev-v0.1.json
 python -m unittest discover -s tests -v
 ```
+
+### 公开视频 Benchmark
+
+仓库包含一套不附带影片文件的《Sintel》公开开发集。31 道题覆盖视觉事实、片尾 OCR、平台人工字幕、时间定位、事件顺序和跨事件理解；每题都登记证据时间窗、模态和来源。当前标注状态为 `single_maintainer_draft`：已有一位维护者按公开影片、人工字幕和时间戳帧建立答案，但尚未完成第二位独立人工复核，所以不能称为冻结测试集。
+
+Provider 输出使用独立 Predictions 合同，评分时同时报告答案、时间区间 IoU 和证据命中，未回答题目不会被忽略：
+
+```bash
+audience-mirror benchmark score \
+  --benchmark fixtures/benchmarks/sintel-public-dev-v0.1.json \
+  --predictions /path/to/provider-predictions.json \
+  --output artifacts/benchmark/report.json
+
+# 只比较同一模型、同一 Timeline、同一证据条件的重复运行
+audience-mirror benchmark stability \
+  --benchmark fixtures/benchmarks/sintel-public-dev-v0.1.json \
+  --predictions run-1.json run-2.json run-3.json \
+  --output artifacts/benchmark/stability-report.json
+```
+
+还可以先跑一个明确受限的语义 Timeline 文本基线。它只把事件事实与问题发送给已认证 CLI，不发送原视频、音轨或证据帧：
+
+```bash
+audience-mirror benchmark run-timeline \
+  --benchmark fixtures/benchmarks/sintel-public-dev-v0.1.json \
+  --timeline /path/to/authorized-sintel-timeline.json \
+  --reasoner codex-cli \
+  --model gpt-5.6-sol \
+  --effort xhigh \
+  --allow-remote-processing \
+  --output artifacts/benchmark/predictions.json
+```
+
+首轮真实运行用 1 次 50.3 秒调用返回 31 条预测：宏平均 64.5%，主动弃答 10 道；视觉与片尾 OCR 均为 100%，对白为 0%。这个结果证明评分链路能暴露缺失模态，不代表原生视频模型达到相同分数。详见[首轮基线记录](docs/13-sintel-timeline-baseline-2026-08-20.md)。
+
+完整口径见[公开视频 Benchmark](docs/12-public-video-benchmark.md)。它评估视频事实和证据回查，不评估审美偏好、购买意愿或真人预测准确率。
+
+同一无字幕语义 Timeline 的三次 GPT-5.6 Sol／xhigh 重复运行得到 62.4% 宏平均（58.1%—64.5%），参考得分在 2/31 题变化；加入平台人工字幕后的三次重复得到 81.7% 宏平均（80.6%—83.9%），对白均值从 0% 升至 86.7%，但视觉事实从 96.7% 降至 80%。两组都是技术重复，`human_sample_size` 仍为 0；差值支持继续做字幕消融，不等于真人预测。详见[稳定性与字幕增量基线](docs/14-sintel-stability-and-caption-baseline-2026-08-21.md)。
+
+同一无字幕条件还完成一次 GPT-5.6 Terra／xhigh 敏感性探针，宏平均 64.5%，落在 Sol 三次范围内；这是单次跨模型对照，不能当作模型等价或跨模型稳定性结论。
 
 如果已有外部 MatrAIx Checkout，可检查固定版本和许可边界：
 
@@ -168,6 +229,11 @@ Audience Mirror 所在的影视垂直已经有强竞品：[aiScreeningRoom](http
 12. [视频理解与视频 Agent 技术版图](docs/10-video-understanding-landscape-2026-08-20.md)：复核抖音 AI 解析、火山 Aideo、LibTV、MiniMax Design、原生模型、长视频 Agent 论文与开源项目，并给出 build／buy 决策。
 13. [v0.2 本地发布候选状态](docs/11-release-candidate-status-2026-08-20.md)：精确列出可发布面、不可声称项、首个 Benchmark 与仍需授权的对外动作。
 14. [Schema 状态](schemas/README.md)、[Environment](schemas/environment.schema.json)、[Trace](schemas/trace.schema.json)、[Timeline](schemas/timeline.schema.json) 与 [Human Anchor](schemas/human-anchor.schema.json)：供原型直接实现和验收。
+15. [公开视频 Benchmark](docs/12-public-video-benchmark.md)：31 道公开开发题、标注成熟度、Predictions 合同和三类评分口径。
+16. [Sintel 语义 Timeline 首轮基线](docs/13-sintel-timeline-baseline-2026-08-20.md)：真实模型运行、分项结果、主动弃答与下一组对照。
+17. [Sintel 稳定性与人工字幕增量](docs/14-sintel-stability-and-caption-baseline-2026-08-21.md)：无字幕与人工字幕条件各三次重复、答案／证据漂移与分模态差异。
+18. [真人盲测包](docs/15-blind-study-packet.md)：匿名槽位、结果盲法、A/B 反平衡、密钥隔离和 Human Anchor 导入顺序。
+19. [公开 Demo 与部署边界](docs/16-public-demo-deployment.md)：静态只读能力、本机完整能力、组件库和 GitHub Pages 发布合同。
 
 ## 研究口径
 

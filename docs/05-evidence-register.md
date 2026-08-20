@@ -164,6 +164,19 @@ PUB-01 的方向性主张另用 RES-12A／12B 核对自然情境 EEG 的可测�
 | RES-18 | [Qwen2.5-VL](https://qwenlm.github.io/blog/qwen2.5-vl/) 与 [Seed1.8](https://seed.bytedance.com/en/blog/official-release-of-seed1-8-a-generalized-agentic-model) | 两家模型团队均公开长视频理解与时间定位／局部高帧率能力 | B／厂商技术自述 | 官方 Benchmark 不能代替同一公开素材的独立横评 |
 | RES-13 | [InfiniBench](https://aclanthology.org/2025.emnlp-main.984/) | 平均 53 分钟电影／剧集；最佳模型 grounding 47.1%，并会利用标题等元数据猜答案 | A1／EMNLP 2025 | 加去片名／去标题对照，防止预训练记忆冒充观看 |
 
+### 5.3 界面系统与组件基础
+
+这些来源只用于界面工程和交互行为，不构成 Audience Mirror 预测有效性的证据。
+
+| ID | 来源 | 可复核事实 | 等级 | 本项目使用方式 |
+| --- | --- | --- | --- | --- |
+| UI-01 | [Ice Works Showcase](https://github.com/MegD1/Ice-works-showcase) | 公开源码展示粒子凝图、悬停粒子影、编辑式信息编排和液态转场；仓库说明源码 MIT，但 `public/` 资产不随源码许可开放 | A2／代码与仓库说明 | 只吸收“证据从噪声中显影”的交互原则；不复制资产、字体、shader 或品牌表达 |
+| UI-02 | [Radix Primitives Accessibility](https://www.radix-ui.com/primitives/docs/overview/accessibility) | 官方说明组件遵循 WAI-ARIA 预期，并处理常见键盘、焦点和标签行为 | A2／官方文档 | 作为 Tabs、Dialog、Tooltip、Select 等复杂控件的行为参考 |
+| UI-03 | [Base UI Quick Start](https://base-ui.com/react/overview/quick-start) | 官方提供无样式、单包、可 tree-shake 的 React primitives，覆盖 Drawer、Toast、Field、Tabs 等组件 | A2／官方文档 | 未来 React 化的默认候选之一；当前原生基线不新增依赖 |
+| UI-04 | [React Aria Getting Started](https://react-aria.adobe.com/getting-started) | 官方组件暴露交互状态，覆盖 Focus、Press、Selection、Virtualizer 与国际化能力 | A2／官方文档 | 高密度集合、表格和复杂键盘交互的候选基础 |
+| UI-05 | [Motion Accessibility](https://motion.dev/docs/react-accessibility) | 官方提供 reduced-motion 全局策略与 hook，并建议减少大幅 transform、自动播放和视差 | A2／官方文档 | 当前原生实现直接遵守系统偏好；未来迁 React 时保持同一契约 |
+| UI-06 | [Observable Plot](https://observablehq.com/plot/) 与 [Visx](https://visx.airbnb.tech/) | 两者提供可组合的可视化基础；Plot 用 mark、scale、transform、facet 组织图形，Visx 提供低层 React 视觉组件 | A2／官方项目页 | 仅在时间轴／群体分布超出当前 SVG 基线后评估，不因“图表更多”而引入 |
+
 ## 6. Demo 素材
 
 | ID | 来源 | 权利与用途 | 等级 |

@@ -1,159 +1,446 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" id="theme-color" content="#f5f3ee">
   <meta name="referrer" content="no-referrer">
-  <meta name="description" content="Audience Mirror 本地多模态人群实验工作台。">
-  <title>Audience Mirror · 实验工作台</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23080a0d'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%2359d8e6' stroke-width='2'/%3E%3Cpath d='M16 3v6M16 23v6M3 16h6M23 16h6' stroke='%2359d8e6' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="/styles.css?v=0.2.0-alpha.3">
-  <script src="/app.js?v=0.2.0-alpha.3" defer></script>
+  <meta name="description" content="Audience Mirror：粘贴一个已获授权的视频链接，在本机建立可回放的证据时间轴，让 AI 观众逐段体验，再用真人反馈校准。">
+  <title>Audience Mirror · 可回放的观众证据工作台</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c1013'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%2359d8e6' stroke-width='2'/%3E%3Cpath d='M16 3v6M16 23v6M3 16h6M23 16h6' stroke='%2359d8e6' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css?v=0.2.0-alpha.8">
+  <script>
+    /* Theme resolves before first paint so there is no flash. The first visit is
+       light on purpose: the system preference does not decide it, the person does.
+       After that the stored choice wins on every visit. */
+    (() => {
+      let theme = "light";
+      try {
+        theme = window.localStorage.getItem("audience-mirror-theme") === "dark" ? "dark" : "light";
+      } catch { theme = "light"; }
+      document.documentElement.dataset.theme = theme;
+      const meta = document.getElementById("theme-color");
+      if (meta) meta.content = theme === "dark" ? "#0a0d11" : "#f5f3ee";
+    })();
+  </script>
+  <script src="./static-demo.js?v=0.2.0-alpha.8"></script>
+  <script src="./app.js?v=0.2.0-alpha.8" defer></script>
 </head>
 <body>
   <!--
-  THESIS: 聚合判断必须沿同一条可回放的证据光路返回 cue、画面、声音与个体 Trace，拒绝摘要仪表盘。
-  OWN-WORLD: 校准放映机房——校准黑与深石墨机身、钨丝白读内容、信号青只指可操作证据、琥珀只标限制与风险。
-  STORY: 研究者在命令槽装载链接，确认权利，建立本地多模态时间轴，选 cue 看证据，下钻个体 Trace，再用真人锚点校准。
-  FIRST VIEWPORT: 一屏定高工作台——紧凑顶栏、链接优先命令槽、左实验轨（上下文＋阶段导航＋运行控制）／中放映台／右证据 Inspector、底部代理量与校准状态轨；无营销 Hero，页面本身不滚动。
-  FORM: Calibrated Projection Room，direction seed 6ade60aa，Operate 模式；已批准构图 .impeccable/mocks/approved-projection-room.png。
-  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+  THESIS: 聚合判断必须沿同一条可回放的证据光路返回事件、画面、声音与个体反应记录，拒绝摘要仪表盘。
+  OWN-WORLD: 校准放映机房。浅色是档案纸张与精确边界，深色是同一机房的夜班；两套主题各自校准，不是互为反色。
+    两套主题里放映孔径都保持深色，画面永远是全页唯一的暗区，因此也是唯一的第一视觉重心。
+  STORY: 粘贴已授权链接，确认权利，在本机建立证据时间轴，选事件看证据，下钻个体反应，再用真人锚点校准。
+  LAYOUT: 桌面自然向下滚动。第一屏＝顶栏＋单行命令栏＋画面舞台；时间轴紧贴画面之下并延入下一屏；
+    实验流程与量表账本是第三层。画面高度由 clamp 决定，Inspector 吸顶自滚，永远不反向决定画面尺寸。
+  RESTRAINT: 一个强调色（信号青＝证据与动作），一个警示色（琥珀＝限制与边界），一套圆角，一套动效时长。
+  SIGNATURE: 证据从噪声中显影。两个动作，同一条语法：
+    1 显影（emulsion）——画面换新时，一层 Canvas 2D 点场向画面边界与视线轴凝聚一次，约 560–760ms 后完全消失。
+    2 光路（light path）——凝聚后剩下的那条关系轨迹：点阵化的虚线从事件卡出发、经观察标记、终止于命中证据锚点，
+      选中或悬停时有一次沿线脉冲，然后静止。悬停时的颗粒尾影是同一语法的最小单位。
+  FINISH: unreviewed and undocumented is unfinished; every shipping raster carries its provenance.
   -->
-  <a class="skip-link" href="#stage">跳到放映台</a>
+  <a class="skip-link" href="#stage">跳到画面与时间轴</a>
   <h1 class="sr-only">Audience Mirror 多模态人群实验工作台</h1>
 
-  <div class="app-shell" id="app-shell" data-pane="stage">
+  <div class="app-shell" id="app-shell" data-pane="stage" data-drawer="closed">
     <header class="shell-head">
-      <a class="brand" href="/">
-        <svg class="brand-mark" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
-          <rect x="1.75" y="1.75" width="18.5" height="18.5" rx="6" fill="none" stroke="currentColor" stroke-opacity=".45"></rect>
-          <circle cx="11" cy="11" r="4.4" fill="none" stroke="currentColor" stroke-width="1.3"></circle>
-          <path d="M11 2.6v3.6M11 15.8v3.6M2.6 11h3.6M15.8 11h3.6" fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="1.3" stroke-linecap="round"></path>
+      <a class="brand" href="./">
+        <svg class="brand-mark" width="26" height="26" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+          <rect x="1.5" y="1.5" width="19" height="19" rx="6.5" fill="none" stroke="currentColor" stroke-opacity=".3"></rect>
+          <circle cx="11" cy="11" r="4.3" fill="none" stroke="currentColor" stroke-width="1.4"></circle>
+          <path d="M11 2.4v3.5M11 16.1v3.5M2.4 11h3.5M16.1 11h3.5" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-width="1.4" stroke-linecap="round"></path>
         </svg>
-        <span>Audience Mirror</span>
+        <span class="brand-full">Audience Mirror</span>
+        <span class="brand-short" aria-hidden="true">AM</span>
       </a>
-      <p class="thesis">现实之前的多模态人群实验平台 · 视频环境</p>
-      <p class="system-state" id="system-state" aria-live="polite" title="本地能力检查">正在检查能力</p>
+      <p class="thesis">把观众判断退回到可回放的证据</p>
+
+      <nav class="head-nav" aria-label="页面区域">
+        <button type="button" data-pane-target="stage" aria-pressed="true">画面</button>
+        <button type="button" data-pane-target="inspector" aria-pressed="false">证据</button>
+        <button type="button" data-pane-target="deck" aria-pressed="false">进度</button>
+      </nav>
+
+      <div class="head-actions">
+        <p class="system-state" id="system-state" aria-live="polite" title="正在检查本机能力">检查中</p>
+        <button class="head-icon" type="button" id="theme-toggle" aria-label="切换到深色主题" title="切换到深色主题">
+          <svg class="glyph-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <circle cx="8" cy="8" r="3.1" fill="none" stroke="currentColor" stroke-width="1.4"></circle>
+            <path d="M8 1.2v1.9M8 12.9v1.9M1.2 8h1.9M12.9 8h1.9M3.2 3.2l1.35 1.35M11.45 11.45l1.35 1.35M12.8 3.2l-1.35 1.35M4.55 11.45L3.2 12.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+          </svg>
+          <svg class="glyph-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <path d="M13.4 9.9A5.8 5.8 0 0 1 6.1 2.6a5.9 5.9 0 1 0 7.3 7.3Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+        <button class="head-button" type="button" data-drawer-target="rail" aria-expanded="false" aria-controls="rail" aria-label="实验设置" title="实验设置">
+          <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+            <circle cx="6" cy="4.5" r="1.7" fill="currentColor"></circle>
+            <circle cx="10.5" cy="11.5" r="1.7" fill="currentColor"></circle>
+          </svg>
+          <span class="button-word">实验设置</span>
+        </button>
+      </div>
     </header>
 
-    <form id="upload-form" class="command-bar" aria-labelledby="command-bar-title">
-      <h2 class="sr-only" id="command-bar-title">装载素材</h2>
+    <!-- One line by default. The rights gate is a control on that line, not a
+         paragraph below it; the parameters live in a popover; the explanation
+         appears only once there is something to import. -->
+    <form id="upload-form" class="command-bar" data-stage="idle" aria-labelledby="command-bar-title">
+      <h2 class="sr-only" id="command-bar-title">导入视频素材</h2>
       <fieldset class="source-picker">
         <legend class="sr-only">视频素材</legend>
-        <div class="source-mode" role="radiogroup" aria-label="素材输入方式">
-          <label>
-            <input type="radio" name="source_mode" value="url" checked>
-            <span>链接</span>
+
+        <div class="command-row">
+          <div class="source-mode" role="radiogroup" aria-label="素材来源">
+            <label>
+              <input type="radio" name="source_mode" value="url" checked>
+              <span>链接</span>
+            </label>
+            <label>
+              <input type="radio" name="source_mode" value="upload">
+              <span>文件</span>
+            </label>
+          </div>
+
+          <div class="command-slot">
+            <div class="source-panel" data-source-panel="url">
+              <span class="slot-glyph" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" focusable="false">
+                  <path d="M7.1 10.9 10.9 7.1M6.5 4.7l1.3-1.3a3.5 3.5 0 0 1 4.9 4.9l-1.3 1.3M11.5 13.3l-1.3 1.3a3.5 3.5 0 0 1-4.9-4.9l1.3-1.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+                </svg>
+              </span>
+              <label class="slot-field source-url-field" for="video-url">
+                <span class="sr-only">视频链接</span>
+                <input id="video-url" name="source_url" type="url" inputmode="url" autocomplete="url" spellcheck="false" aria-describedby="url-hint" placeholder="粘贴一个已获授权的视频链接（公开直链 / YouTube / Bilibili / 抖音）" required>
+              </label>
+              <kbd class="slot-key" aria-hidden="true">⌘K</kbd>
+            </div>
+            <div class="source-panel is-hidden" data-source-panel="upload">
+              <span class="slot-glyph" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" focusable="false">
+                  <path d="M9 12.6V3.9M5.6 7.3 9 3.9l3.4 3.4M3.4 12.3v1.3a1.5 1.5 0 0 0 1.5 1.5h8.2a1.5 1.5 0 0 0 1.5-1.5v-1.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+                </svg>
+              </span>
+              <label class="slot-field file-field" for="video-file">
+                <span class="sr-only">本地视频文件</span>
+                <input id="video-file" name="file" type="file" accept="video/*" aria-describedby="upload-hint" disabled>
+              </label>
+            </div>
+          </div>
+
+          <label class="check-field rights-field" for="rights-confirmed" title="勾选表示你拥有该素材的使用权，并已获得把它用于本次测试的授权。">
+            <input id="rights-confirmed" name="rights_confirmed" type="checkbox" value="true" aria-describedby="rights-detail" required>
+            <span>我已获授权</span>
           </label>
-          <label>
-            <input type="radio" name="source_mode" value="upload">
-            <span>文件</span>
-          </label>
+
+          <details class="bar-options" id="load-options">
+            <summary aria-label="装载参数：数据分类与采样间隔">参数</summary>
+            <div class="options-sheet">
+              <label class="param-field">
+                <span>数据分类</span>
+                <select name="classification" id="classification">
+                  <option value="public">公开素材</option>
+                  <option value="internal">内部素材</option>
+                  <option value="confidential">机密素材</option>
+                  <option value="restricted">受限素材</option>
+                </select>
+              </label>
+              <label class="param-field">
+                <span>切分间隔</span>
+                <select name="sample_interval_ms" id="sample-interval">
+                  <option value="2000">2 秒</option>
+                  <option value="5000" selected>5 秒</option>
+                  <option value="10000">10 秒</option>
+                </select>
+              </label>
+              <p class="options-note">数据分类决定这份素材能走哪条模型路由：机密与受限素材不会被送往公有 Provider。切分间隔决定时间轴上每个事件的最小粒度。</p>
+            </div>
+          </details>
+
+          <button class="primary-button" type="submit" id="ingest-button"><span class="button-label">建立证据时间轴</span></button>
         </div>
 
-        <div class="command-slot">
-          <div class="source-panel" data-source-panel="url">
-            <span class="slot-glyph" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 18 18" focusable="false">
-                <path d="M7.1 10.9 10.9 7.1M6.5 4.7l1.3-1.3a3.5 3.5 0 0 1 4.9 4.9l-1.3 1.3M11.5 13.3l-1.3 1.3a3.5 3.5 0 0 1-4.9-4.9l1.3-1.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
-              </svg>
-            </span>
-            <label class="slot-field source-url-field" for="video-url">
-              <span class="sr-only">视频链接</span>
-              <input id="video-url" name="source_url" type="url" inputmode="url" autocomplete="url" spellcheck="false" aria-describedby="url-hint" placeholder="粘贴已授权的视频链接（公开直链 / YouTube / Bilibili / 抖音）" required>
-            </label>
-          </div>
-          <div class="source-panel is-hidden" data-source-panel="upload">
-            <span class="slot-glyph" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 18 18" focusable="false">
-                <path d="M9 12.6V3.9M5.6 7.3 9 3.9l3.4 3.4M3.4 12.3v1.3a1.5 1.5 0 0 0 1.5 1.5h8.2a1.5 1.5 0 0 0 1.5-1.5v-1.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
-              </svg>
-            </span>
-            <label class="slot-field file-field" for="video-file">
-              <span class="sr-only">本地视频文件</span>
-              <input id="video-file" name="file" type="file" accept="video/*" aria-describedby="upload-hint" disabled>
-            </label>
-          </div>
+        <div class="command-extra" id="command-extra">
+          <p class="rights-detail" id="rights-detail">勾选「我已获授权」表示：你拥有该素材的使用权，并已获得把它用于本次测试的授权。</p>
+          <p class="slot-hint" id="url-hint" data-source-hint="url">支持公开 HTTP(S) 直链，以及 YouTube、Bilibili、抖音页面链接。平台登录与地区限制照旧生效；解析、抽帧与抽取音轨都在本机完成，不会默认外发。</p>
+          <p class="slot-hint is-hidden" id="upload-hint" data-source-hint="upload">单个文件上限 1 GiB。文件只写入本机 artifacts 目录，不进入 Git，也不会默认外发。</p>
         </div>
-
-        <label class="check-field rights-field">
-          <input name="rights_confirmed" type="checkbox" value="true" required>
-          <span>我有权使用该素材</span>
-        </label>
-
-        <details class="bar-options" id="load-options">
-          <summary aria-label="装载参数">装载参数</summary>
-          <div class="options-sheet">
-            <label class="param-field">
-              <span>数据分类</span>
-              <select name="classification" id="classification">
-                <option value="public">公开素材</option>
-                <option value="internal">内部素材</option>
-                <option value="confidential">机密素材</option>
-                <option value="restricted">受限素材</option>
-              </select>
-            </label>
-            <label class="param-field">
-              <span>采样间隔</span>
-              <select name="sample_interval_ms" id="sample-interval">
-                <option value="2000">2 秒</option>
-                <option value="5000" selected>5 秒</option>
-                <option value="10000">10 秒</option>
-              </select>
-            </label>
-            <p class="slot-hint" id="url-hint" data-source-hint="url">支持公开 HTTP(S) 直链，以及 YouTube、Bilibili、抖音页面链接；平台登录与地区限制仍然生效。解析在本地完成，不默认外发。</p>
-            <p class="slot-hint is-hidden" id="upload-hint" data-source-hint="upload">原型上限 1 GiB；文件只写入本地 artifacts，不进入 Git。</p>
-          </div>
-        </details>
-
-        <button class="primary-button" type="submit" id="ingest-button"><span class="button-label">导入并解析</span></button>
         <span class="command-progress" aria-hidden="true"></span>
       </fieldset>
     </form>
 
     <nav class="pane-switch" aria-label="工作台面板">
-      <button type="button" data-pane-target="rail" aria-pressed="false">实验</button>
-      <button type="button" data-pane-target="stage" aria-pressed="true">放映台</button>
+      <button type="button" data-pane-target="rail" aria-pressed="false">设置</button>
+      <button type="button" data-pane-target="stage" aria-pressed="true">画面</button>
       <button type="button" data-pane-target="inspector" aria-pressed="false">证据</button>
-      <button type="button" data-pane-target="deck" aria-pressed="false">总览</button>
+      <button type="button" data-pane-target="deck" aria-pressed="false">进度</button>
     </nav>
 
     <div class="workbench" id="workbench">
-      <aside class="rail" id="rail" aria-label="实验上下文与运行控制">
-        <section class="rail-card" aria-labelledby="rail-experiment-label">
-          <div class="rail-card-head">
-            <h2 class="rail-label" id="rail-experiment-label">当前实验</h2>
-            <button class="text-button" type="button" id="load-demo">恢复公开 Demo</button>
+      <section class="stage" id="stage" aria-label="画面与时间轴">
+        <div class="aperture" id="aperture" data-state="empty">
+          <div class="aperture-chips">
+            <span class="chip chip-mono" id="aperture-timecode">00:00</span>
+            <span class="chip" id="aperture-tag">公开合成样例</span>
+            <span class="chip chip-hint">选中事件会定位到该段起点，不会自动播放</span>
           </div>
-          <div class="experiment-identity">
-            <strong id="experiment-id">demo</strong>
-            <small id="experiment-status">公开合成 Fixture</small>
+          <div class="media-stage" id="media-stage">
+            <!-- The emulsion layer. Non-interactive, transparent at rest, and only
+                 alive for one ~700ms condense whenever a new picture arrives. It is
+                 re-appended after every source swap, never re-created. -->
+            <canvas class="emulsion" id="emulsion" aria-hidden="true"></canvas>
+            <div class="media-placeholder">
+              <span class="placeholder-label">主舞台</span>
+              <strong>你的视频会在这里播放</strong>
+              <p>粘贴一个已获授权的链接，Audience Mirror 会在本机解码画面与音轨、按时间切分事件，并建立一条可回放的证据时间轴。</p>
+              <span class="placeholder-steps">① 粘贴链接 · ② 建立时间轴 · ③ AI 观众逐段体验 · ④ 真人校准</span>
+              <div class="stage-actions">
+                <button class="stage-action" type="button" data-focus-source>粘贴链接开始</button>
+                <button class="quiet-button" type="button" data-load-demo>先看公开样例</button>
+              </div>
+            </div>
           </div>
-          <dl class="source-summary is-hidden" id="source-summary" aria-live="polite">
-            <div><dt>来源</dt><dd>—</dd></div>
-            <div><dt>解析方式</dt><dd>—</dd></div>
-            <div><dt>来源参数</dt><dd>不保存</dd></div>
-          </dl>
-          <details class="recent-experiments" id="recent-experiments">
-            <summary>
-              <span>最近实验</span>
-              <small id="recent-experiment-count">0</small>
-            </summary>
-            <div class="recent-experiment-list" id="recent-experiment-list" aria-live="polite">
-              <p class="empty-copy">正在读取本地实验…</p>
+          <div class="aperture-state" id="aperture-state" role="status" hidden>
+            <span class="aperture-spinner" aria-hidden="true"></span>
+            <strong id="aperture-state-title"></strong>
+            <p id="aperture-state-copy"></p>
+            <button class="secondary-button is-hidden" type="button" id="aperture-retry">载入公开样例</button>
+          </div>
+        </div>
+
+        <!-- Editorial transport: the time reads as a figure, the event name reads as
+             a title, and the machine-facing counters sit on the opposite margin. -->
+        <div class="stage-bar">
+          <div class="stage-lockup">
+            <time id="current-timecode">00:00–00:00</time>
+            <strong id="current-label">还没有时间轴</strong>
+          </div>
+          <div class="stage-transport">
+            <span class="transport-position" id="current-position">0 / 0</span>
+            <span class="transport-steps">
+              <button type="button" class="transport-step" id="cue-prev" aria-label="上一个事件" disabled><span aria-hidden="true"></span></button>
+              <button type="button" class="transport-step" id="cue-next" aria-label="下一个事件" disabled><span aria-hidden="true"></span></button>
+            </span>
+          </div>
+          <div class="media-evidence-links" id="media-evidence-links" aria-live="polite"></div>
+          <button class="primary-button run-action" type="submit" form="run-form" id="run-button"><span class="button-label">让 AI 观众逐段体验</span></button>
+        </div>
+
+        <div class="cue-block" id="cue-block">
+          <div class="cue-head">
+            <h3 class="rail-label">证据时间轴</h3>
+            <p id="cue-scope">导入素材后，这里按真实时间排布事件，卡片宽度就是时长。</p>
+            <div class="zoom-control" role="group" aria-label="时间轴缩放">
+              <span class="zoom-label" id="zoom-level">1×</span>
+              <button type="button" id="zoom-out" aria-label="缩小时间轴">
+                <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.5 6h7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+              </button>
+              <button type="button" id="zoom-in" aria-label="放大时间轴">
+                <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.5 6h7M6 2.5v7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+              </button>
+              <button type="button" id="zoom-fit" aria-label="缩放到全片">全片</button>
+            </div>
+          </div>
+
+          <div class="cue-grid">
+            <div class="lane-gutter" aria-hidden="true">
+              <span class="gutter-ruler">时间</span>
+              <span class="gutter-cue">事件</span>
+              <span class="gutter-curve">
+                <b>代理量</b>
+                <i>高</i><i>中</i><i>低</i>
+              </span>
+            </div>
+
+            <div class="track-scroll" id="track-scroll">
+              <div class="track" id="track" style="--zoom:1">
+                <ol class="cue-ruler" id="cue-ruler" aria-hidden="true"></ol>
+                <ol class="timeline-rail" id="timeline-rail" aria-label="视频事件时间轴"></ol>
+                <div class="curve-lane" id="curve-lane">
+                  <svg class="proxy-curve" id="proxy-curve" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"></svg>
+                  <div class="curve-nodes" id="curve-nodes" aria-hidden="true"></div>
+                  <p class="lane-empty" id="curve-empty">让 AI 观众逐段体验之后，这里出现按时间排列的注意与困惑曲线。</p>
+                </div>
+                <div class="playhead" id="track-playhead" aria-hidden="true">
+                  <span class="playhead-time" id="playhead-time">00:00</span>
+                </div>
+                <div class="playmark" id="track-playmark" aria-hidden="true" hidden></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="curve-legend" id="curve-legend">
+            <span class="legend-item" data-series="attention">注意</span>
+            <span class="legend-item" data-series="confusion">困惑</span>
+            <span class="legend-note">代理量＝模型推算的替代指标，不是真人数据。按事件中点连线；卡片、标尺与曲线共用同一条时间坐标。</span>
+          </p>
+        </div>
+      </section>
+
+      <aside class="inspector" id="evidence-inspector" aria-label="证据 Inspector">
+        <div class="inspector-tabs" role="tablist" aria-label="证据视图">
+          <button type="button" role="tab" id="tab-evidence" data-view="evidence" aria-controls="view-evidence" aria-selected="true">当前证据</button>
+          <button type="button" role="tab" id="tab-response" data-view="response" aria-controls="view-response" aria-selected="false" tabindex="-1">逐段反应</button>
+          <button type="button" role="tab" id="tab-traces" data-view="traces" aria-controls="view-traces" aria-selected="false" tabindex="-1">个体记录</button>
+          <button type="button" role="tab" id="tab-calibration" data-view="calibration" aria-controls="view-calibration" aria-selected="false" tabindex="-1">真人校准</button>
+        </div>
+
+        <div class="methods-strip" id="methods-strip">
+          <span class="methods-glyph" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" focusable="false"><circle cx="7" cy="7" r="5.6" fill="none" stroke="currentColor" stroke-width="1.2"></circle><path d="M7 4.2v3.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path><circle cx="7" cy="9.7" r=".85" fill="currentColor"></circle></svg>
+          </span>
+          <strong>本页所有数值都是代理量，不是对真实人群的预测。</strong>
+          <details>
+            <summary>方法与局限</summary>
+            <div class="methods-sheet">
+              <ul id="limitations-list">
+                <li>界面中的注意、情绪、理解、购买等数值都是代理量，也就是模型推算的替代指标。</li>
+                <li>Persona 数不等于真人样本量；只有导入同任务的真人反馈后，才能报告校准结果。</li>
+              </ul>
+              <dl class="epistemic-legend">
+                <div><dt data-epistemic="human_confirmed">人工复核事实</dt><dd>素材层事实已由人复核。</dd></div>
+                <div><dt data-epistemic="model_inferred">模型推断</dt><dd>模型给出的解释，尚未人工复核。</dd></div>
+                <div><dt data-epistemic="proxy">未校准代理量</dt><dd>Persona 状态推算值，不是真人行为记录。</dd></div>
+              </dl>
             </div>
           </details>
-        </section>
+        </div>
 
+        <div class="inspector-views">
+          <section class="inspector-view" id="view-evidence" role="tabpanel" aria-labelledby="tab-evidence" tabindex="0">
+            <!-- Asymmetric lockup: the eyebrow carries the time slice, the title
+                 carries the event, the right margin carries the review state. -->
+            <div class="inspector-heading">
+              <p class="heading-eyebrow">
+                <span class="rail-label">当前事件</span>
+                <time id="inspector-timecode">00:00–00:00</time>
+              </p>
+              <h3 id="inspector-title">还没有选择事件</h3>
+              <span class="status-tag" id="review-status">未选择</span>
+            </div>
+            <p class="event-summary" id="event-summary">在时间轴上选一个事件，这里会同步它的多模态事实、推断状态与证据引用。</p>
+
+            <div class="inspector-block">
+              <div class="block-head">
+                <h4 class="rail-label">三项代理量</h4>
+                <span class="qualifier">未校准</span>
+              </div>
+              <dl class="metric-strip" id="event-metrics">
+                <div data-state="empty"><dt>困惑</dt><dd><b data-metric>待载入</b></dd></div>
+                <div data-state="empty"><dt>注意</dt><dd><b data-metric>待载入</b></dd></div>
+                <div data-state="empty"><dt>继续</dt><dd><b data-metric>待载入</b></dd></div>
+              </dl>
+              <p class="metric-note">Deep Persona（完整看完全片的 AI 观众）在本段的平均值。先让 AI 观众逐段体验，这三格才会有数。</p>
+            </div>
+
+            <div class="inspector-block">
+              <div class="block-head">
+                <h4 class="rail-label">多模态观察</h4>
+                <span class="qualifier is-quiet">素材事实层</span>
+              </div>
+              <ul id="observations" class="observation-list"><li class="empty-copy">选中事件后，这里列出该段的画面、语音与声音观察。</li></ul>
+            </div>
+
+            <div class="inspector-block claim-block">
+              <span class="claim-anchor" id="claim-anchor" aria-hidden="true"></span>
+              <div class="block-head">
+                <h4 class="rail-label">命中证据</h4>
+                <span class="qualifier is-quiet">时间片引用</span>
+              </div>
+              <div id="evidence-claim"><p class="empty-copy">选中事件后，这里显示该时间片引用的证据与来源标识。</p></div>
+            </div>
+
+            <div class="inspector-block">
+              <div class="block-head">
+                <h4 class="rail-label">分歧与反例</h4>
+                <span class="qualifier">未校准</span>
+              </div>
+              <div id="event-extremes" class="empty-copy">让 AI 观众逐段体验之后，这里显示反应最强的 Persona 和一个反例。</div>
+            </div>
+
+            <dl class="provenance-strip" id="evidence-provenance">
+              <div><dt>Environment</dt><dd>待载入</dd></div>
+              <div><dt>Timeline</dt><dd>待载入</dd></div>
+              <div><dt>素材哈希</dt><dd>待载入</dd></div>
+              <div><dt>Runtime</dt><dd>待载入</dd></div>
+            </dl>
+          </section>
+
+          <section class="inspector-view" id="view-response" role="tabpanel" aria-labelledby="tab-response" tabindex="0" hidden>
+            <p class="view-note">聚合只是入口。点任意一行都能回到对应事件，并下钻到具体 Persona 与反例；三列数值都是未校准代理量。</p>
+            <div class="table-wrap">
+              <table id="response-table">
+                <thead>
+                  <tr><th scope="col">时间</th><th scope="col">事件与下钻</th><th scope="col" class="numeric-head">困惑</th><th scope="col" class="numeric-head">注意</th><th scope="col" class="numeric-head">继续</th></tr>
+                </thead>
+                <tbody id="event-table-body"><tr><td colspan="5">正在载入公开样例。</td></tr></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="inspector-view" id="view-traces" role="tabpanel" aria-labelledby="tab-traces" tabindex="0" hidden>
+            <p class="view-note">个体记录（Trace）是每个 Persona 逐事件的可回放反应。这里不做跨 Persona 平均，只按个体展开。</p>
+            <label class="search-field">
+              <span class="sr-only">筛选 Persona</span>
+              <input id="persona-filter" type="search" placeholder="按 Persona 或分群筛选">
+            </label>
+            <div id="trace-list" class="trace-list" aria-live="polite"></div>
+          </section>
+
+          <section class="inspector-view" id="view-calibration" role="tabpanel" aria-labelledby="tab-calibration" tabindex="0" hidden>
+            <p class="view-note">导入真人锚点（Human Anchor：同一任务、同一版本素材下收集的真人反馈记录）。已撤回同意的记录会自动排除。</p>
+            <form id="calibration-form" class="calibration-form">
+              <label class="field file-field">
+                <span>真人锚点文件（Human Anchor v0.1 JSON）</span>
+                <input name="file" type="file" accept="application/json,.json" required>
+              </label>
+              <label class="field">
+                <span>A/B 方向（可选）</span>
+                <select name="agent_ab_direction">
+                  <option value="">尚未比较</option>
+                  <option value="variant_a">版本 A 更好</option>
+                  <option value="variant_b">版本 B 更好</option>
+                  <option value="no_difference">两版无差异</option>
+                </select>
+              </label>
+              <button class="secondary-button" type="submit" id="calibrate-button"><span class="button-label">计算校准指标</span></button>
+            </form>
+            <div id="calibration-results" class="calibration-results">
+              <strong>还没有真人数据</strong>
+              <p>导入锚点文件后，这里会报告 Top 问题召回、时间点召回、同名代理量误差和 A/B 方向一致性。在那之前，本页数值都不能当作对现实的预测。</p>
+            </div>
+          </section>
+        </div>
+      </aside>
+
+      <!-- The relation trajectory left behind by the condense: a dotted particle
+           trail at rest, with one spark that sweeps it on selection or hover. -->
+      <svg class="light-path" id="light-path" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+        <path class="beam" d="" fill="none"></path>
+        <path class="beam-spark" d="" fill="none"></path>
+        <circle class="beam-source" r="2.6" cx="-40" cy="-40"></circle>
+        <circle class="beam-mark" r="1.8" cx="-40" cy="-40"></circle>
+        <circle class="beam-end" r="3.6" cx="-40" cy="-40" fill="none"></circle>
+      </svg>
+    </div>
+
+    <section class="deck" id="deck" aria-label="实验流程、量表账本与校准状态">
+      <div class="deck-flow">
+        <div class="deck-head">
+          <h2 class="rail-label">实验流程</h2>
+          <p id="pipeline-scope">四步依次推进，点任一步跳到对应操作</p>
+        </div>
         <nav class="rail-stages" aria-label="实验阶段">
-          <h2 class="rail-label">实验阶段</h2>
           <ol class="pipeline">
             <li class="is-active" data-stage="ingest">
               <button type="button" data-stage-target="ingest">
                 <span class="stage-index" aria-hidden="true">1</span>
                 <span class="stage-name">素材与权利</span>
-                <small class="stage-meta">本地解析<em class="stage-status">· 当前</em></small>
+                <small class="stage-meta">本机解析<em class="stage-status">· 当前</em></small>
               </button>
             </li>
             <li data-stage="analyze">
@@ -166,7 +453,7 @@
             <li data-stage="run">
               <button type="button" data-stage-target="run">
                 <span class="stage-index" aria-hidden="true">3</span>
-                <span class="stage-name">顺序体验</span>
+                <span class="stage-name">AI 观众体验</span>
                 <small class="stage-meta">Deep Persona<em class="stage-status">· 待开始</em></small>
               </button>
             </li>
@@ -174,32 +461,102 @@
               <button type="button" data-stage-target="calibrate">
                 <span class="stage-index" aria-hidden="true">4</span>
                 <span class="stage-name">真人校准</span>
-                <small class="stage-meta">Human Anchors<em class="stage-status">· 待开始</em></small>
+                <small class="stage-meta">真人锚点<em class="stage-status">· 待开始</em></small>
               </button>
             </li>
           </ol>
         </nav>
+      </div>
+
+      <div class="deck-metrics">
+        <div class="deck-head">
+          <h2 class="rail-label">量表账本</h2>
+          <p id="deck-scope">还没有时间轴</p>
+        </div>
+        <dl class="metric-strip" id="deck-metrics">
+          <div data-state="empty"><dt>困惑</dt><dd><b data-metric>待载入</b></dd></div>
+          <div data-state="empty"><dt>注意</dt><dd><b data-metric>待载入</b></dd></div>
+          <div data-state="empty"><dt>继续</dt><dd><b data-metric>待载入</b></dd></div>
+        </dl>
+        <p class="metric-note">区间 0 至 100%，取全片平均，未经真人校准。</p>
+      </div>
+
+      <div class="deck-calibration">
+        <div class="deck-head">
+          <h2 class="rail-label">校准状态</h2>
+          <button class="text-button" type="button" data-stage-target="calibrate">导入真人锚点</button>
+        </div>
+        <dl class="calibration-status" id="calibration-status">
+          <div><dt>同任务真人</dt><dd data-state="empty">0</dd></div>
+          <div><dt>Top 问题召回</dt><dd data-state="empty">未校准</dd></div>
+          <div><dt>时间点召回</dt><dd data-state="empty">未校准</dd></div>
+        </dl>
+      </div>
+
+      <footer class="deck-legal">
+        <strong id="deployment-label">本机原型</strong>
+        <span>证据先于结论。代理量未经真人校准，不作现实预测。</span>
+        <a href="https://github.com/YunyueLi/audience-mirror" rel="noreferrer">源代码与方法文档</a>
+        <a href="./components.html">界面系统</a>
+      </footer>
+    </section>
+
+    <div class="drawer" id="drawer">
+      <button class="drawer-scrim" type="button" id="drawer-scrim" tabindex="-1" aria-label="关闭实验设置"></button>
+      <aside class="rail" id="rail" aria-label="实验上下文与运行控制">
+        <div class="drawer-head">
+          <h2 class="rail-label">实验设置</h2>
+          <button class="drawer-close" type="button" id="drawer-close" aria-label="关闭实验设置">
+            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3.5 3.5 7 7M10.5 3.5l-7 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+          </button>
+        </div>
+
+        <section class="rail-card" aria-labelledby="rail-experiment-label">
+          <div class="rail-card-head">
+            <h3 class="rail-label" id="rail-experiment-label">当前实验</h3>
+            <button class="text-button" type="button" id="load-demo" data-load-demo>载入公开样例</button>
+          </div>
+          <div class="experiment-identity">
+            <strong id="experiment-id">demo</strong>
+            <small id="experiment-status">公开合成样例</small>
+          </div>
+          <dl class="source-summary is-hidden" id="source-summary" aria-live="polite">
+            <div><dt>来源</dt><dd>待载入</dd></div>
+            <div><dt>解析方式</dt><dd>待载入</dd></div>
+            <div><dt>来源参数</dt><dd>不保存</dd></div>
+          </dl>
+          <p class="control-note" id="capability-detail">正在读取本机能力清单。</p>
+          <details class="recent-experiments" id="recent-experiments">
+            <summary>
+              <span>最近实验</span>
+              <small id="recent-experiment-count">0</small>
+            </summary>
+            <div class="recent-experiment-list" id="recent-experiment-list" aria-live="polite">
+              <p class="empty-copy">正在读取本机实验。</p>
+            </div>
+          </details>
+        </section>
 
         <details class="rail-group" id="scale-group" open>
           <summary><span>规模口径</span><em>Persona ≠ 真人</em></summary>
           <div class="rail-group-body">
             <dl id="scale-values" class="scale-ledger">
-              <div><dt>Persona Pool</dt><dd><b data-count>—</b><small>可检索画像记录</small></dd></div>
-              <div><dt>Deep Persona</dt><dd><b data-count>—</b><small>完成顺序体验</small></dd></div>
-              <div><dt>Trace Event</dt><dd><b data-count>—</b><small>可回放反应事件</small></dd></div>
-              <div><dt>Human Participant</dt><dd><b data-count>—</b><small>同任务真人</small></dd></div>
+              <div><dt>Persona Pool</dt><dd><b data-count>待载入</b><small>可检索画像记录</small></dd></div>
+              <div><dt>Deep Persona</dt><dd><b data-count>待载入</b><small>已看完全片</small></dd></div>
+              <div><dt>Trace Event</dt><dd><b data-count>待载入</b><small>可回放反应事件</small></dd></div>
+              <div><dt>Human Participant</dt><dd><b data-count>待载入</b><small>同任务真人</small></dd></div>
             </dl>
           </div>
         </details>
 
         <details class="rail-group" id="run-group" open>
-          <summary><span>顺序体验</span><em>阶段 3</em></summary>
+          <summary><span>AI 观众体验</span><em>第 3 步</em></summary>
           <div class="rail-group-body">
             <form id="run-form" class="rail-form">
               <label class="field">
                 <span>运行时</span>
                 <select name="runtime_mode">
-                  <option value="deterministic">工程基线</option>
+                  <option value="deterministic">工程基线（本机、可复现）</option>
                   <option value="model">真实模型 Agent</option>
                 </select>
               </label>
@@ -225,22 +582,22 @@
                 </select>
               </label>
               <label class="field">
-                <span>Deep Persona</span>
+                <span>Deep Persona 数量</span>
                 <input name="persona_count" type="number" min="1" max="32" value="6">
               </label>
               <div class="remote-governance is-hidden" data-model-runtime>
-                <strong>Agent 远程推理边界</strong>
-                <p>会发送当前 Timeline 事实、Persona 与此前记忆；不发送原视频文件。机密／受限 Timeline 默认拒绝。</p>
+                <strong>远程推理边界</strong>
+                <p>会发送当前时间轴事实、Persona 与此前记忆；不发送原视频文件。机密与受限素材默认拒绝。</p>
               </div>
               <label class="check-field is-hidden" data-model-runtime>
                 <input name="agent_remote_processing_confirmed" type="checkbox" value="true" disabled>
-                <span>授权本次把 Timeline 与 Persona 上下文发送给所选 Reasoner。</span>
+                <span>授权本次把时间轴与 Persona 上下文发送给所选 Reasoner。</span>
               </label>
               <label class="check-field is-hidden" data-model-runtime>
                 <input name="agent_provider_policy_confirmed" type="checkbox" value="true" disabled>
                 <span>已核对所选 Provider 的地域、保留和训练使用政策。</span>
               </label>
-              <p class="control-note">Persona 按时间顺序独立体验，不互相讨论；模型模式逐事件调用，默认限制 16 次。运行按钮在放映台运输条。</p>
+              <p class="control-note">Persona 按时间顺序独立体验，互不讨论。模型模式逐事件调用，默认上限 16 次。开始按钮在画面下方的控制条上。</p>
             </form>
           </div>
         </details>
@@ -263,7 +620,7 @@
               </label>
               <div class="remote-governance" id="remote-governance">
                 <strong>本次远程处理边界</strong>
-                <p>Provider 管理地域；调用后请求删除远程文件，服务日志仍受当期 API 条款约束；本原型不替你断言训练使用政策。</p>
+                <p>Provider 管理数据地域。调用后会请求删除远程文件，但服务日志仍受当期 API 条款约束；本原型不替你断言训练使用政策。</p>
               </div>
               <label class="check-field">
                 <input name="remote_processing_confirmed" type="checkbox" value="true" required>
@@ -271,7 +628,7 @@
               </label>
               <label class="check-field">
                 <input name="provider_policy_confirmed" type="checkbox" value="true" required>
-                <span>已核对数据地域、保留与训练使用政策；机密／受限素材不走该公有路由。</span>
+                <span>已核对数据地域、保留与训练使用政策；机密与受限素材不走该公有路由。</span>
               </label>
               <button class="secondary-button" type="submit" id="analyze-button"><span class="button-label">分析证据帧</span></button>
             </form>
@@ -282,223 +639,12 @@
           <summary><span>远程处理凭据</span><em id="receipt-count">0</em></summary>
           <div class="rail-group-body">
             <div class="receipt-list" id="receipt-list" aria-live="polite">
-              <p class="empty-copy">本实验尚无远程调用。</p>
+              <p class="empty-copy">本实验还没有远程调用。</p>
             </div>
           </div>
         </details>
       </aside>
-
-      <section class="stage" id="stage" aria-label="放映台与线索轨道">
-        <div class="aperture" id="aperture" data-state="empty">
-          <div class="media-stage" id="media-stage">
-            <div class="media-placeholder">
-              <strong>公开合成时间轴</strong>
-              <span>粘贴已授权链接或恢复公开 Demo 后，这里显示原视频与解码证据帧。</span>
-            </div>
-          </div>
-          <div class="aperture-frame" aria-hidden="true">
-            <span></span><span></span><span></span><span></span>
-          </div>
-          <div class="aperture-chips">
-            <span class="chip chip-mono" id="aperture-timecode">00:00</span>
-            <span class="chip" id="aperture-tag">公开合成 Fixture</span>
-          </div>
-          <div class="aperture-state" id="aperture-state" role="status" hidden>
-            <span class="aperture-spinner" aria-hidden="true"></span>
-            <strong id="aperture-state-title"></strong>
-            <p id="aperture-state-copy"></p>
-            <button class="secondary-button is-hidden" type="button" id="aperture-retry">恢复公开 Demo</button>
-          </div>
-        </div>
-
-        <div class="stage-bar">
-          <time id="current-timecode">00:00–00:00</time>
-          <strong id="current-label">等待时间轴</strong>
-          <span class="transport-position" id="current-position">0 / 0</span>
-          <span class="transport-steps">
-            <button type="button" class="transport-step" id="cue-prev" aria-label="上一个 cue" disabled><span aria-hidden="true"></span></button>
-            <button type="button" class="transport-step" id="cue-next" aria-label="下一个 cue" disabled><span aria-hidden="true"></span></button>
-          </span>
-          <button class="primary-button run-action" type="submit" form="run-form" id="run-button"><span class="button-label">运行顺序体验</span></button>
-        </div>
-
-        <div class="media-evidence-links" id="media-evidence-links" aria-live="polite"></div>
-
-        <div class="cue-block">
-          <div class="cue-head">
-            <h3 class="rail-label">线索轨道</h3>
-            <p id="cue-scope">← → 切换 cue，Home／End 到首尾。</p>
-          </div>
-          <ol class="cue-ruler" id="cue-ruler" aria-hidden="true"></ol>
-          <ol class="timeline-rail" id="timeline-rail" aria-label="视频时间轴"></ol>
-        </div>
-      </section>
-
-      <aside class="inspector" id="evidence-inspector" aria-label="证据 Inspector">
-        <div class="methods-strip" id="methods-strip">
-          <strong>本页数值是预测代理量，不是现实人群预测。</strong>
-          <details>
-            <summary>方法与局限</summary>
-            <div class="methods-sheet">
-              <ul id="limitations-list">
-                <li>界面中的注意、情绪、理解、购买等数值均为预测代理量。</li>
-                <li>Persona 数不等于真人样本量；只有导入同任务 Human Anchors 后才能报告校准结果。</li>
-              </ul>
-              <dl class="epistemic-legend">
-                <div><dt data-epistemic="human_confirmed">人工复核事实</dt><dd>素材层事实已由人复核。</dd></div>
-                <div><dt data-epistemic="model_inferred">模型推断</dt><dd>模型给出的解释，尚未人工复核。</dd></div>
-                <div><dt data-epistemic="proxy">未校准代理量</dt><dd>Persona 状态推算值，不是真人行为记录。</dd></div>
-              </dl>
-            </div>
-          </details>
-        </div>
-
-        <div class="inspector-tabs" role="tablist" aria-label="Inspector 视图">
-          <button type="button" role="tab" id="tab-evidence" data-view="evidence" aria-controls="view-evidence" aria-selected="true">当前证据</button>
-          <button type="button" role="tab" id="tab-response" data-view="response" aria-controls="view-response" aria-selected="false" tabindex="-1">逐段反应</button>
-          <button type="button" role="tab" id="tab-traces" data-view="traces" aria-controls="view-traces" aria-selected="false" tabindex="-1">个体 Trace</button>
-          <button type="button" role="tab" id="tab-calibration" data-view="calibration" aria-controls="view-calibration" aria-selected="false" tabindex="-1">校准</button>
-        </div>
-
-        <div class="inspector-views">
-          <section class="inspector-view" id="view-evidence" role="tabpanel" aria-labelledby="tab-evidence" tabindex="0">
-            <div class="inspector-heading">
-              <h3 id="inspector-title">当前事件</h3>
-              <span class="status-tag" id="review-status">未选择</span>
-            </div>
-            <p id="event-summary">选择 cue 后查看多模态事实、推断状态和证据引用。</p>
-
-            <div class="inspector-block">
-              <div class="block-head">
-                <h4 class="rail-label">三项代理量</h4>
-                <span class="qualifier">未校准</span>
-              </div>
-              <dl class="metric-strip" id="event-metrics">
-                <div data-state="empty"><dt>困惑</dt><dd><b data-metric>—</b></dd></div>
-                <div data-state="empty"><dt>注意</dt><dd><b data-metric>—</b></dd></div>
-                <div data-state="empty"><dt>继续</dt><dd><b data-metric>—</b></dd></div>
-              </dl>
-              <p class="metric-note">Deep Persona 平均值，运行顺序体验后可用。</p>
-            </div>
-
-            <div class="inspector-block">
-              <div class="block-head">
-                <h4 class="rail-label">多模态观察</h4>
-                <span class="qualifier is-quiet">素材事实层</span>
-              </div>
-              <ul id="observations" class="observation-list"><li class="empty-copy">尚无观察。</li></ul>
-            </div>
-
-            <div class="inspector-block claim-block">
-              <span class="claim-anchor" id="claim-anchor" aria-hidden="true"></span>
-              <div class="block-head">
-                <h4 class="rail-label">命中证据</h4>
-                <span class="qualifier is-quiet">时间片引用</span>
-              </div>
-              <div id="evidence-claim"><p class="empty-copy">选择 cue 后显示该时间片引用的证据与来源标识。</p></div>
-            </div>
-
-            <div class="inspector-block">
-              <div class="block-head">
-                <h4 class="rail-label">分歧与反例</h4>
-                <span class="qualifier">未校准</span>
-              </div>
-              <div id="event-extremes" class="empty-copy">运行 Deep Persona 后显示高反应与反例。</div>
-            </div>
-
-            <dl class="provenance-strip" id="evidence-provenance">
-              <div><dt>Environment</dt><dd>—</dd></div>
-              <div><dt>Timeline</dt><dd>—</dd></div>
-              <div><dt>素材哈希</dt><dd>—</dd></div>
-              <div><dt>Runtime</dt><dd>—</dd></div>
-            </dl>
-          </section>
-
-          <section class="inspector-view" id="view-response" role="tabpanel" aria-labelledby="tab-response" tabindex="0" hidden>
-            <p class="view-note">聚合只作为入口；每一行都能下钻到 cue、Persona 与反例。三列数值为未校准预测代理量。</p>
-            <div class="table-wrap">
-              <table id="response-table">
-                <thead>
-                  <tr><th scope="col">时间</th><th scope="col">事件与下钻</th><th scope="col" class="numeric-head">困惑</th><th scope="col" class="numeric-head">注意</th><th scope="col" class="numeric-head">继续</th></tr>
-                </thead>
-                <tbody id="event-table-body"><tr><td colspan="5">正在载入公开 Demo。</td></tr></tbody>
-              </table>
-            </div>
-          </section>
-
-          <section class="inspector-view" id="view-traces" role="tabpanel" aria-labelledby="tab-traces" tabindex="0" hidden>
-            <label class="search-field">
-              <span class="sr-only">筛选 Persona</span>
-              <input id="persona-filter" type="search" placeholder="筛选 Persona 或分群">
-            </label>
-            <div id="trace-list" class="trace-list" aria-live="polite"></div>
-          </section>
-
-          <section class="inspector-view" id="view-calibration" role="tabpanel" aria-labelledby="tab-calibration" tabindex="0" hidden>
-            <p class="view-note">导入符合 Human Anchor v0.1 的同任务、同版本反馈；撤回同意的记录会自动排除。</p>
-            <form id="calibration-form" class="calibration-form">
-              <label class="field file-field">
-                <span>Human Anchors JSON</span>
-                <input name="file" type="file" accept="application/json,.json" required>
-              </label>
-              <label class="field">
-                <span>Agent A/B 方向（可选）</span>
-                <select name="agent_ab_direction">
-                  <option value="">尚未比较</option>
-                  <option value="variant_a">版本 A</option>
-                  <option value="variant_b">版本 B</option>
-                  <option value="no_difference">无差异</option>
-                </select>
-              </label>
-              <button class="secondary-button" type="submit" id="calibrate-button"><span class="button-label">计算校准指标</span></button>
-            </form>
-            <div id="calibration-results" class="calibration-results">
-              <strong>尚未导入真人数据</strong>
-              <p>校准结果会显示 Top 问题召回、时间点召回、同名代理量误差和 A/B 方向一致性。</p>
-            </div>
-          </section>
-        </div>
-      </aside>
-
-      <svg class="light-path" id="light-path" aria-hidden="true" focusable="false" preserveAspectRatio="none">
-        <path class="beam" d="" fill="none"></path>
-        <circle class="beam-source" r="3.5" cx="-40" cy="-40"></circle>
-        <circle class="beam-mark" r="2.5" cx="-40" cy="-40"></circle>
-        <circle class="beam-end" r="4.5" cx="-40" cy="-40" fill="none"></circle>
-      </svg>
     </div>
-
-    <section class="deck" id="deck" aria-label="代理量总览与校准状态">
-      <div class="deck-metrics">
-        <div class="deck-head">
-          <h2 class="rail-label">代理量总览</h2>
-          <p id="deck-scope">等待时间轴</p>
-        </div>
-        <dl class="metric-strip" id="deck-metrics">
-          <div data-state="empty"><dt>困惑</dt><dd><b data-metric>—</b></dd></div>
-          <div data-state="empty"><dt>注意</dt><dd><b data-metric>—</b></dd></div>
-          <div data-state="empty"><dt>继续</dt><dd><b data-metric>—</b></dd></div>
-        </dl>
-      </div>
-
-      <div class="deck-calibration">
-        <div class="deck-head">
-          <h2 class="rail-label">校准状态</h2>
-          <button class="text-button" type="button" data-stage-target="calibrate">前往校准</button>
-        </div>
-        <dl class="calibration-status" id="calibration-status">
-          <div><dt>同任务真人</dt><dd data-state="empty">0</dd></div>
-          <div><dt>Top 问题召回</dt><dd data-state="empty">未校准</dd></div>
-          <div><dt>时间点召回</dt><dd data-state="empty">未校准</dd></div>
-        </dl>
-      </div>
-
-      <footer class="deck-legal">
-        <strong>本地原型</strong>
-        <span>证据先于结论 · 代理量未经真人校准不作现实预测</span>
-        <a href="https://github.com/YunyueLi/audience-mirror" rel="noreferrer">源代码与方法文档</a>
-      </footer>
-    </section>
   </div>
 
   <div class="form-message" id="setup-message" role="status" aria-live="polite">

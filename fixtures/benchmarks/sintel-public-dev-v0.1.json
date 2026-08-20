@@ -1,0 +1,407 @@
+{
+  "schema_version": "audience-mirror.video-benchmark/v0.1",
+  "benchmark_id": "sintel-public-dev-v0.1",
+  "title": "Sintel 公开长视频理解开发集 v0.1",
+  "description": "面向原生整片、固定采样与主动局部复核策略的公开开发集。题目覆盖视觉事实、片尾 OCR、人工字幕、时间定位、顺序与跨事件理解。",
+  "asset": {
+    "title": "Sintel - Open Movie by Blender Foundation",
+    "source_url": "https://www.youtube.com/watch?v=eRsGyueVLvQ",
+    "duration_ms": 888041,
+    "content_hash": "8d42f955c7a46f5ce117ac3493b3355d074b04c3f5dce7e009951ba07567817f",
+    "license": "CC BY 3.0",
+    "license_url": "https://durian.blender.org/sharing/",
+    "attribution": "© Blender Foundation | durian.blender.org",
+    "media_included": false
+  },
+  "construction": {
+    "created_at": "2026-08-20",
+    "language": "zh-CN",
+    "annotation_status": "single_maintainer_draft",
+    "human_annotator_count": 1,
+    "source_evidence": [
+      "公开影片逐段观看",
+      "YouTube 人工英文与简体中文字幕",
+      "本地解码的时间戳证据帧"
+    ],
+    "independent_second_review": false
+  },
+  "questions": [
+    {
+      "question_id": "visual-01-setting",
+      "category": "visual_fact",
+      "prompt": "约 00:50 的主体环境是什么？",
+      "answer_type": "multiple_choice",
+      "choices": ["雪山山谷", "热带海滩", "城市街道", "室内剧场"],
+      "reference": {"accepted_answers": ["雪山山谷"]},
+      "evidence": [{"t_start_ms": 41958, "t_end_ms": 80000, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "远景显示积雪山谷和岩壁。"}],
+      "scoring": {"strategy": "choice", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["scene", "early"]
+    },
+    {
+      "question_id": "visual-02-orange-light",
+      "category": "visual_fact",
+      "prompt": "雪山远景左侧高处的小型建筑或入口呈现什么醒目视觉特征？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["橙黄色光线", "橙色光", "暖色光"]},
+      "evidence": [{"t_start_ms": 41958, "t_end_ms": 123021, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "左侧高处入口透出橙黄色光。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["scene-detail"]
+    },
+    {
+      "question_id": "visual-03-hands",
+      "category": "visual_fact",
+      "prompt": "约 02:20 的近景中，黑色粗糙布料旁最清楚可见的身体部位是什么？",
+      "answer_type": "short_text",
+      "reference": {"required_term_groups": [["手", "手掌", "双手"]]},
+      "evidence": [{"t_start_ms": 123021, "t_end_ms": 201771, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "两只戴露指护具的手位于黑色布料旁。"}],
+      "scoring": {"strategy": "required_terms", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["object", "close-up"]
+    },
+    {
+      "question_id": "visual-04-winged-companion",
+      "category": "visual_fact",
+      "prompt": "约 03:45，闭眼躺卧的人物身旁是什么？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["一只小型翼生物", "翼生物", "小龙"]},
+      "evidence": [{"t_start_ms": 201771, "t_end_ms": 281833, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "带膜翼与长口鼻的小型生物伏在人物身侧。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["character", "relationship"]
+    },
+    {
+      "question_id": "visual-05-flight-background",
+      "category": "visual_fact",
+      "prompt": "约 04:50，翼生物飞行时下方的环境是什么状态？",
+      "answer_type": "multiple_choice",
+      "choices": ["残破的石质建筑群", "完好的森林村庄", "平静海面", "冰封湖泊"],
+      "reference": {"accepted_answers": ["残破的石质建筑群"]},
+      "evidence": [{"t_start_ms": 281833, "t_end_ms": 364479, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "下方存在断裂墙体、裸露结构和碎片。"}],
+      "scoring": {"strategy": "choice", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["action", "environment"]
+    },
+    {
+      "question_id": "visual-06-blurred-shape",
+      "category": "visual_fact",
+      "prompt": "约 06:20 的雪山画面中央出现了什么难以确认的元素？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["大型浅色模糊形体", "浅色模糊形体", "模糊的巨大物体"]},
+      "evidence": [{"t_start_ms": 364479, "t_end_ms": 451229, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "大型浅灰至淡粉色形体因失焦或运动模糊而不可辨。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["uncertainty", "motion-blur"]
+    },
+    {
+      "question_id": "visual-07-crystals",
+      "category": "visual_fact",
+      "prompt": "约 08:00 的黑暗岩石空间主要由什么提供局部光源？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["蓝白色发光晶体", "蓝白色晶体", "发光晶体"]},
+      "evidence": [{"t_start_ms": 451229, "t_end_ms": 528438, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "多簇蓝白色晶体在暗色岩层中发光。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["lighting", "cave"]
+    },
+    {
+      "question_id": "visual-08-reaching-pose",
+      "category": "visual_fact",
+      "prompt": "约 09:20，人物在晶体环境中的主要姿态是什么？",
+      "answer_type": "short_text",
+      "reference": {"required_term_groups": [["伏地", "跪伏", "爬行"], ["伸手", "手向前伸出"]]},
+      "evidence": [{"t_start_ms": 528438, "t_end_ms": 606125, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "人物以膝和一只手支撑，另一只手向前伸出。"}],
+      "scoring": {"strategy": "required_terms", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["pose", "action"]
+    },
+    {
+      "question_id": "visual-09-scaled-head",
+      "category": "visual_fact",
+      "prompt": "约 10:30，站立人物面对的巨大形体最像什么？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["大型鳞状头部", "巨大的鳞状头部", "龙的头部"]},
+      "evidence": [{"t_start_ms": 606125, "t_end_ms": 682833, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "左侧前景形体具有口鼻与鳞状轮廓。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["reveal", "entity"]
+    },
+    {
+      "question_id": "visual-10-white-flowers",
+      "category": "visual_fact",
+      "prompt": "约 11:50 的低机位岩地画面中，靴子附近长着什么？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["白色下垂的钟形花", "白色钟形花", "白花"]},
+      "evidence": [{"t_start_ms": 682833, "t_end_ms": 767958, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "岩缝和画面右侧可见白色下垂花朵。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["plant", "detail"]
+    },
+    {
+      "question_id": "ocr-01-main-heading",
+      "category": "ocr_text",
+      "prompt": "约 13:20 的片尾页上方主要标题之一是什么？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["MAIN SPONSORS"]},
+      "evidence": [{"t_start_ms": 767958, "t_end_ms": 851375, "modalities": ["video", "text"], "source_type": "credits_ocr", "note": "木板背景的片尾页显示 MAIN SPONSORS。"}],
+      "scoring": {"strategy": "exact", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["credits", "ocr"]
+    },
+    {
+      "question_id": "ocr-02-gold-heading",
+      "category": "ocr_text",
+      "prompt": "与 MAIN SPONSORS 同页的另一赞助级别标题是什么？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["GOLD SPONSORS"]},
+      "evidence": [{"t_start_ms": 767958, "t_end_ms": 851375, "modalities": ["video", "text"], "source_type": "credits_ocr", "note": "同一片尾页显示 GOLD SPONSORS。"}],
+      "scoring": {"strategy": "exact", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["credits", "ocr"]
+    },
+    {
+      "question_id": "ocr-03-foundations",
+      "category": "ocr_text",
+      "prompt": "影片最后一段上方并列出现哪两个基金或机构名称？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["BLENDER FOUNDATION 和 NETHERLANDS FILM FUND", "BLENDER FOUNDATION NETHERLANDS FILM FUND"]},
+      "evidence": [{"t_start_ms": 851375, "t_end_ms": 888041, "modalities": ["video", "text"], "source_type": "credits_ocr", "note": "最终片尾页上方出现两个机构名称。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["credits", "ocr", "two-entity"]
+    },
+    {
+      "question_id": "ocr-04-cg-cookie",
+      "category": "ocr_text",
+      "prompt": "CG Cookie 是否出现在 MAIN SPONSORS 名单中？",
+      "answer_type": "boolean",
+      "reference": {"accepted_answers": [true, "是", "yes"]},
+      "evidence": [{"t_start_ms": 767958, "t_end_ms": 851375, "modalities": ["video", "text"], "source_type": "credits_ocr", "note": "MAIN SPONSORS 名单包含 CG Cookie。"}],
+      "scoring": {"strategy": "exact", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["credits", "ocr", "boolean"]
+    },
+    {
+      "question_id": "ocr-05-city",
+      "category": "ocr_text",
+      "prompt": "最终机构鸣谢页明确提到哪座城市？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["Amsterdam", "阿姆斯特丹", "City of Amsterdam"]},
+      "evidence": [{"t_start_ms": 851375, "t_end_ms": 888041, "modalities": ["video", "text"], "source_type": "credits_ocr", "note": "资助信息包含 City of Amsterdam。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["credits", "ocr", "location"]
+    },
+    {
+      "question_id": "dialogue-01-blade",
+      "category": "dialogue",
+      "prompt": "约 01:47，被说成有黑暗过去的物品是什么？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["刀", "刀刃", "blade"]},
+      "evidence": [{"t_start_ms": 107250, "t_end_ms": 110500, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "人工字幕称这把刀有黑暗的历史。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["caption", "object"]
+    },
+    {
+      "question_id": "dialogue-02-purpose",
+      "category": "dialogue",
+      "prompt": "约 02:15，旅行者说自己来到这里是为了什么？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["找人", "寻找某个人", "searching for someone"]},
+      "evidence": [{"t_start_ms": 135000, "t_end_ms": 137500, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "人工字幕回答为寻找某个人。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["caption", "motivation"]
+    },
+    {
+      "question_id": "dialogue-03-target",
+      "category": "dialogue",
+      "prompt": "旅行者最终说明自己寻找的对象是什么？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["一条龙", "龙", "a dragon"]},
+      "evidence": [{"t_start_ms": 143400, "t_end_ms": 145000, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "人工字幕回答为一条龙。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "easy",
+      "tags": ["caption", "quest"]
+    },
+    {
+      "question_id": "dialogue-04-name",
+      "category": "dialogue",
+      "prompt": "短片中反复被呼唤的小龙名字是什么？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["Scales", "小麟"]},
+      "evidence": [
+        {"t_start_ms": 228250, "t_end_ms": 232250, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "首次完整称呼 Good night, Scales。"},
+        {"t_start_ms": 621600, "t_end_ms": 629800, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "后段再次反复呼唤 Scales。"}
+      ],
+      "scoring": {"strategy": "exact", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["caption", "long-range", "name"]
+    },
+    {
+      "question_id": "dialogue-05-dragon-lands",
+      "category": "dialogue",
+      "prompt": "约 07:38，对方告诉 Sintel 她已经身处什么地方？",
+      "answer_type": "short_text",
+      "reference": {"accepted_answers": ["龙的国度", "龙之地", "dragon lands"]},
+      "evidence": [{"t_start_ms": 457800, "t_end_ms": 460500, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "人工字幕称这里就是龙的国度。"}],
+      "scoring": {"strategy": "contains", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["caption", "location"]
+    },
+    {
+      "question_id": "time-01-first-name",
+      "category": "temporal_localization",
+      "prompt": "第一次在人工字幕中完整出现名字 Scales 的时间范围是什么？",
+      "answer_type": "time_range",
+      "reference": {"time_range_ms": {"t_start_ms": 228250, "t_end_ms": 232250}},
+      "evidence": [{"t_start_ms": 228250, "t_end_ms": 232250, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "Good night, Scales。"}],
+      "scoring": {"strategy": "time_overlap", "min_iou": 0.3, "center_tolerance_ms": 3000, "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["caption", "grounding"]
+    },
+    {
+      "question_id": "time-02-failed",
+      "category": "temporal_localization",
+      "prompt": "“I have failed／我失败了”出现在哪个时间范围？",
+      "answer_type": "time_range",
+      "reference": {"time_range_ms": {"t_start_ms": 445850, "t_end_ms": 447500}},
+      "evidence": [{"t_start_ms": 445850, "t_end_ms": 447500, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "人工字幕的失败陈述。"}],
+      "scoring": {"strategy": "time_overlap", "min_iou": 0.3, "center_tolerance_ms": 2500, "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["caption", "grounding"]
+    },
+    {
+      "question_id": "time-03-crystal-cave",
+      "category": "temporal_localization",
+      "prompt": "影片从雪山过渡到以蓝白晶体为主要视觉特征的黑暗岩石环境，大致从哪个时间窗开始？",
+      "answer_type": "time_range",
+      "reference": {"time_range_ms": {"t_start_ms": 451229, "t_end_ms": 528438}},
+      "evidence": [{"t_start_ms": 451229, "t_end_ms": 528438, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "此段首次稳定呈现黑暗岩层与蓝白晶体。"}],
+      "scoring": {"strategy": "time_overlap", "min_iou": 0.25, "center_tolerance_ms": 15000, "evidence_min_iou": 0.1},
+      "difficulty": "hard",
+      "tags": ["scene-transition", "grounding"]
+    },
+    {
+      "question_id": "time-04-credits",
+      "category": "temporal_localization",
+      "prompt": "包含 MAIN SPONSORS 与 GOLD SPONSORS 的片尾页面出现在哪个时间窗？",
+      "answer_type": "time_range",
+      "reference": {"time_range_ms": {"t_start_ms": 767958, "t_end_ms": 851375}},
+      "evidence": [{"t_start_ms": 767958, "t_end_ms": 851375, "modalities": ["video", "text"], "source_type": "credits_ocr", "note": "片尾赞助者名单页。"}],
+      "scoring": {"strategy": "time_overlap", "min_iou": 0.25, "center_tolerance_ms": 15000, "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["credits", "grounding"]
+    },
+    {
+      "question_id": "time-05-final-name",
+      "category": "temporal_localization",
+      "prompt": "片中最后一次连续呼唤 Scales 的字幕出现在哪个时间范围？",
+      "answer_type": "time_range",
+      "reference": {"time_range_ms": {"t_start_ms": 621600, "t_end_ms": 629800}},
+      "evidence": [{"t_start_ms": 621600, "t_end_ms": 629800, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "10:21 至 10:29 连续出现 Scales。"}],
+      "scoring": {"strategy": "time_overlap", "min_iou": 0.3, "center_tolerance_ms": 4000, "evidence_min_iou": 0.1},
+      "difficulty": "hard",
+      "tags": ["caption", "last-occurrence", "grounding"]
+    },
+    {
+      "question_id": "order-01-scenes",
+      "category": "temporal_order",
+      "prompt": "将以下场景按首次出现顺序排列：雪山山谷、躺卧人物与翼生物、飞越残破建筑群、黑暗晶体环境、赞助者名单。",
+      "answer_type": "ordered_choices",
+      "choices": ["雪山山谷", "躺卧人物与翼生物", "飞越残破建筑群", "黑暗晶体环境", "赞助者名单"],
+      "reference": {"accepted_answers": [["雪山山谷", "躺卧人物与翼生物", "飞越残破建筑群", "黑暗晶体环境", "赞助者名单"]]},
+      "evidence": [
+        {"t_start_ms": 41958, "t_end_ms": 123021, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "雪山山谷。"},
+        {"t_start_ms": 201771, "t_end_ms": 364479, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "躺卧与随后飞行。"},
+        {"t_start_ms": 451229, "t_end_ms": 528438, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "晶体环境。"},
+        {"t_start_ms": 767958, "t_end_ms": 851375, "modalities": ["video", "text"], "source_type": "credits_ocr", "note": "赞助者名单。"}
+      ],
+      "scoring": {"strategy": "ordered_exact", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["long-range", "sequence"]
+    },
+    {
+      "question_id": "order-02-dialogue",
+      "category": "temporal_order",
+      "prompt": "将以下对白信息按出现顺序排列：寻找某个人、对象是一条龙、长期独自一人。",
+      "answer_type": "ordered_choices",
+      "choices": ["寻找某个人", "对象是一条龙", "长期独自一人"],
+      "reference": {"accepted_answers": [["寻找某个人", "对象是一条龙", "长期独自一人"]]},
+      "evidence": [
+        {"t_start_ms": 135000, "t_end_ms": 137500, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "寻找某个人。"},
+        {"t_start_ms": 143400, "t_end_ms": 145000, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "对象是一条龙。"},
+        {"t_start_ms": 152950, "t_end_ms": 155870, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "长期独自一人。"}
+      ],
+      "scoring": {"strategy": "ordered_exact", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["caption", "sequence"]
+    },
+    {
+      "question_id": "order-03-name-mentions",
+      "category": "temporal_order",
+      "prompt": "以下三次对 Scales 的称呼按时间顺序应如何排列：晚安 Scales、Scales 加油、疑问语气 Scales？",
+      "answer_type": "ordered_choices",
+      "choices": ["晚安 Scales", "Scales 加油", "疑问语气 Scales？"],
+      "reference": {"accepted_answers": [["晚安 Scales", "Scales 加油", "疑问语气 Scales？"]]},
+      "evidence": [
+        {"t_start_ms": 228250, "t_end_ms": 232250, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "晚安。"},
+        {"t_start_ms": 250350, "t_end_ms": 253850, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "加油。"},
+        {"t_start_ms": 265250, "t_end_ms": 268250, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "疑问呼唤。"}
+      ],
+      "scoring": {"strategy": "ordered_exact", "evidence_min_iou": 0.1},
+      "difficulty": "hard",
+      "tags": ["caption", "fine-order"]
+    },
+    {
+      "question_id": "cross-01-quest-link",
+      "category": "cross_event",
+      "prompt": "结合前段对白与后段晶体洞穴相遇，旅行者寻找的对象类别和后来面对的大型形体各是什么？",
+      "answer_type": "short_text",
+      "reference": {"required_term_groups": [["龙", "dragon"], ["鳞状头部", "龙的头部", "scaled head"]]},
+      "evidence": [
+        {"t_start_ms": 143400, "t_end_ms": 145000, "modalities": ["audio", "text"], "source_type": "platform_manual_caption", "note": "对白明确寻找一条龙。"},
+        {"t_start_ms": 606125, "t_end_ms": 682833, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "后段面对巨大鳞状头部样形体。"}
+      ],
+      "scoring": {"strategy": "required_terms", "evidence_min_iou": 0.1},
+      "difficulty": "hard",
+      "tags": ["cross-modal", "long-range"]
+    },
+    {
+      "question_id": "cross-02-environment-shift",
+      "category": "cross_event",
+      "prompt": "影片中段的主要环境变化是什么？",
+      "answer_type": "short_text",
+      "reference": {"required_term_groups": [["雪山", "积雪岩峰", "snowy mountains"], ["黑暗", "暗色", "dark"], ["晶体", "crystal"]]},
+      "evidence": [
+        {"t_start_ms": 364479, "t_end_ms": 451229, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "雪山与模糊巨形。"},
+        {"t_start_ms": 451229, "t_end_ms": 528438, "modalities": ["video"], "source_type": "maintainer_viewing", "note": "黑暗岩层与蓝白晶体。"}
+      ],
+      "scoring": {"strategy": "required_terms", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["scene-transition", "long-range"]
+    },
+    {
+      "question_id": "cross-03-credits-motif",
+      "category": "cross_event",
+      "prompt": "最后两段片尾在版式与插图上共享什么视觉母题？",
+      "answer_type": "short_text",
+      "reference": {"required_term_groups": [["木板", "wooden board"], ["纸张", "paper"], ["素描", "sketch"]]},
+      "evidence": [
+        {"t_start_ms": 767958, "t_end_ms": 851375, "modalities": ["video", "text"], "source_type": "credits_ocr", "note": "木板、纸张与小型角色素描。"},
+        {"t_start_ms": 851375, "t_end_ms": 888041, "modalities": ["video", "text"], "source_type": "credits_ocr", "note": "木板背景延续，纸张上有多名角色和小型生物素描。"}
+      ],
+      "scoring": {"strategy": "required_terms", "evidence_min_iou": 0.1},
+      "difficulty": "medium",
+      "tags": ["credits", "cross-event", "visual-motif"]
+    }
+  ],
+  "limitations": [
+    "当前为单维护者公开开发集，尚未完成第二位独立人工复核，不能标记为 frozen test set。",
+    "对白依据平台人工字幕，未逐字核对说话人、口型或多语言翻译一致性。",
+    "公开影片与公开题目可能已进入模型训练数据，必须另做去标题提示和隐藏题对照。",
+    "题集衡量视频事实、时间定位与证据回查，不衡量审美、偏好、购买意愿或真人预测准确率。"
+  ]
+}
