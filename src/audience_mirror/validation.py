@@ -11,14 +11,13 @@ from __future__ import annotations
 import json
 import re
 from collections import defaultdict
-from pathlib import Path
 from typing import Any, Iterable
 
 from .hashing import event_fingerprint, fingerprint
+from .resources import resource_path
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-SCHEMA_DIRECTORY = REPOSITORY_ROOT / "schemas"
+SCHEMA_DIRECTORY = resource_path("schemas")
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
 

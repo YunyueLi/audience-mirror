@@ -109,8 +109,10 @@ Audience Mirror 仍需另存 Persona 的情节记忆、角色记忆、个人解�
 
 - PyAV／Pillow 本地视频解码、时长与 SHA-256、关键帧／场景差分采样、音轨抽取；
 - Gemini 原生整片视频 Adapter：显式远程授权、机密素材拒绝、结构化结果、用量／延迟与远端删除尝试；
+- 稠密镜头证据到最多 16 个语义体验事件的重建，Provider 未覆盖时段显式保留；
 - 通用 Environment Contract 及 Media Timeline Adapter；
 - Future-blind 顺序体验运行时：每个 Persona 只看到当前事件、既有状态和过去记忆；
+- Codex CLI／Claude Code 双结构化 Reasoner、逐次远程授权和可复现 Run Manifest；
 - 个体 Trace 哈希链、模型／Prompt／Persona／Seed／成本指纹；
 - Human Anchor 校准：实验／Timeline／素材哈希强对齐、Top 问题召回、时间点召回、代理量 MAE、A/B 方向一致性和撤回排除；
 - 可交互工作台：真实视频导入、原视频／声音回放与时间片 seek、时间轴、聚合→个体→证据下钻、真人校准和规模分账。
@@ -118,7 +120,7 @@ Audience Mirror 仍需另存 Persona 的情节记忆、角色记忆、个人解�
 ### 6.2 仍需通过真实基准后才能说“支持”
 
 - Gemini 远程整片调用已实现，但本轮没有可用 Key，未执行真实远端推理；
-- Claude Code 顺序推理 Adapter 已实现，但本机 OAuth 已过期，未执行真实模型 Session；
+- GPT-5.6 Sol／xhigh 已在公开合成 Timeline 完成 1 Persona × 4 Event 的真实顺序 Session；尚未在真实视频语义 Timeline 上运行，也没有跨模型稳定性结果；Claude Code 认证有效，但当次团队额度尚未重置；
 - ASR、OCR、说话人分离、局部高 FPS 复核器和 Ark／Aideo／Qwen Provider 尚未实现；
 - 没有真人数据时，界面的注意、情绪、理解、购买仍只能叫预测代理量；
 - 当前校准器能运行合同和指标，不代表已经得到可靠校准系数。
