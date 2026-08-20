@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "audience-mirror"
+version = "0.2.0a1"
+description = "Open multimodal population experiments with evidence-linked traces and human calibration."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Audience Mirror contributors" }
+]
+keywords = ["multi-agent", "multimodal", "synthetic-users", "simulation", "evaluation"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = []
+
+[project.optional-dependencies]
+media = [
+  "av>=14,<17",
+  "Pillow>=11,<13",
+]
+gemini = [
+  "google-genai>=1,<2",
+]
+web = [
+  "fastapi>=0.115,<1",
+  "python-multipart>=0.0.9,<1",
+  "uvicorn>=0.30,<1",
+]
+dev = [
+  "jsonschema>=4.23,<5",
+]
+
+[project.urls]
+Homepage = "https://github.com/YunyueLi/audience-mirror"
+Repository = "https://github.com/YunyueLi/audience-mirror"
+Issues = "https://github.com/YunyueLi/audience-mirror/issues"
+Changelog = "https://github.com/YunyueLi/audience-mirror/blob/main/CHANGELOG.md"
+
+[project.scripts]
+audience-mirror = "audience_mirror.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

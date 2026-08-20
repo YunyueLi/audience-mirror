@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://audience-mirror.local/schemas/environment.schema.json",
+  "title": "Audience Mirror Environment Contract",
+  "description": "A versioned contract describing what an Agent may observe and do in an experiment environment.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "environment_id",
+    "environment_type",
+    "version",
+    "observation_space",
+    "action_space",
+    "transition_policy",
+    "data_handling",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": { "const": "audience-mirror.environment/v0.1" },
+    "environment_id": { "type": "string", "minLength": 1 },
+    "environment_type": {
+      "enum": ["media", "web", "app", "game", "social", "survey", "custom"]
+    },
+    "version": { "type": "string", "minLength": 1 },
+    "asset_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["asset_id", "variant_id", "content_hash"],
+        "properties": {
+          "asset_id": { "type": "string", "minLength": 1 },
+          "variant_id": { "type": "string", "minLength": 1 },
+          "content_hash": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+          "object_ref": {
+            "type": ["string", "null"],
+            "pattern": "^(?!https?://)(?!file://)(?!/)(?![A-Za-z]:[\\\\/]).+$"
+          }
+        }
+      }
+    },
+    "observation_space": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["modalities", "ordering", "future_visibility", "evidence_required"],
+      "properties": {
+        "modalities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["visual", "speech", "text", "music", "sound", "state", "social", "multimodal"]
+          }
+        },
+        "ordering": { "enum": ["sequential", "snapshot", "interactive"] },
+        "future_visibility": { "enum": ["blocked", "task_defined", "visible"] },
+        "evidence_required": { "type": "boolean" }
+      }
+    },
+    "action_space": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["action_type", "description"],
+        "properties": {
+          "action_type": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 },
+          "terminal": { "type": "boolean", "default": false },
+          "parameters": { "type": "object", "additionalProperties": true }
+        }
+      }
+    },
+    "transition_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "terminal_actions", "max_steps"],
+      "properties": {
+        "mode": { "enum": ["deterministic", "model_driven", "hybrid", "external"] },
+        "terminal_actions": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "max_steps": { "type": "integer", "minimum": 1 },
+        "allow_revisit": { "type": "boolean", "default": false }
+      }
+    },
+    "data_handling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["data_classification", "export_policy", "retention_class"],
+      "properties": {
+        "data_classification": { "enum": ["public", "internal", "confidential", "restricted"] },
+        "export_policy": { "enum": ["no_export", "redacted_only", "authorized"] },
+        "retention_class": { "type": "string", "minLength": 1 }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producer", "code_version", "config_hash"],
+      "properties": {
+        "producer": { "type": "string", "minLength": 1 },
+        "code_version": { "type": "string", "minLength": 1 },
+        "config_hash": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" }
+      }
+    },
+    "extensions": { "type": "object", "additionalProperties": true }
+  }
+}

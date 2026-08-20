@@ -1,0 +1,1860 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://audience-mirror.local/schemas/trace.schema.json",
+  "title": "Audience Mirror Trace Event",
+  "description": "An immutable, evidence-linked event emitted by one simulated viewing session.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "trace_event_id",
+    "session_sequence_no",
+    "idempotency_key",
+    "stream_version",
+    "previous_trace_event_id",
+    "previous_event_hash",
+    "event_hash",
+    "experiment_id",
+    "run_id",
+    "run_type",
+    "session_id",
+    "agent_id",
+    "asset",
+    "data_handling",
+    "timeline",
+    "event_type",
+    "observed_at",
+    "state",
+    "evidence",
+    "memory",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "audience-mirror.trace/v0.1"
+    },
+    "trace_event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "session_sequence_no": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stream_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "previous_trace_event_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "previous_event_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-fA-F0-9]{64}$"
+    },
+    "event_hash": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$"
+    },
+    "experiment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_type": {
+      "enum": [
+        "content_only",
+        "persona_one_shot",
+        "independent_sequential",
+        "social"
+      ]
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "segment_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "asset": {
+      "$ref": "#/$defs/assetRef"
+    },
+    "data_handling": {
+      "$ref": "#/$defs/dataHandling"
+    },
+    "timeline": {
+      "$ref": "#/$defs/timelineRef"
+    },
+    "event_type": {
+      "enum": [
+        "session.started",
+        "perception.recorded",
+        "state.updated",
+        "reaction.emitted",
+        "action.continue",
+        "action.pause_marked",
+        "action.rewind_requested",
+        "action.skip",
+        "action.abandon",
+        "action.share_considered",
+        "action.payment_considered",
+        "exposure.gap",
+        "memory.updated",
+        "social.message",
+        "social.influence",
+        "review.override",
+        "session.completed",
+        "session.failed"
+      ]
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "state": {
+      "$ref": "#/$defs/stateTransition"
+    },
+    "observation": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "perceived_facts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "open_questions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "epistemic_status": {
+          "enum": [
+            "observed",
+            "inferred",
+            "uncertain",
+            "conflicted"
+          ]
+        }
+      },
+      "required": [
+        "summary",
+        "perceived_facts",
+        "open_questions",
+        "epistemic_status"
+      ]
+    },
+    "reaction": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "reaction_type": {
+          "enum": [
+            "understanding",
+            "confusion",
+            "surprise",
+            "delight",
+            "frustration",
+            "boredom",
+            "trust_change",
+            "character_affinity_change",
+            "memory_formed",
+            "share_language",
+            "purchase_objection",
+            "other"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "decision_basis_summary": {
+          "description": "A concise, user-displayable evidence summary. It must not contain or claim to expose hidden chain-of-thought.",
+          "type": "string",
+          "maxLength": 1500
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "reaction_type",
+        "summary",
+        "decision_basis_summary",
+        "confidence"
+      ]
+    },
+    "action": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "action_type": {
+          "enum": [
+            "continue",
+            "pause_marked",
+            "rewind_requested",
+            "skip",
+            "abandon",
+            "share_considered",
+            "payment_considered",
+            "none"
+          ]
+        },
+        "target_segment_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason_summary": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "action_type",
+        "reason_summary"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidenceRef"
+      }
+    },
+    "memory": {
+      "$ref": "#/$defs/memoryDelta"
+    },
+    "social": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "message_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "message_content_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(?!https?://)(?!file://)(?!/)(?![A-Za-z]:[\\\\/]).+$",
+          "description": "Opaque internal identifier for redacted message content."
+        },
+        "source_agent_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "target_agent_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "influence_claim_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pre_social_position_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "post_social_position_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "influence_strength": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "calibration": {
+      "$ref": "#/$defs/calibration"
+    },
+    "review": {
+      "$ref": "#/$defs/review"
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "cost": {
+      "$ref": "#/$defs/cost"
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "session.started"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "session_sequence_no": {
+            "const": 0
+          },
+          "previous_trace_event_id": {
+            "type": "null"
+          },
+          "previous_event_hash": {
+            "type": "null"
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "const": "ready"
+              },
+              "session_status_after": {
+                "const": "watching"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "perception.recorded",
+              "reaction.emitted"
+            ]
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "perception.recorded"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "observation"
+        ],
+        "properties": {
+          "observation": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "reaction.emitted"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "reaction"
+        ],
+        "properties": {
+          "reaction": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "action.continue"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "object",
+            "properties": {
+              "action_type": {
+                "const": "continue"
+              }
+            },
+            "required": [
+              "action_type"
+            ]
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "const": "watching"
+              },
+              "session_status_after": {
+                "const": "watching"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "action.pause_marked"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "object",
+            "properties": {
+              "action_type": {
+                "const": "pause_marked"
+              }
+            },
+            "required": [
+              "action_type"
+            ]
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "const": "watching"
+              },
+              "session_status_after": {
+                "const": "review_marked"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "action.rewind_requested"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "object",
+            "properties": {
+              "action_type": {
+                "const": "rewind_requested"
+              }
+            },
+            "required": [
+              "action_type"
+            ]
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "const": "watching"
+              },
+              "session_status_after": {
+                "const": "review_marked"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "action.skip"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "object",
+            "properties": {
+              "action_type": {
+                "const": "skip"
+              }
+            },
+            "required": [
+              "action_type"
+            ]
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "const": "watching"
+              },
+              "session_status_after": {
+                "const": "skipped_window"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "action.abandon"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "object",
+            "properties": {
+              "action_type": {
+                "const": "abandon"
+              }
+            },
+            "required": [
+              "action_type"
+            ]
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "const": "watching"
+              },
+              "session_status_after": {
+                "const": "abandoned"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "action.share_considered"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "object",
+            "properties": {
+              "action_type": {
+                "const": "share_considered"
+              }
+            },
+            "required": [
+              "action_type"
+            ]
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "const": "watching"
+              },
+              "session_status_after": {
+                "const": "watching"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "action.payment_considered"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "object",
+            "properties": {
+              "action_type": {
+                "const": "payment_considered"
+              }
+            },
+            "required": [
+              "action_type"
+            ]
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "const": "watching"
+              },
+              "session_status_after": {
+                "const": "watching"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "memory.updated"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "memory": {
+            "type": "object",
+            "properties": {
+              "writes": {
+                "type": "array",
+                "minItems": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "social.message",
+              "social.influence"
+            ]
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "social"
+        ],
+        "properties": {
+          "social": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "review.override"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "review"
+        ],
+        "properties": {
+          "review": {
+            "type": "object",
+            "required": [
+              "status",
+              "reviewer_ref",
+              "reviewed_at",
+              "reason",
+              "previous_value",
+              "corrected_value"
+            ]
+          },
+          "provenance": {
+            "type": "object",
+            "properties": {
+              "provenance_type": {
+                "const": "human"
+              }
+            },
+            "required": [
+              "provenance_type"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "exposure.gap"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "const": "skipped_window"
+              },
+              "session_status_after": {
+                "const": "watching"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "session.completed"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "const": "watching"
+              },
+              "session_status_after": {
+                "const": "completed"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "session.failed"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "type": "object",
+            "properties": {
+              "session_status_before": {
+                "enum": [
+                  "ready",
+                  "watching",
+                  "review_marked",
+                  "skipped_window"
+                ]
+              },
+              "session_status_after": {
+                "const": "failed"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "action.continue",
+              "action.pause_marked",
+              "action.rewind_requested",
+              "action.skip",
+              "action.abandon",
+              "action.share_considered",
+              "action.payment_considered"
+            ]
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "observation": {
+            "type": "null"
+          },
+          "reaction": {
+            "type": "null"
+          },
+          "social": {
+            "type": "null"
+          },
+          "review": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "perception.recorded"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reaction": {
+            "type": "null"
+          },
+          "action": {
+            "type": "null"
+          },
+          "social": {
+            "type": "null"
+          },
+          "review": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "reaction.emitted"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "observation": {
+            "type": "null"
+          },
+          "action": {
+            "type": "null"
+          },
+          "social": {
+            "type": "null"
+          },
+          "review": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "social.message",
+              "social.influence"
+            ]
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "observation": {
+            "type": "null"
+          },
+          "reaction": {
+            "type": "null"
+          },
+          "action": {
+            "type": "null"
+          },
+          "review": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "session.started",
+              "exposure.gap",
+              "session.completed",
+              "session.failed"
+            ]
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "observation": {
+            "type": "null"
+          },
+          "reaction": {
+            "type": "null"
+          },
+          "action": {
+            "type": "null"
+          },
+          "social": {
+            "type": "null"
+          },
+          "review": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "review.override"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "observation": {
+            "type": "null"
+          },
+          "reaction": {
+            "type": "null"
+          },
+          "action": {
+            "type": "null"
+          },
+          "social": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "assetRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_id",
+        "variant_id",
+        "content_hash",
+        "rights_manifest_id"
+      ],
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variant_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "rights_manifest_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dataHandling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data_classification",
+        "export_policy",
+        "retention_class",
+        "contains_personal_data",
+        "redaction_status"
+      ],
+      "properties": {
+        "data_classification": {
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        },
+        "export_policy": {
+          "enum": [
+            "no_export",
+            "redacted_only",
+            "authorized"
+          ]
+        },
+        "retention_class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contains_personal_data": {
+          "type": "boolean"
+        },
+        "redaction_status": {
+          "enum": [
+            "not_required",
+            "pending",
+            "redacted",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "timelineRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timeline_id",
+        "timeline_schema_version",
+        "timeline_hash",
+        "timeline_node_id",
+        "t_start_ms",
+        "t_end_ms",
+        "exposure_index"
+      ],
+      "properties": {
+        "timeline_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeline_schema_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeline_hash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "timeline_node_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "t_start_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t_end_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exposure_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "stateTransition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_status_before",
+        "session_status_after",
+        "before",
+        "after"
+      ],
+      "properties": {
+        "session_status_before": {
+          "$ref": "#/$defs/sessionStatus"
+        },
+        "session_status_after": {
+          "$ref": "#/$defs/sessionStatus"
+        },
+        "before": {
+          "$ref": "#/$defs/stateVector"
+        },
+        "after": {
+          "$ref": "#/$defs/stateVector"
+        }
+      }
+    },
+    "sessionStatus": {
+      "enum": [
+        "ready",
+        "watching",
+        "review_marked",
+        "skipped_window",
+        "abandoned",
+        "completed",
+        "failed"
+      ]
+    },
+    "stateVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attention_proxy",
+        "valence",
+        "arousal",
+        "comprehension",
+        "confusion",
+        "trust",
+        "continue_intent",
+        "share_intent",
+        "consider_paying",
+        "uncertainty"
+      ],
+      "properties": {
+        "attention_proxy": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "valence": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1
+        },
+        "arousal": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "comprehension": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "confusion": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "trust": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "continue_intent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "share_intent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "consider_paying": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "uncertainty": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "character_affinity": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": -1,
+            "maximum": 1
+          }
+        },
+        "expectations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "evidence_type",
+        "timeline_observation_id",
+        "t_start_ms",
+        "t_end_ms",
+        "hash_algorithm",
+        "content_hash",
+        "data_classification",
+        "export_policy",
+        "redaction_status"
+      ],
+      "properties": {
+        "ref_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_type": {
+          "enum": [
+            "frame",
+            "frame_group",
+            "video_clip",
+            "audio_clip",
+            "transcript",
+            "subtitle",
+            "ocr",
+            "script",
+            "timeline_observation",
+            "user_annotation",
+            "human_anchor"
+          ]
+        },
+        "timeline_observation_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "t_start_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t_end_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "object_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(?!https?://)(?!file://)(?!/)(?![A-Za-z]:[\\\\/]).+$",
+          "description": "Opaque internal identifier only; never a URL, filesystem path, signed URL, or credential."
+        },
+        "hash_algorithm": {
+          "const": "sha256"
+        },
+        "data_classification": {
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        },
+        "export_policy": {
+          "enum": [
+            "no_export",
+            "redacted_only",
+            "authorized"
+          ]
+        },
+        "redaction_status": {
+          "enum": [
+            "not_required",
+            "pending",
+            "redacted",
+            "blocked"
+          ]
+        },
+        "excerpt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 500
+        }
+      }
+    },
+    "memoryDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reads",
+        "writes",
+        "working_memory_hash",
+        "long_term_memory_hash"
+      ],
+      "properties": {
+        "reads": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/memoryWrite"
+          }
+        },
+        "working_memory_hash": {
+          "type": "string",
+          "minLength": 8
+        },
+        "long_term_memory_hash": {
+          "type": "string",
+          "minLength": 8
+        }
+      }
+    },
+    "memoryWrite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "memory_id",
+        "memory_type",
+        "summary",
+        "source_trace_event_ids",
+        "confidence",
+        "data_classification",
+        "export_policy",
+        "redaction_status"
+      ],
+      "properties": {
+        "memory_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "memory_type": {
+          "enum": [
+            "working",
+            "episodic",
+            "character",
+            "world",
+            "misunderstanding",
+            "expectation",
+            "preference_update"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "source_trace_event_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "data_classification": {
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        },
+        "export_policy": {
+          "enum": [
+            "no_export",
+            "redacted_only",
+            "authorized"
+          ]
+        },
+        "redaction_status": {
+          "enum": [
+            "not_required",
+            "pending",
+            "redacted",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "calibration": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "u0_uncalibrated",
+            "u1_technically_checked",
+            "c1_directionally_calibrated",
+            "c2_metric_calibrated",
+            "c3_prospectively_validated"
+          ]
+        },
+        "profile_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_value_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "calibrated_value_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "human_anchor_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "status",
+        "human_anchor_ids"
+      ]
+    },
+    "review": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "unreviewed",
+            "accepted",
+            "corrected",
+            "rejected",
+            "disputed"
+          ]
+        },
+        "reviewer_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 2000
+        },
+        "supersedes_trace_event_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 2000
+        },
+        "previous_value": {
+          "type": [
+            "object",
+            "array",
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "corrected_value": {
+          "type": [
+            "object",
+            "array",
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "status"
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provenance_type",
+        "producer",
+        "code_version",
+        "experiment_manifest_hash",
+        "cache_key"
+      ],
+      "properties": {
+        "provenance_type": {
+          "enum": [
+            "model",
+            "human",
+            "system"
+          ]
+        },
+        "producer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_provider": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "prompt_hash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "persona_snapshot_hash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "experiment_manifest_hash": {
+          "type": "string",
+          "minLength": 8
+        },
+        "random_seed": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "actor_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cache_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "region": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "provenance_type": {
+                "const": "model"
+              }
+            },
+            "required": [
+              "provenance_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "model_provider",
+              "model_id",
+              "model_version",
+              "prompt_hash",
+              "persona_snapshot_hash",
+              "random_seed"
+            ],
+            "properties": {
+              "model_provider": {
+                "type": "string",
+                "minLength": 1
+              },
+              "model_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "model_version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "prompt_hash": {
+                "type": "string",
+                "minLength": 8
+              },
+              "persona_snapshot_hash": {
+                "type": "string",
+                "minLength": 8
+              },
+              "random_seed": {
+                "type": [
+                  "integer",
+                  "string"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "provenance_type": {
+                "const": "human"
+              }
+            },
+            "required": [
+              "provenance_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "actor_ref"
+            ],
+            "properties": {
+              "actor_ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "cost": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "latency_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "media_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "estimated_cost": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "cache_hit": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "latency_ms",
+        "input_tokens",
+        "output_tokens",
+        "cache_hit"
+      ]
+    }
+  }
+}

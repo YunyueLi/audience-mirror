@@ -1,0 +1,569 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "虚拟观众规模与开源策略",
+    "description": "MatrAIx 核验、规模成本边界和开放内核建议",
+    "generatedAt": "2026-08-19T18:00:00+08:00",
+    "sources": [
+      {
+        "id": "matraix-paper",
+        "label": "MatrAIx technical report, arXiv:2608.04205v1",
+        "href": "https://arxiv.org/html/2608.04205v1",
+        "query": {
+          "engine": "ANSI SQL over reviewed paper transcription",
+          "sql": "WITH rows(task, measure, gpt55_pct, opus48_pct, haiku45_pct, range_pp) AS (VALUES ('Annual checkup','Very likely to schedule in time',50.5,41.4,29.7,20.8),('Candy Land price','Hesitates or worse at new price',98.3,27.0,83.3,71.3),('OpenBB honesty','Would not continue using',18.5,14.5,71.9,57.4),('Meal planning','Stated need fully satisfied',46.2,0.2,28.1,46.0),('Notion plans','Selected a paid plan',75.8,23.2,93.9,70.7),('MIT OCW course','Chose a graduate-level course',40.0,34.5,47.5,13.0),('News+ subscription','Subscribed',4.2,20.8,0.0,20.8),('Stocks sentiment','Buy opinion',40.0,70.0,47.4,30.0)) SELECT * FROM rows",
+          "description": "Materializes the eight product-level rows transcribed from MatrAIx Table 13 for the chart and exact-value table.",
+          "executed_at": "2026-08-19T18:00:00+08:00",
+          "language": "sql",
+          "filters": ["All eight reported tasks", "Percentages use each model arm's answered denominator"],
+          "metric_definitions": ["range_pp is max model percentage minus min model percentage for the same task"]
+        }
+      },
+      {
+        "id": "matraix-chart-source",
+        "label": "MatrAIx Table 13 — seven comparable cross-model tasks",
+        "href": "https://arxiv.org/html/2608.04205v1",
+        "query": {
+          "engine": "PostgreSQL-compatible SQL over reviewed paper transcription",
+          "sql": "WITH base(task, measure, environment, gpt55_pct, opus48_pct, haiku45_pct, caveat) AS (VALUES ('Annual checkup','Very likely to schedule in time','Survey',50.5,41.4,29.7,''),('Candy Land price','Hesitates or worse at new price','Survey',98.3,27.0,83.3,''),('OpenBB honesty','Would not continue using','Chat',18.5,14.5,71.9,''),('Notion plans','Selected a paid plan','Web',75.8,23.2,93.9,''),('MIT OCW course','Chose a graduate-level course','Web',40.0,34.5,47.5,'Course-level aggregation'),('News+ subscription','Subscribed','App',4.2,20.8,0.0,'About 24 trials per model; too small for modest subgroup effects'),('Stocks sentiment','Buy opinion','App',40.0,70.0,47.4,'About 20 trials per model')) SELECT b.task,b.measure,b.environment,m.model,m.result_pct,b.caveat FROM base b CROSS JOIN LATERAL (VALUES ('GPT 5.5',b.gpt55_pct),('Opus 4.8',b.opus48_pct),('Haiku 4.5',b.haiku45_pct)) AS m(model,result_pct)",
+          "description": "Materializes seven comparable tasks from MatrAIx Table 13 in long form; excludes Meal Planning because the GPT 5.5 arm did not run the declared cohort.",
+          "executed_at": "2026-08-19T18:00:00+08:00",
+          "language": "sql",
+          "filters": ["Meal Planning excluded from chart due to reported cohort-integrity exception", "App tasks retained with small-sample caveats"],
+          "metric_definitions": ["result_pct is the reported product outcome share using each arm's answered denominator"]
+        }
+      },
+      {
+        "id": "matraix-code",
+        "label": "MatrAIx code at audited commit 07bb6a4",
+        "href": "https://github.com/MatrAIx-ai/MatrAIx-Persona-8B/tree/07bb6a4e07c33b5ab96dc4563cf516d5d15b3dd9"
+      },
+      {
+        "id": "matraix-quickstart",
+        "label": "MatrAIx Quickstart at audited commit 07bb6a4",
+        "href": "https://github.com/MatrAIx-ai/MatrAIx-Persona-8B/blob/07bb6a4e07c33b5ab96dc4563cf516d5d15b3dd9/docs/quickstart.md"
+      },
+      {
+        "id": "matraix-dataset",
+        "label": "MatrAIx Persona 1M dataset card",
+        "href": "https://huggingface.co/datasets/MatrAIx2026/MatrAIx_Persona_1M"
+      },
+      {
+        "id": "open-ecosystem",
+        "label": "Official open-source repositories: TinyTroupe, genagents, OASIS, Concordia and AgentSociety",
+        "href": "https://github.com/microsoft/TinyTroupe"
+      },
+      {
+        "id": "matraix-scale-source",
+        "label": "MatrAIx paper, code docs and Persona 1M card — reviewed scale ledger",
+        "href": "https://arxiv.org/html/2608.04205v1",
+        "query": {
+          "engine": "ANSI SQL over reviewed source notes",
+          "sql": "SELECT 1 AS ordering, 'Persona record universe' AS level, '8.3B' AS reported_scale UNION ALL SELECT 2, 'Public coreset', '999,847' UNION ALL SELECT 3, 'Executed trials in paper', '18,189' UNION ALL SELECT 4, 'Controlled adherence trials', '400'",
+          "description": "Materializes four scale concepts reviewed across the MatrAIx paper, code Quickstart and Persona 1M card.",
+          "executed_at": "2026-08-19T18:00:00+08:00",
+          "language": "sql"
+        }
+      },
+      {
+        "id": "execution-tiers-source",
+        "label": "Proposed execution tiers derived from MatrAIx trial economics",
+        "href": "https://github.com/MatrAIx-ai/MatrAIx-Persona-8B/blob/07bb6a4e07c33b5ab96dc4563cf516d5d15b3dd9/docs/quickstart.md",
+        "query": {
+          "engine": "ANSI SQL over design defaults",
+          "sql": "SELECT 1 AS ordering, 'Deep Trace' AS tier, '12-32' AS default_scale UNION ALL SELECT 2, 'Broad Sweep', '100-1000' UNION ALL SELECT 3, 'Population Projection', '10000+'",
+          "description": "Materializes the proposed three-tier execution defaults; these are hypotheses to benchmark, not observed performance.",
+          "executed_at": "2026-08-19T18:00:00+08:00",
+          "language": "sql"
+        }
+      },
+      {
+        "id": "open-strategy-source",
+        "label": "Open-source and commercial signal decision framework",
+        "query": {
+          "engine": "ANSI SQL over decision framework",
+          "sql": "SELECT 1 AS ordering, 'strong' AS community_signal, 'strong' AS commercial_signal, 'open core product' AS decision UNION ALL SELECT 2, 'strong', 'weak', 'open research tool' UNION ALL SELECT 3, 'weak', 'strong', 'private product or service' UNION ALL SELECT 4, 'weak', 'weak', 'stop virtual-audience product'",
+          "description": "Materializes the proposed decision matrix; it is a management framework, not an empirical dataset.",
+          "executed_at": "2026-08-19T18:00:00+08:00",
+          "language": "sql"
+        }
+      }
+    ],
+    "charts": [
+      {
+        "id": "model-sensitivity-chart",
+        "title": "可比 Cohort 的跨模型产品结果",
+        "subtitle": "MatrAIx 论文 7 个可比任务；排除 1 个 Cohort 完整性例外，App 任务样本很小",
+        "intent": "comparison",
+        "question": "同一或完整匹配的 Persona Cohort 在不同底模下会给出多大幅度的产品结果差异？",
+        "rationale": "7 个可比离散任务、3 个同单位模型结果适合用分组横向柱图比较；长任务标签需要横向布局。",
+        "comparisonContext": {
+          "denominator": "各模型在对应任务中成功回答该字段的 Trial",
+          "grain": "任务 × Persona 底模",
+          "normalization": "各任务字段的回答比例",
+          "unit": "%"
+        },
+        "type": "horizontalBar",
+        "dataset": "model_sensitivity_chart",
+        "sourceId": "matraix-chart-source",
+        "encodings": {
+          "x": {"field": "task", "type": "nominal", "label": "任务"},
+          "y": {"field": "result_pct", "type": "quantitative", "format": "number", "label": "给出该产品结果的 Trial 比例", "unit": "%"},
+          "color": {"field": "model", "type": "nominal", "label": "Persona 底模"},
+          "tooltip": [
+            {"field": "measure", "type": "text", "label": "产品指标"},
+            {"field": "environment", "type": "nominal", "label": "环境"},
+            {"field": "caveat", "type": "text", "label": "限制"}
+          ]
+        },
+        "layout": "full",
+        "maxRows": 21,
+        "palette": {"kind": "categorical", "name": "model-identity"},
+        "surface": {"surface": "explorer", "interactiveLegend": true, "showControls": false, "viewMode": "both"}
+      }
+    ],
+    "tables": [
+      {
+        "id": "matraix-scale-table",
+        "title": "MatrAIx 的记录规模与执行规模",
+        "subtitle": "公开论文、代码文档和数据卡中的不同计数口径",
+        "dataset": "matraix_scale",
+        "defaultSort": {
+          "field": "order",
+          "direction": "asc"
+        },
+        "density": "spacious",
+        "sourceId": "matraix-scale-source",
+        "layout": "full",
+        "columns": [
+          {"field": "order", "label": "序号", "type": "number"},
+          {"field": "level", "label": "层级", "type": "text"},
+          {"field": "reported_scale", "label": "公开规模", "type": "text"},
+          {"field": "what_it_means", "label": "实际含义", "type": "text"},
+          {"field": "model_execution", "label": "是否代表模型执行", "type": "text"}
+        ]
+      },
+      {
+        "id": "model-sensitivity-table",
+        "title": "相同 Cohort 在不同 Persona 底模下的产品结果",
+        "subtitle": "MatrAIx 论文 Table 13；比例单位为百分比",
+        "dataset": "model_sensitivity",
+        "defaultSort": {
+          "field": "range_pp",
+          "direction": "desc"
+        },
+        "density": "spacious",
+        "sourceId": "matraix-paper",
+        "layout": "full",
+        "columns": [
+          {"field": "task", "label": "任务", "type": "text"},
+          {"field": "measure", "label": "产品指标", "type": "text"},
+          {"field": "gpt55_pct", "label": "GPT 5.5", "type": "number"},
+          {"field": "opus48_pct", "label": "Opus 4.8", "type": "number"},
+          {"field": "haiku45_pct", "label": "Haiku 4.5", "type": "number"},
+          {"field": "range_pp", "label": "最大差值（百分点）", "type": "number"}
+        ]
+      },
+      {
+        "id": "execution-tiers-table",
+        "title": "建议的三层执行方式",
+        "subtitle": "规模是产品能力；不同层的证据含义必须分开",
+        "dataset": "execution_tiers",
+        "defaultSort": {
+          "field": "order",
+          "direction": "asc"
+        },
+        "density": "spacious",
+        "sourceId": "execution-tiers-source",
+        "layout": "full",
+        "columns": [
+          {"field": "order", "label": "序号", "type": "number"},
+          {"field": "tier", "label": "层", "type": "text"},
+          {"field": "default_scale", "label": "默认规模", "type": "text"},
+          {"field": "runtime", "label": "运行方式", "type": "text"},
+          {"field": "claim", "label": "允许支持的结论", "type": "text"}
+        ]
+      },
+      {
+        "id": "open-strategy-table",
+        "title": "开源与商业信号的决策矩阵",
+        "subtitle": "公开 Demo 后分别验证社区复用和私有试点",
+        "dataset": "open_strategy",
+        "defaultSort": {
+          "field": "order",
+          "direction": "asc"
+        },
+        "density": "spacious",
+        "sourceId": "open-strategy-source",
+        "layout": "full",
+        "columns": [
+          {"field": "order", "label": "序号", "type": "number"},
+          {"field": "community", "label": "开源信号", "type": "text"},
+          {"field": "commercial", "label": "商业信号", "type": "text"},
+          {"field": "decision", "label": "建议形态", "type": "text"}
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 虚拟观众规模与开源策略",
+        "layout": "full"
+      },
+      {
+        "id": "executive-summary",
+        "type": "markdown",
+        "body": "## Executive Summary\n\n- **不从零建设通用 Persona 引擎。** MatrAIx 已提供大 Persona 池、Cohort、Task／Trial／Verifier 和四类交互环境；本项目应集中建设第五类 Media Environment、顺序 Trace、版本对齐与真人校准。\n- **大 Persona 池很便宜，完整独立体验仍按执行量增长。** 报告聚合、Persona 检索和人口投影可以低成本扩展；每个有独立记忆和逐时 Trace 的 Persona 仍需要模型推理。\n- **采用三层规模。** 12—32 个 Deep Trace 用于证据下钻，100—1,000 个 Broad Sweep 用于搜索边缘场景，10k+ Population Projection 不逐人调用 LLM。\n- **开源是经营工具，不是信仰。** 当前按开放内核设计；用外部复用和授权私有试点两类信号决定最后是全开源、open-core 还是闭源产品。",
+        "layout": "full"
+      },
+      {
+        "id": "matraix-changes-build-decision",
+        "type": "markdown",
+        "body": "## MatrAIx 改变了 build-versus-reuse 决策\n\nMatrAIx 的代码与论文证明，小团队已经可以复用 Persona 检索、Cohort、Trial、Verifier、轨迹与报告骨架。8.3B 是 Persona 记录空间，公开 Coreset 约 1M；论文实际执行 18,189 个 Trial。它没有 Media 环境，动态长程记忆仍列在未来工作，因此本项目的垂直增量仍然成立。",
+        "layout": "full",
+        "sourceId": "matraix-scale-source"
+      },
+      {
+        "id": "matraix-scale",
+        "type": "table",
+        "tableId": "matraix-scale-table",
+        "layout": "full"
+      },
+      {
+        "id": "scale-cost-boundary",
+        "type": "markdown",
+        "body": "## 报告成本接近，不代表实验生成成本接近\n\nMatrAIx Quickstart 明确写明 `N personas = N trials`，并提示 10 个 Trial 约等于 10 次 LLM 调用。并发、Batch 和 Prefix Cache 可以降低单价或墙钟时间，却不会消除独立状态轨迹。把 10,000 个 Persona 放进一次 Prompt 也不能算作 10,000 次独立体验，因为输出共享同一次生成过程。",
+        "layout": "full",
+        "sourceId": "matraix-quickstart"
+      },
+      {
+        "id": "model-sensitivity-explanation",
+        "type": "markdown",
+        "body": "## 模型选择偏差远大于增加 Persona 数能解决的问题\n\n在 Cohort 完整匹配的任务中，部分产品指标跨底模相差超过 70 个百分点。论文另有一个 Meal Planning GPT Arm 未运行声明 Cohort，已从图中排除并在明细表保留限制。MatrAIx 自身因此要求把结果当作部署前筛查和假设生成，并在涉及真人结论时使用同任务真人验证。增加 1,000 或 10,000 个同底模 Agent 不会自动消除这种共同偏差。",
+        "layout": "full",
+        "sourceId": "matraix-paper"
+      },
+      {
+        "id": "model-sensitivity-visual",
+        "type": "chart",
+        "chartId": "model-sensitivity-chart",
+        "layout": "full"
+      },
+      {
+        "id": "model-sensitivity",
+        "type": "table",
+        "tableId": "model-sensitivity-table",
+        "layout": "full"
+      },
+      {
+        "id": "three-tier-recommendation",
+        "type": "markdown",
+        "body": "## 用三层执行同时获得规模、证据和成本控制\n\nDeep Trace 承担可下钻证据；Broad Sweep 承担边缘人群和问题搜索；Population Projection 承担大池覆盖与敏感性分析。报告必须分别显示 Pool、Deep、Sweep、Projected、Stability 和 Human 六种计数。",
+        "layout": "full"
+      },
+      {
+        "id": "execution-tiers",
+        "type": "table",
+        "tableId": "execution-tiers-table",
+        "layout": "full"
+      },
+      {
+        "id": "open-core",
+        "type": "markdown",
+        "body": "## 当前最优经营形态是开放内核倾向\n\n建议开放 Schema、Media Environment、公开 Demo、验证脚本和 Adapter；保留客户素材、Human Anchor、Calibration Profile、权限审计、VPC、协作工作台和托管 SLA。代码候选 Apache-2.0，但要先完成第三方代码、模型、数据和素材的独立许可清单。MatrAIx 代码为 MIT；Persona 1M 数据卡没有统一 License 字段，不能自动按 MIT 再分发或商用。",
+        "layout": "full"
+      },
+      {
+        "id": "open-strategy",
+        "type": "table",
+        "tableId": "open-strategy-table",
+        "layout": "full"
+      },
+      {
+        "id": "next-steps",
+        "type": "markdown",
+        "body": "## Recommended Next Steps\n\n1. 固定 MatrAIx Commit `07bb6a4e07c33b5ab96dc4563cf516d5d15b3dd9`，完成 Smoke、最小 Cohort／Trial Adapter 和依赖／数据权利清单。\n2. 把 Sintel Demo 定义为 MatrAIx 之外的第五类 Media Task：12 个 Deep Trace、约 100 个 Broad Sweep、10k 零逐人 LLM Projection。\n3. 记录每层模型调用、tokens、墙钟时间、边际成本和新增问题数；不扩招，不采购 GPU。\n4. Demo 验证通过后再公开内核；随后分别观察 6—8 周社区复用和一个授权私有试点。",
+        "layout": "full"
+      },
+      {
+        "id": "further-questions",
+        "type": "markdown",
+        "body": "## Further Questions\n\n- MatrAIx 的 Media Environment 更适合作为独立 Adapter、上游贡献，还是在其 Task Contract 上单独实现？\n- 首个授权方是否允许第三方模型，或要求境内／客户云运行？\n- 哪些 Persona 特征对内容决策有增量，哪些只增加刻板描述与成本？",
+        "layout": "full"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "body": "## Caveats and Assumptions\n\nMatrAIx 论文是 2026 年预印本，核心验证主要覆盖 Persona adherence、提取质量和产品任务差异，不是内容消费或现实人口预测。GitHub Star／Fork 会变化，也不能证明有效性。本文的 12／100／10k 是需要在公开 Demo 中验证的工程默认值，不是统计样本方案。",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-19T18:00:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "matraix_scale": [
+        {
+          "order": 1,
+          "level": "Persona 记录空间",
+          "reported_scale": "8.3B",
+          "what_it_means": "内部构造的 Persona 记录宇宙",
+          "model_execution": "否"
+        },
+        {
+          "order": 2,
+          "level": "公开 Coreset",
+          "reported_scale": "999,847",
+          "what_it_means": "可检索 Persona 数据；约 600k human-grounded、400k synthetic",
+          "model_execution": "否，抽入 Cohort 后才执行"
+        },
+        {
+          "order": 3,
+          "level": "论文实际 Trial",
+          "reported_scale": "18,189",
+          "what_it_means": "8 个代表任务、3 个 Persona 底模的实际运行",
+          "model_execution": "是"
+        },
+        {
+          "order": 4,
+          "level": "控制遵循实验",
+          "reported_scale": "400",
+          "what_it_means": "10 个行为属性、4 类环境的 Persona adherence 测试",
+          "model_execution": "是；不是预测真人准确率"
+        }
+      ],
+      "model_sensitivity": [
+        {
+          "task": "Candy Land price",
+          "measure": "涨价后犹豫或更负面",
+          "gpt55_pct": 98.3,
+          "opus48_pct": 27.0,
+          "haiku45_pct": 83.3,
+          "range_pp": 71.3,
+          "environment": "Survey",
+          "denominator_note": "各模型成功回答该字段的 Trial",
+          "caveat": ""
+        },
+        {
+          "task": "OpenBB honesty",
+          "measure": "不再继续使用",
+          "gpt55_pct": 18.5,
+          "opus48_pct": 14.5,
+          "haiku45_pct": 71.9,
+          "range_pp": 57.4,
+          "environment": "Chat",
+          "denominator_note": "各模型成功回答该字段的 Trial",
+          "caveat": "不同底模差异显著"
+        },
+        {
+          "task": "Meal planning",
+          "measure": "需求完全满足",
+          "gpt55_pct": 46.2,
+          "opus48_pct": 0.2,
+          "haiku45_pct": 28.1,
+          "range_pp": 46.0,
+          "environment": "Chat",
+          "denominator_note": "各模型成功回答该字段的 Trial",
+          "caveat": "GPT 5.5 Arm 未运行声明 Cohort，不用于跨模型解释"
+        },
+        {
+          "task": "Notion plans",
+          "measure": "选择付费方案",
+          "gpt55_pct": 75.8,
+          "opus48_pct": 23.2,
+          "haiku45_pct": 93.9,
+          "range_pp": 70.7,
+          "environment": "Web",
+          "denominator_note": "各模型成功回答该字段的 Trial",
+          "caveat": ""
+        },
+        {
+          "task": "MIT OCW course",
+          "measure": "选择研究生课程",
+          "gpt55_pct": 40.0,
+          "opus48_pct": 34.5,
+          "haiku45_pct": 47.5,
+          "range_pp": 13.0,
+          "environment": "Web",
+          "denominator_note": "各模型成功回答该字段的 Trial",
+          "caveat": "课程级聚合"
+        },
+        {
+          "task": "News+ subscription",
+          "measure": "订阅",
+          "gpt55_pct": 4.2,
+          "opus48_pct": 20.8,
+          "haiku45_pct": 0.0,
+          "range_pp": 20.8,
+          "environment": "App",
+          "denominator_note": "每个模型约 24 个 Trial",
+          "caveat": "样本过小，不能解析中等分群差异"
+        },
+        {
+          "task": "Stocks sentiment",
+          "measure": "买入观点",
+          "gpt55_pct": 40.0,
+          "opus48_pct": 70.0,
+          "haiku45_pct": 47.4,
+          "range_pp": 30.0,
+          "environment": "App",
+          "denominator_note": "每个模型约 20 个 Trial",
+          "caveat": "样本过小"
+        },
+        {
+          "task": "Annual checkup",
+          "measure": "很可能按时预约",
+          "gpt55_pct": 50.5,
+          "opus48_pct": 41.4,
+          "haiku45_pct": 29.7,
+          "range_pp": 20.8,
+          "environment": "Survey",
+          "denominator_note": "各模型成功回答该字段的 Trial",
+          "caveat": ""
+        }
+      ],
+      "model_sensitivity_chart": [
+        {"task":"Candy Land price","measure":"涨价后犹豫或更负面","model":"GPT 5.5","result_pct":98.3,"range_pp":71.3,"environment":"Survey","caveat":""},
+        {"task":"Candy Land price","measure":"涨价后犹豫或更负面","model":"Opus 4.8","result_pct":27.0,"range_pp":71.3,"environment":"Survey","caveat":""},
+        {"task":"Candy Land price","measure":"涨价后犹豫或更负面","model":"Haiku 4.5","result_pct":83.3,"range_pp":71.3,"environment":"Survey","caveat":""},
+        {"task":"Notion plans","measure":"选择付费方案","model":"GPT 5.5","result_pct":75.8,"range_pp":70.7,"environment":"Web","caveat":""},
+        {"task":"Notion plans","measure":"选择付费方案","model":"Opus 4.8","result_pct":23.2,"range_pp":70.7,"environment":"Web","caveat":""},
+        {"task":"Notion plans","measure":"选择付费方案","model":"Haiku 4.5","result_pct":93.9,"range_pp":70.7,"environment":"Web","caveat":""},
+        {"task":"OpenBB honesty","measure":"不再继续使用","model":"GPT 5.5","result_pct":18.5,"range_pp":57.4,"environment":"Chat","caveat":""},
+        {"task":"OpenBB honesty","measure":"不再继续使用","model":"Opus 4.8","result_pct":14.5,"range_pp":57.4,"environment":"Chat","caveat":""},
+        {"task":"OpenBB honesty","measure":"不再继续使用","model":"Haiku 4.5","result_pct":71.9,"range_pp":57.4,"environment":"Chat","caveat":""},
+        {"task":"Stocks sentiment","measure":"买入观点","model":"GPT 5.5","result_pct":40.0,"range_pp":30.0,"environment":"App","caveat":"每个模型约 20 个 Trial；样本很小"},
+        {"task":"Stocks sentiment","measure":"买入观点","model":"Opus 4.8","result_pct":70.0,"range_pp":30.0,"environment":"App","caveat":"每个模型约 20 个 Trial；样本很小"},
+        {"task":"Stocks sentiment","measure":"买入观点","model":"Haiku 4.5","result_pct":47.4,"range_pp":30.0,"environment":"App","caveat":"每个模型约 20 个 Trial；样本很小"},
+        {"task":"Annual checkup","measure":"很可能按时预约","model":"GPT 5.5","result_pct":50.5,"range_pp":20.8,"environment":"Survey","caveat":""},
+        {"task":"Annual checkup","measure":"很可能按时预约","model":"Opus 4.8","result_pct":41.4,"range_pp":20.8,"environment":"Survey","caveat":""},
+        {"task":"Annual checkup","measure":"很可能按时预约","model":"Haiku 4.5","result_pct":29.7,"range_pp":20.8,"environment":"Survey","caveat":""},
+        {"task":"News+ subscription","measure":"订阅","model":"GPT 5.5","result_pct":4.2,"range_pp":20.8,"environment":"App","caveat":"每个模型约 24 个 Trial；样本很小"},
+        {"task":"News+ subscription","measure":"订阅","model":"Opus 4.8","result_pct":20.8,"range_pp":20.8,"environment":"App","caveat":"每个模型约 24 个 Trial；样本很小"},
+        {"task":"News+ subscription","measure":"订阅","model":"Haiku 4.5","result_pct":0.0,"range_pp":20.8,"environment":"App","caveat":"每个模型约 24 个 Trial；样本很小"},
+        {"task":"MIT OCW course","measure":"选择研究生课程","model":"GPT 5.5","result_pct":40.0,"range_pp":13.0,"environment":"Web","caveat":"课程级聚合"},
+        {"task":"MIT OCW course","measure":"选择研究生课程","model":"Opus 4.8","result_pct":34.5,"range_pp":13.0,"environment":"Web","caveat":"课程级聚合"},
+        {"task":"MIT OCW course","measure":"选择研究生课程","model":"Haiku 4.5","result_pct":47.5,"range_pp":13.0,"environment":"Web","caveat":"课程级聚合"}
+      ],
+      "execution_tiers": [
+        {
+          "order": 1,
+          "tier": "Deep Trace",
+          "default_scale": "12—32",
+          "runtime": "完整顺序体验、独立记忆、逐时 Trace",
+          "claim": "具体时点问题、个体路径、版本差异"
+        },
+        {
+          "order": 2,
+          "tier": "Broad Sweep",
+          "default_scale": "100—1,000",
+          "runtime": "冻结摘要或少量关键检查点；结构化短输出",
+          "claim": "边缘人群、覆盖缺口、候选问题搜索"
+        },
+        {
+          "order": 3,
+          "tier": "Population Projection",
+          "default_scale": "10k+",
+          "runtime": "规则、校准响应面或小模型批量计算；零逐 Persona LLM",
+          "claim": "场景投影与敏感性，不是独立观看或真人总体率"
+        }
+      ],
+      "open_strategy": [
+        {"order": 1, "community": "强", "commercial": "强", "decision": "开放内核 + 商业控制面／私有校准"},
+        {"order": 2, "community": "强", "commercial": "弱", "decision": "开源研究／开发工具，控制商业投入"},
+        {"order": 3, "community": "弱", "commercial": "强", "decision": "私有产品／项目服务，缩小公开维护面"},
+        {"order": 4, "community": "弱", "commercial": "弱", "decision": "停止虚拟观众产品，保留 Timeline／Trace"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "matraix-paper",
+      "label": "MatrAIx technical report, arXiv:2608.04205v1",
+      "href": "https://arxiv.org/html/2608.04205v1",
+      "query": {
+        "engine": "ANSI SQL over reviewed paper transcription",
+        "sql": "WITH rows(task, measure, gpt55_pct, opus48_pct, haiku45_pct, range_pp) AS (VALUES ('Annual checkup','Very likely to schedule in time',50.5,41.4,29.7,20.8),('Candy Land price','Hesitates or worse at new price',98.3,27.0,83.3,71.3),('OpenBB honesty','Would not continue using',18.5,14.5,71.9,57.4),('Meal planning','Stated need fully satisfied',46.2,0.2,28.1,46.0),('Notion plans','Selected a paid plan',75.8,23.2,93.9,70.7),('MIT OCW course','Chose a graduate-level course',40.0,34.5,47.5,13.0),('News+ subscription','Subscribed',4.2,20.8,0.0,20.8),('Stocks sentiment','Buy opinion',40.0,70.0,47.4,30.0)) SELECT * FROM rows",
+        "description": "Materializes the eight product-level rows transcribed from MatrAIx Table 13 for the chart and exact-value table.",
+        "executed_at": "2026-08-19T18:00:00+08:00",
+        "language": "sql",
+        "filters": ["All eight reported tasks", "Percentages use each model arm's answered denominator"],
+        "metric_definitions": ["range_pp is max model percentage minus min model percentage for the same task"]
+      }
+    },
+    {
+      "id": "matraix-chart-source",
+      "label": "MatrAIx Table 13 — seven comparable cross-model tasks",
+      "href": "https://arxiv.org/html/2608.04205v1",
+      "query": {
+        "engine": "PostgreSQL-compatible SQL over reviewed paper transcription",
+        "sql": "WITH base(task, measure, environment, gpt55_pct, opus48_pct, haiku45_pct, caveat) AS (VALUES ('Annual checkup','Very likely to schedule in time','Survey',50.5,41.4,29.7,''),('Candy Land price','Hesitates or worse at new price','Survey',98.3,27.0,83.3,''),('OpenBB honesty','Would not continue using','Chat',18.5,14.5,71.9,''),('Notion plans','Selected a paid plan','Web',75.8,23.2,93.9,''),('MIT OCW course','Chose a graduate-level course','Web',40.0,34.5,47.5,'Course-level aggregation'),('News+ subscription','Subscribed','App',4.2,20.8,0.0,'About 24 trials per model; too small for modest subgroup effects'),('Stocks sentiment','Buy opinion','App',40.0,70.0,47.4,'About 20 trials per model')) SELECT b.task,b.measure,b.environment,m.model,m.result_pct,b.caveat FROM base b CROSS JOIN LATERAL (VALUES ('GPT 5.5',b.gpt55_pct),('Opus 4.8',b.opus48_pct),('Haiku 4.5',b.haiku45_pct)) AS m(model,result_pct)",
+        "description": "Materializes seven comparable tasks from MatrAIx Table 13 in long form; excludes Meal Planning because the GPT 5.5 arm did not run the declared cohort.",
+        "executed_at": "2026-08-19T18:00:00+08:00",
+        "language": "sql",
+        "filters": ["Meal Planning excluded from chart due to reported cohort-integrity exception", "App tasks retained with small-sample caveats"],
+        "metric_definitions": ["result_pct is the reported product outcome share using each arm's answered denominator"]
+      }
+    },
+    {
+      "id": "matraix-code",
+      "label": "MatrAIx code at audited commit 07bb6a4",
+      "href": "https://github.com/MatrAIx-ai/MatrAIx-Persona-8B/tree/07bb6a4e07c33b5ab96dc4563cf516d5d15b3dd9"
+    },
+    {
+      "id": "matraix-quickstart",
+      "label": "MatrAIx Quickstart at audited commit 07bb6a4",
+      "href": "https://github.com/MatrAIx-ai/MatrAIx-Persona-8B/blob/07bb6a4e07c33b5ab96dc4563cf516d5d15b3dd9/docs/quickstart.md"
+    },
+    {
+      "id": "matraix-dataset",
+      "label": "MatrAIx Persona 1M dataset card",
+      "href": "https://huggingface.co/datasets/MatrAIx2026/MatrAIx_Persona_1M"
+    },
+    {
+      "id": "open-ecosystem",
+      "label": "Official open-source repositories: TinyTroupe, genagents, OASIS, Concordia and AgentSociety",
+      "href": "https://github.com/microsoft/TinyTroupe"
+    },
+    {
+      "id": "matraix-scale-source",
+      "label": "MatrAIx paper, code docs and Persona 1M card — reviewed scale ledger",
+      "href": "https://arxiv.org/html/2608.04205v1",
+      "query": {
+        "engine": "ANSI SQL over reviewed source notes",
+        "sql": "SELECT 1 AS ordering, 'Persona record universe' AS level, '8.3B' AS reported_scale UNION ALL SELECT 2, 'Public coreset', '999,847' UNION ALL SELECT 3, 'Executed trials in paper', '18,189' UNION ALL SELECT 4, 'Controlled adherence trials', '400'",
+        "description": "Materializes four scale concepts reviewed across the MatrAIx paper, code Quickstart and Persona 1M card.",
+        "executed_at": "2026-08-19T18:00:00+08:00",
+        "language": "sql"
+      }
+    },
+    {
+      "id": "execution-tiers-source",
+      "label": "Proposed execution tiers derived from MatrAIx trial economics",
+      "href": "https://github.com/MatrAIx-ai/MatrAIx-Persona-8B/blob/07bb6a4e07c33b5ab96dc4563cf516d5d15b3dd9/docs/quickstart.md",
+      "query": {
+        "engine": "ANSI SQL over design defaults",
+        "sql": "SELECT 1 AS ordering, 'Deep Trace' AS tier, '12-32' AS default_scale UNION ALL SELECT 2, 'Broad Sweep', '100-1000' UNION ALL SELECT 3, 'Population Projection', '10000+'",
+        "description": "Materializes the proposed three-tier execution defaults; these are hypotheses to benchmark, not observed performance.",
+        "executed_at": "2026-08-19T18:00:00+08:00",
+        "language": "sql"
+      }
+    },
+    {
+      "id": "open-strategy-source",
+      "label": "Open-source and commercial signal decision framework",
+      "query": {
+        "engine": "ANSI SQL over decision framework",
+        "sql": "SELECT 1 AS ordering, 'strong' AS community_signal, 'strong' AS commercial_signal, 'open core product' AS decision UNION ALL SELECT 2, 'strong', 'weak', 'open research tool' UNION ALL SELECT 3, 'weak', 'strong', 'private product or service' UNION ALL SELECT 4, 'weak', 'weak', 'stop virtual-audience product'",
+        "description": "Materializes the proposed decision matrix; it is a management framework, not an empirical dataset.",
+        "executed_at": "2026-08-19T18:00:00+08:00",
+        "language": "sql"
+      }
+    }
+  ]
+}

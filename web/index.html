@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Audience Mirror 本地多模态人群实验工作台。">
+  <title>Audience Mirror · 实验工作台</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <!--
+  THESIS: 聚合判断沿同一条证据走廊返回时间点与个体 Trace，拒绝摘要仪表盘。
+  OWN-WORLD: 白纸画布、冷灰仪器层、稀缺证据蓝、限制黄；表格与分隔线主导，不堆卡片。
+  STORY: 研究者导入素材，确认权利，解析与运行，检查分歧，再用真人锚点校准。
+  FIRST VIEWPORT: 顶部是实验状态与操作带；其下左侧为素材和时间轴，右侧为当前证据 Inspector。
+  FORM: 既有审片证据台的 Evidence Corridor 扩展；任务结构 seed 8166f271，用户既有 DESIGN.md 固定该方向。
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+  -->
+  <a class="skip-link" href="#workspace">跳到实验工作区</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="Audience Mirror 首页">Audience Mirror</a>
+      <nav aria-label="工作区导航">
+        <a href="#setup">实验</a>
+        <a href="#timeline">时间轴</a>
+        <a href="#traces">个体 Trace</a>
+        <a href="#calibration">校准</a>
+      </nav>
+      <div class="system-state" id="system-state" aria-live="polite">正在检查能力</div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <h1 id="page-title">让人群先走一遍，再决定下一版。</h1>
+        <p>把真实视频转成可定位的多模态时间轴，让稳定 Persona 按顺序体验；每条反应都能回到画面、声音、时间点与个体轨迹。</p>
+      </div>
+      <div class="experiment-identity" aria-label="当前实验">
+        <span>当前实验</span>
+        <strong id="experiment-id">demo</strong>
+        <small id="experiment-status">公开合成 Fixture</small>
+      </div>
+    </section>
+
+    <aside class="method-notice" aria-label="方法边界">
+      <strong>当前结果不是现实人群预测。</strong>
+      <span>注意、情绪、理解和购买均为预测代理量；Persona 数与真人参与者数始终分开，只有同任务真人数据才能校准。</span>
+    </aside>
+
+    <section id="setup" class="setup" aria-labelledby="setup-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="setup-title">建立实验</h2>
+          <p>本地解析默认不把素材发送给第三方。远程视频模型必须单独授权。</p>
+        </div>
+        <button class="text-button" type="button" id="load-demo">恢复公开 Demo</button>
+      </div>
+
+      <ol class="pipeline" aria-label="实验流程">
+        <li class="is-active" data-stage="ingest"><span>素材与权利</span><small>本地解析 <em class="stage-status">· 当前</em></small></li>
+        <li data-stage="analyze"><span>多模态事实层</span><small>原生视频模型 <em class="stage-status">· 待开始</em></small></li>
+        <li data-stage="run"><span>顺序体验</span><small>Deep Persona <em class="stage-status">· 待开始</em></small></li>
+        <li data-stage="calibrate"><span>真人校准</span><small>Human Anchors <em class="stage-status">· 待开始</em></small></li>
+      </ol>
+
+      <form id="upload-form" class="setup-form">
+        <div class="file-field">
+          <label for="video-file">视频素材</label>
+          <input id="video-file" name="file" type="file" accept="video/*" required>
+          <small>原型上限 1 GiB；文件只写入本地 artifacts，不进入 Git。</small>
+        </div>
+        <label class="field">
+          <span>数据分类</span>
+          <select name="classification" id="classification">
+            <option value="public">公开素材</option>
+            <option value="internal">内部素材</option>
+            <option value="confidential">机密素材</option>
+            <option value="restricted">受限素材</option>
+          </select>
+        </label>
+        <label class="field compact-field">
+          <span>采样间隔</span>
+          <select name="sample_interval_ms" id="sample-interval">
+            <option value="2000">2 秒</option>
+            <option value="5000" selected>5 秒</option>
+            <option value="10000">10 秒</option>
+          </select>
+        </label>
+        <label class="check-field">
+          <input name="rights_confirmed" type="checkbox" value="true" required>
+          <span>我确认有权将该素材用于本次测试。</span>
+        </label>
+        <button class="primary-button" type="submit" id="ingest-button">解析视频</button>
+      </form>
+      <p class="form-message" id="setup-message" role="status" aria-live="polite"></p>
+
+      <div class="run-controls" id="run-controls">
+        <form id="analyze-form" class="control-group">
+          <div>
+            <strong>多模态事实层</strong>
+            <small id="native-model-status">检查原生视频模型</small>
+          </div>
+          <label class="field">
+            <span>Provider</span>
+            <select name="provider" id="provider"><option value="gemini">Gemini Native Video</option></select>
+          </label>
+          <label class="field">
+            <span>模型</span>
+            <select name="model" id="provider-model"><option value="gemini-3.7-flash">gemini-3.7-flash</option></select>
+          </label>
+          <div class="remote-governance" id="remote-governance">
+            <strong>本次远程处理边界</strong>
+            <p>Provider 管理地域；调用后请求删除远程文件，服务日志仍受当期 API 条款约束；本原型不替你断言训练使用政策。</p>
+          </div>
+          <label class="check-field remote-confirmation">
+            <input name="remote_processing_confirmed" type="checkbox" value="true" required>
+            <span>我授权本次把当前素材发送给上方 Provider 与模型。</span>
+          </label>
+          <label class="check-field remote-confirmation">
+            <input name="provider_policy_confirmed" type="checkbox" value="true" required>
+            <span>我已核对当前数据地域、保留与训练使用政策；机密／受限素材不走该公有路由。</span>
+          </label>
+          <button class="secondary-button" type="submit" id="analyze-button">分析完整视频</button>
+        </form>
+
+        <form id="run-form" class="control-group">
+          <div>
+            <strong>顺序体验</strong>
+            <small>模型模式逐事件调用，默认限制 16 次。</small>
+          </div>
+          <label class="field compact-field">
+            <span>运行时</span>
+            <select name="runtime_mode">
+              <option value="deterministic">工程基线</option>
+              <option value="model">Claude Code 模型</option>
+            </select>
+          </label>
+          <label class="field compact-field">
+            <span>Deep Persona</span>
+            <input name="persona_count" type="number" min="1" max="32" value="6">
+          </label>
+          <button class="secondary-button" type="submit" id="run-button">运行顺序体验</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="scale-ledger" aria-labelledby="scale-title">
+      <div class="section-heading compact-heading">
+        <div>
+          <h2 id="scale-title">规模口径</h2>
+          <p>覆盖、深度体验与真人校准是三种不同数量。</p>
+        </div>
+      </div>
+      <dl id="scale-values">
+        <div><dt>Persona Pool</dt><dd>—</dd><small>可检索画像记录</small></div>
+        <div><dt>Deep Persona</dt><dd>—</dd><small>完成顺序体验</small></div>
+        <div><dt>Trace Event</dt><dd>—</dd><small>可回放反应事件</small></div>
+        <div><dt>Human Participant</dt><dd>—</dd><small>同任务真人</small></div>
+      </dl>
+    </section>
+
+    <section id="workspace" class="workspace-section" aria-labelledby="workspace-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="workspace-title">证据工作区</h2>
+          <p>选择任一时间片，检查模型看到了什么、Persona 如何变化，以及结论引用了哪条证据。</p>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <div class="screening-bay">
+          <div class="media-stage" id="media-stage">
+            <div class="media-placeholder">
+              <strong>公开合成时间轴</strong>
+              <span>上传视频后，这里显示真实解码帧。</span>
+            </div>
+          </div>
+          <div class="media-evidence-links" id="media-evidence-links" aria-live="polite"></div>
+          <div class="transport" aria-label="时间片信息">
+            <time id="current-timecode">00:00–00:00</time>
+            <strong id="current-label">等待时间轴</strong>
+            <span id="current-position">0 / 0</span>
+          </div>
+          <ol class="timeline-rail" id="timeline-rail" aria-label="视频时间轴"></ol>
+        </div>
+
+        <aside class="evidence-inspector" id="evidence-inspector" aria-labelledby="inspector-title">
+          <div class="inspector-heading">
+            <h3 id="inspector-title">当前时间片</h3>
+            <span class="status-tag" id="review-status">未选择</span>
+          </div>
+          <p id="event-summary">选择时间轴事件后查看多模态事实、推断状态和证据引用。</p>
+          <dl class="provenance-strip" id="evidence-provenance">
+            <div><dt>Environment</dt><dd>—</dd></div>
+            <div><dt>Timeline</dt><dd>—</dd></div>
+            <div><dt>素材哈希</dt><dd>—</dd></div>
+          </dl>
+          <dl class="metric-strip" id="event-metrics">
+            <div><dt>困惑代理量</dt><dd>—</dd></div>
+            <div><dt>注意代理量</dt><dd>—</dd></div>
+            <div><dt>继续意向</dt><dd>—</dd></div>
+          </dl>
+          <div class="observation-list">
+            <h3>多模态观察</h3>
+            <ul id="observations"><li>尚无观察。</li></ul>
+          </div>
+          <div class="extremes">
+            <h3>分歧与反例</h3>
+            <div id="event-extremes" class="empty-copy">运行 Deep Persona 后显示高反应与反例。</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="timeline" aria-labelledby="timeline-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="timeline-title">逐段人群反应</h2>
+          <p>聚合只作为入口；每一行都必须能下钻到具体 Persona 和 Trace。</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>时间</th><th>事件</th><th>困惑</th><th>注意</th><th>继续</th><th>证据入口</th></tr>
+          </thead>
+          <tbody id="event-table-body"><tr><td colspan="6">正在载入公开 Demo。</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="traces" aria-labelledby="traces-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="traces-title">个体 Trace</h2>
+          <p>默认展示独立顺序体验；群体讨论与社会影响需作为另一种运行条件。</p>
+        </div>
+        <label class="search-field">
+          <span>筛选 Persona</span>
+          <input id="persona-filter" type="search" placeholder="输入 Persona 或分群">
+        </label>
+      </div>
+      <div id="trace-list" class="trace-list" aria-live="polite"></div>
+    </section>
+
+    <section id="calibration" aria-labelledby="calibration-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="calibration-title">真人反馈校准</h2>
+          <p>导入符合 Human Anchor v0.1 的同任务、同版本反馈；撤回同意的记录会自动排除。</p>
+        </div>
+      </div>
+      <div class="calibration-layout">
+        <form id="calibration-form" class="calibration-form">
+          <label class="file-field">
+            <span>Human Anchors JSON</span>
+            <input name="file" type="file" accept="application/json,.json" required>
+          </label>
+          <label class="field">
+            <span>Agent A/B 方向（可选）</span>
+            <select name="agent_ab_direction">
+              <option value="">尚未比较</option>
+              <option value="variant_a">版本 A</option>
+              <option value="variant_b">版本 B</option>
+              <option value="no_difference">无差异</option>
+            </select>
+          </label>
+          <button class="secondary-button" type="submit" id="calibrate-button">计算校准指标</button>
+        </form>
+        <div id="calibration-results" class="calibration-results">
+          <strong>尚未导入真人数据</strong>
+          <p>校准结果会显示 Top 问题召回、时间点召回、同名代理量误差和 A/B 方向一致性。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <strong>Audience Mirror</strong>
+      <span>本地原型 · 证据先于结论 · 未经校准不作现实预测</span>
+    </div>
+    <a href="https://github.com/YunyueLi/audience-mirror" rel="noreferrer">源代码与方法文档</a>
+  </footer>
+</body>
+</html>

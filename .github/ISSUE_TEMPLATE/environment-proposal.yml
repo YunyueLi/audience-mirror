@@ -1,0 +1,33 @@
+name: Environment proposal
+description: Propose a Media, Web／App, Game, Social, or other experiment environment.
+title: "[Environment]: "
+labels: ["environment"]
+body:
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision to improve
+      description: What real decision would this environment help investigate before reality?
+    validations:
+      required: true
+  - type: textarea
+    id: contract
+    attributes:
+      label: Environment contract
+      description: Describe observations, actions, state, memory, termination, and evidence references.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Human or real-world validation
+      description: How could the simulated result be compared with authorized real evidence?
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Data and safety
+      options:
+        - label: The proposal can be discussed without sharing private or restricted data.
+          required: true

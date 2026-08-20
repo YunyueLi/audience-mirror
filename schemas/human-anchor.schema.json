@@ -1,0 +1,573 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://audience-mirror.local/schemas/human-anchor.schema.json",
+  "title": "Audience Mirror Human Anchor",
+  "description": "A pseudonymous, consent-linked human observation used for exploration, validation, or calibration. It is intentionally separate from simulated Agent Trace.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "human_anchor_id",
+    "experiment_id",
+    "human_session_id",
+    "assignment_id",
+    "exposure_order",
+    "counterbalance_cell",
+    "participant_pseudonym",
+    "consent_ref",
+    "consent_status",
+    "withdrawal",
+    "asset",
+    "data_handling",
+    "instrument",
+    "timeline",
+    "response",
+    "observed_at",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "audience-mirror.human-anchor/v0.1"
+    },
+    "human_anchor_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "human_session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assignment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "exposure_order": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "counterbalance_cell": {
+      "enum": [
+        "a_only",
+        "b_only",
+        "ab",
+        "ba",
+        "not_applicable"
+      ]
+    },
+    "participant_pseudonym": {
+      "type": "string",
+      "minLength": 1
+    },
+    "consent_ref": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!https?://)(?!file://)(?!/)(?![A-Za-z]:[\\\\/]).+$",
+      "description": "Opaque internal reference to consent and withdrawal records."
+    },
+    "consent_status": {
+      "enum": [
+        "active",
+        "withdrawn"
+      ]
+    },
+    "withdrawal": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/withdrawal"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "segment_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "asset": {
+      "$ref": "#/$defs/assetRef"
+    },
+    "comparison_asset": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/assetRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "data_handling": {
+      "$ref": "#/$defs/dataHandling"
+    },
+    "instrument": {
+      "$ref": "#/$defs/instrument"
+    },
+    "timeline": {
+      "$ref": "#/$defs/timelineRef"
+    },
+    "response": {
+      "$ref": "#/$defs/response"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "consent_status": {
+            "const": "active"
+          }
+        },
+        "required": [
+          "consent_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "withdrawal": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consent_status": {
+            "const": "withdrawn"
+          }
+        },
+        "required": [
+          "consent_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "withdrawal": {
+            "type": "object"
+          },
+          "data_handling": {
+            "type": "object",
+            "properties": {
+              "export_policy": {
+                "const": "no_export"
+              },
+              "redaction_status": {
+                "const": "blocked"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "instrument": {
+            "type": "object",
+            "properties": {
+              "instrument_type": {
+                "const": "ab_choice"
+              }
+            },
+            "required": [
+              "instrument_type"
+            ]
+          }
+        },
+        "required": [
+          "instrument"
+        ]
+      },
+      "then": {
+        "required": [
+          "comparison_asset"
+        ],
+        "properties": {
+          "comparison_asset": {
+            "type": "object"
+          },
+          "counterbalance_cell": {
+            "enum": [
+              "a_only",
+              "b_only",
+              "ab",
+              "ba"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "assetRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_id",
+        "variant_id",
+        "content_hash",
+        "rights_manifest_id"
+      ],
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variant_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "rights_manifest_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dataHandling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data_classification",
+        "export_policy",
+        "retention_class",
+        "contains_personal_data",
+        "redaction_status"
+      ],
+      "properties": {
+        "data_classification": {
+          "enum": [
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        },
+        "export_policy": {
+          "enum": [
+            "no_export",
+            "redacted_only",
+            "authorized"
+          ]
+        },
+        "retention_class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contains_personal_data": {
+          "const": true
+        },
+        "redaction_status": {
+          "enum": [
+            "pending",
+            "redacted",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "instrument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "instrument_id",
+        "instrument_type",
+        "version"
+      ],
+      "properties": {
+        "instrument_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "instrument_type": {
+          "enum": [
+            "continuous_rating",
+            "timestamp_issue",
+            "post_view_scale",
+            "interview_code",
+            "behavior",
+            "ab_choice",
+            "eye_tracking",
+            "physiological"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scale_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "timelineRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timeline_id",
+        "timeline_hash",
+        "t_start_ms",
+        "t_end_ms"
+      ],
+      "properties": {
+        "timeline_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeline_hash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "timeline_node_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "t_start_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t_end_ms": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metric_id",
+        "value",
+        "direction",
+        "severity",
+        "issue_code"
+      ],
+      "properties": {
+        "metric_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "maxLength": 3000
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "number",
+                  "boolean"
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "direction": {
+          "enum": [
+            "variant_a",
+            "variant_b",
+            "no_difference",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "severity": {
+          "enum": [
+            "none",
+            "low",
+            "medium",
+            "high",
+            "critical",
+            "not_applicable"
+          ]
+        },
+        "issue_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 2000
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "withdrawal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "withdrawn_at",
+        "analysis_excluded",
+        "disposition",
+        "legal_basis",
+        "deletion_receipt_ref",
+        "invalidated_artifact_refs"
+      ],
+      "properties": {
+        "withdrawn_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "analysis_excluded": {
+          "const": true
+        },
+        "disposition": {
+          "enum": [
+            "deleted",
+            "retained_under_legal_basis",
+            "pending"
+          ]
+        },
+        "legal_basis": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 1000
+        },
+        "deletion_receipt_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(?!https?://)(?!file://)(?!/)(?![A-Za-z]:[\\\\/]).+$"
+        },
+        "invalidated_artifact_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(?!https?://)(?!file://)(?!/)(?![A-Za-z]:[\\\\/]).+$"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "disposition": {
+                "const": "deleted"
+              }
+            },
+            "required": [
+              "disposition"
+            ]
+          },
+          "then": {
+            "properties": {
+              "deletion_receipt_ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "disposition": {
+                "const": "retained_under_legal_basis"
+              }
+            },
+            "required": [
+              "disposition"
+            ]
+          },
+          "then": {
+            "properties": {
+              "legal_basis": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "collection_system",
+        "source_record_hash",
+        "source_record_ref",
+        "coder_ref",
+        "coded_at"
+      ],
+      "properties": {
+        "collection_system": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_record_hash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "source_record_ref": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!https?://)(?!file://)(?!/)(?![A-Za-z]:[\\\\/]).+$",
+          "description": "Opaque internal reference only."
+        },
+        "coder_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "coded_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

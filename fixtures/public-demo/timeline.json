@@ -1,0 +1,349 @@
+{
+  "schema_version": "audience-mirror.timeline/v0.1",
+  "timeline_id": "timeline-public-fiction-v1",
+  "asset": {
+    "asset_id": "asset-public-fiction",
+    "variant_id": "variant-a",
+    "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "object_ref": "fixture:asset:public-fiction:variant-a",
+    "rights_manifest_id": "rights-synthetic-fixture-v1"
+  },
+  "data_handling": {
+    "data_classification": "public",
+    "export_policy": "authorized",
+    "retention_class": "repository_fixture",
+    "contains_personal_data": false,
+    "redaction_status": "not_required"
+  },
+  "generated_at": "2026-08-19T00:00:00Z",
+  "frozen_at": "2026-08-19T00:00:00Z",
+  "language": "zh-CN",
+  "duration_ms": 240000,
+  "extractor_manifest": [
+    {
+      "extractor_run_id": "extractor-fixture-human-v1",
+      "capability": "human_review",
+      "producer": "audience-mirror.fixture-author",
+      "model_id": null,
+      "version": "0.1.0",
+      "config_hash": "fixture-config-v1",
+      "ran_at": "2026-08-19T00:00:00Z"
+    }
+  ],
+  "nodes": [
+    {
+      "node_id": "act-1",
+      "parent_node_id": null,
+      "level": "act",
+      "t_start_ms": 0,
+      "t_end_ms": 240000,
+      "label": "失联站点中的未知信号",
+      "summary": "一名维修员在废弃站点中发现未知信号，并重新判断信号来源。",
+      "observations": [
+        {
+          "observation_id": "obs-act-1",
+          "modality": "user_annotation",
+          "kind": "act_summary",
+          "text": "合成故事从威胁预期转向合作选择。",
+          "epistemic_status": "user_provided",
+          "confidence": 1,
+          "evidence_refs": [
+            {
+              "ref_id": "evidence-act-1",
+              "evidence_type": "user_annotation",
+              "t_start_ms": 0,
+              "t_end_ms": 240000,
+              "object_ref": "fixture:evidence:act-1",
+              "hash_algorithm": "sha256",
+              "content_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "data_classification": "public",
+              "export_policy": "authorized",
+              "redaction_status": "not_required",
+              "excerpt": "威胁预期转向合作选择。"
+            }
+          ],
+          "producer_ref": "extractor-fixture-human-v1"
+        }
+      ],
+      "entity_refs": ["character:repairer", "entity:station", "entity:robot"],
+      "review_status": "human_confirmed",
+      "salience_tags": ["synthetic_fixture", "narrative_arc"]
+    },
+    {
+      "node_id": "scene-1",
+      "parent_node_id": "act-1",
+      "level": "scene",
+      "t_start_ms": 0,
+      "t_end_ms": 120000,
+      "label": "信号与剪影",
+      "summary": "维修员进入暗廊，先听到信号，再看到未知剪影。",
+      "observations": [
+        {
+          "observation_id": "obs-scene-1",
+          "modality": "user_annotation",
+          "kind": "scene_summary",
+          "text": "场景通过声音和剪影建立威胁预期。",
+          "epistemic_status": "user_provided",
+          "confidence": 1,
+          "evidence_refs": [
+            {
+              "ref_id": "evidence-scene-1",
+              "evidence_type": "user_annotation",
+              "t_start_ms": 0,
+              "t_end_ms": 120000,
+              "object_ref": "fixture:evidence:scene-1",
+              "hash_algorithm": "sha256",
+              "content_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "data_classification": "public",
+              "export_policy": "authorized",
+              "redaction_status": "not_required",
+              "excerpt": "声音和剪影建立威胁预期。"
+            }
+          ],
+          "producer_ref": "extractor-fixture-human-v1"
+        }
+      ],
+      "entity_refs": ["character:repairer", "entity:station"],
+      "review_status": "human_confirmed",
+      "salience_tags": ["setup"]
+    },
+    {
+      "node_id": "event-1",
+      "parent_node_id": "scene-1",
+      "level": "event",
+      "t_start_ms": 0,
+      "t_end_ms": 55000,
+      "label": "维修员听到重复信号",
+      "summary": "暗廊中出现有规律的敲击和微弱灯光。",
+      "observations": [
+        {
+          "observation_id": "obs-event-1",
+          "modality": "multimodal",
+          "kind": "story_event",
+          "text": "维修员停下脚步，听到三次重复敲击，并看见远处灯光。",
+          "epistemic_status": "user_provided",
+          "confidence": 1,
+          "evidence_refs": [
+            {
+              "ref_id": "evidence-event-1",
+              "evidence_type": "user_annotation",
+              "t_start_ms": 0,
+              "t_end_ms": 55000,
+              "object_ref": "fixture:evidence:event-1",
+              "hash_algorithm": "sha256",
+              "content_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+              "data_classification": "public",
+              "export_policy": "authorized",
+              "redaction_status": "not_required",
+              "excerpt": "三次重复敲击与远处灯光。"
+            }
+          ],
+          "producer_ref": "extractor-fixture-human-v1"
+        }
+      ],
+      "entity_refs": ["character:repairer", "entity:signal"],
+      "review_status": "human_confirmed",
+      "salience_tags": ["hook", "audio_cue"],
+      "extensions": {
+        "fixture_signals": {
+          "clarity": 0.78,
+          "pace": 0.6,
+          "emotional_intensity": 0.4,
+          "novelty": 0.7,
+          "valence": 0.05
+        }
+      }
+    },
+    {
+      "node_id": "event-2",
+      "parent_node_id": "scene-1",
+      "level": "event",
+      "t_start_ms": 55000,
+      "t_end_ms": 120000,
+      "label": "剪影突然靠近",
+      "summary": "一个轮廓快速经过门口，但身份和动机没有交代。",
+      "observations": [
+        {
+          "observation_id": "obs-event-2",
+          "modality": "visual",
+          "kind": "story_event",
+          "text": "门外剪影快速掠过，维修员举起工具防备。",
+          "epistemic_status": "user_provided",
+          "confidence": 1,
+          "evidence_refs": [
+            {
+              "ref_id": "evidence-event-2",
+              "evidence_type": "user_annotation",
+              "t_start_ms": 55000,
+              "t_end_ms": 120000,
+              "object_ref": "fixture:evidence:event-2",
+              "hash_algorithm": "sha256",
+              "content_hash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              "data_classification": "public",
+              "export_policy": "authorized",
+              "redaction_status": "not_required",
+              "excerpt": "剪影掠过，维修员进入防备状态。"
+            }
+          ],
+          "producer_ref": "extractor-fixture-human-v1"
+        }
+      ],
+      "entity_refs": ["character:repairer", "entity:unknown_silhouette"],
+      "review_status": "human_confirmed",
+      "salience_tags": ["ambiguity", "threat_expectation"],
+      "extensions": {
+        "fixture_signals": {
+          "clarity": 0.45,
+          "pace": 0.7,
+          "emotional_intensity": 0.72,
+          "novelty": 0.82,
+          "valence": -0.15
+        }
+      }
+    },
+    {
+      "node_id": "scene-2",
+      "parent_node_id": "act-1",
+      "level": "scene",
+      "t_start_ms": 120000,
+      "t_end_ms": 240000,
+      "label": "误解解除与跟随选择",
+      "summary": "剪影被揭示为修理机器人，维修员决定跟随它寻找信号源。",
+      "observations": [
+        {
+          "observation_id": "obs-scene-2",
+          "modality": "user_annotation",
+          "kind": "scene_summary",
+          "text": "第二场景解释身份并完成合作选择。",
+          "epistemic_status": "user_provided",
+          "confidence": 1,
+          "evidence_refs": [
+            {
+              "ref_id": "evidence-scene-2",
+              "evidence_type": "user_annotation",
+              "t_start_ms": 120000,
+              "t_end_ms": 240000,
+              "object_ref": "fixture:evidence:scene-2",
+              "hash_algorithm": "sha256",
+              "content_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "data_classification": "public",
+              "export_policy": "authorized",
+              "redaction_status": "not_required",
+              "excerpt": "身份解释与合作选择。"
+            }
+          ],
+          "producer_ref": "extractor-fixture-human-v1"
+        }
+      ],
+      "entity_refs": ["character:repairer", "entity:robot"],
+      "review_status": "human_confirmed",
+      "salience_tags": ["reveal", "resolution"]
+    },
+    {
+      "node_id": "event-3",
+      "parent_node_id": "scene-2",
+      "level": "event",
+      "t_start_ms": 120000,
+      "t_end_ms": 180000,
+      "label": "剪影被揭示为修理机器人",
+      "summary": "机器人展示损坏部件和求助信号，威胁预期被修正。",
+      "observations": [
+        {
+          "observation_id": "obs-event-3",
+          "modality": "multimodal",
+          "kind": "story_event",
+          "text": "机器人放下工具，投射出损坏部件和求助路径。",
+          "epistemic_status": "user_provided",
+          "confidence": 1,
+          "evidence_refs": [
+            {
+              "ref_id": "evidence-event-3",
+              "evidence_type": "user_annotation",
+              "t_start_ms": 120000,
+              "t_end_ms": 180000,
+              "object_ref": "fixture:evidence:event-3",
+              "hash_algorithm": "sha256",
+              "content_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+              "data_classification": "public",
+              "export_policy": "authorized",
+              "redaction_status": "not_required",
+              "excerpt": "机器人展示损坏部件和求助路径。"
+            }
+          ],
+          "producer_ref": "extractor-fixture-human-v1"
+        }
+      ],
+      "entity_refs": ["character:repairer", "entity:robot"],
+      "review_status": "human_confirmed",
+      "salience_tags": ["identity_reveal", "expectation_revision"],
+      "extensions": {
+        "fixture_signals": {
+          "clarity": 0.82,
+          "pace": 0.5,
+          "emotional_intensity": 0.65,
+          "novelty": 0.65,
+          "valence": 0.45
+        }
+      }
+    },
+    {
+      "node_id": "event-4",
+      "parent_node_id": "scene-2",
+      "level": "event",
+      "t_start_ms": 180000,
+      "t_end_ms": 240000,
+      "label": "维修员决定跟随机器人",
+      "summary": "维修员放下防备姿态，进入更深的站点寻找信号源。",
+      "observations": [
+        {
+          "observation_id": "obs-event-4",
+          "modality": "multimodal",
+          "kind": "story_event",
+          "text": "维修员收起工具，跟随机器人走入亮起的通道。",
+          "epistemic_status": "user_provided",
+          "confidence": 1,
+          "evidence_refs": [
+            {
+              "ref_id": "evidence-event-4",
+              "evidence_type": "user_annotation",
+              "t_start_ms": 180000,
+              "t_end_ms": 240000,
+              "object_ref": "fixture:evidence:event-4",
+              "hash_algorithm": "sha256",
+              "content_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+              "data_classification": "public",
+              "export_policy": "authorized",
+              "redaction_status": "not_required",
+              "excerpt": "维修员跟随机器人进入通道。"
+            }
+          ],
+          "producer_ref": "extractor-fixture-human-v1"
+        }
+      ],
+      "entity_refs": ["character:repairer", "entity:robot", "entity:signal"],
+      "review_status": "human_confirmed",
+      "salience_tags": ["choice", "continuation_hook"],
+      "extensions": {
+        "fixture_signals": {
+          "clarity": 0.68,
+          "pace": 0.55,
+          "emotional_intensity": 0.55,
+          "novelty": 0.5,
+          "valence": 0.25
+        }
+      }
+    }
+  ],
+  "version_alignment": [],
+  "review_summary": {
+    "reviewed_node_count": 7,
+    "corrected_node_count": 0,
+    "disputed_node_count": 0,
+    "reviewer_ref": "fixture-author"
+  },
+  "extensions": {
+    "fixture_only": true,
+    "copyright_status": "synthetic",
+    "human_behavior_claims_allowed": false
+  }
+}

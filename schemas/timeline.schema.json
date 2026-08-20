@@ -1,0 +1,581 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://audience-mirror.local/schemas/timeline.schema.json",
+  "title": "Audience Mirror Multimodal Timeline",
+  "description": "A model-independent, evidence-linked timeline for a single asset variant.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "timeline_id",
+    "asset",
+    "data_handling",
+    "generated_at",
+    "extractor_manifest",
+    "nodes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "audience-mirror.timeline/v0.1"
+    },
+    "timeline_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "asset": {
+      "$ref": "#/$defs/assetRef"
+    },
+    "data_handling": {
+      "$ref": "#/$defs/dataHandling"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "frozen_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "language": {
+      "type": "string",
+      "minLength": 2
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "extractor_manifest": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/extractor"
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/timelineNode"
+      }
+    },
+    "version_alignment": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/alignment"
+      }
+    },
+    "review_summary": {
+      "$ref": "#/$defs/reviewSummary"
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "assetRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_id",
+        "variant_id",
+        "content_hash",
+        "rights_manifest_id"
+      ],
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variant_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "object_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(?!https?://)(?!file://)(?!/)(?![A-Za-z]:[\\\\/]).+$",
+          "description": "Opaque internal identifier only; never a URL, filesystem path, signed URL, or credential."
+        },
+        "rights_manifest_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dataHandling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data_classification",
+        "export_policy",
+        "retention_class",
+        "contains_personal_data",
+        "redaction_status"
+      ],
+      "properties": {
+        "data_classification": {
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        },
+        "export_policy": {
+          "enum": [
+            "no_export",
+            "redacted_only",
+            "authorized"
+          ]
+        },
+        "retention_class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contains_personal_data": {
+          "type": "boolean"
+        },
+        "redaction_status": {
+          "enum": [
+            "not_required",
+            "pending",
+            "redacted",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "extractor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "extractor_run_id",
+        "capability",
+        "producer",
+        "version",
+        "config_hash"
+      ],
+      "properties": {
+        "extractor_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "capability": {
+          "enum": [
+            "transcode",
+            "shot_detection",
+            "asr",
+            "diarization",
+            "ocr",
+            "audio_event",
+            "vision_caption",
+            "character_linking",
+            "event_extraction",
+            "timeline_fusion",
+            "human_review"
+          ]
+        },
+        "producer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "config_hash": {
+          "type": "string",
+          "minLength": 8
+        },
+        "ran_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "timelineNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "level",
+        "t_start_ms",
+        "t_end_ms",
+        "label",
+        "observations",
+        "entity_refs",
+        "review_status"
+      ],
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parent_node_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "level": {
+          "enum": [
+            "shot",
+            "scene",
+            "event",
+            "act"
+          ]
+        },
+        "t_start_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t_end_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 3000
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation"
+          }
+        },
+        "entity_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "salience_tags": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "exposition",
+              "character_change",
+              "relationship_change",
+              "goal_change",
+              "reveal",
+              "conflict",
+              "payoff",
+              "visual_spectacle",
+              "music_change",
+              "silence",
+              "ui_change",
+              "purchase_exposure",
+              "share_hook",
+              "safety_critical"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "review_status": {
+          "enum": [
+            "unreviewed",
+            "auto_checked",
+            "human_confirmed",
+            "human_corrected",
+            "disputed"
+          ]
+        },
+        "review_notes": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 2000
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observation_id",
+        "modality",
+        "kind",
+        "text",
+        "epistemic_status",
+        "confidence",
+        "evidence_refs"
+      ],
+      "properties": {
+        "observation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "modality": {
+          "enum": [
+            "visual",
+            "speech",
+            "text",
+            "music",
+            "sound",
+            "multimodal",
+            "script",
+            "user_annotation"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000
+        },
+        "epistemic_status": {
+          "enum": [
+            "observed",
+            "user_provided",
+            "inferred",
+            "uncertain",
+            "conflicted"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          }
+        },
+        "producer_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "References extractor_manifest.extractor_run_id."
+        }
+      }
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "evidence_type",
+        "t_start_ms",
+        "t_end_ms",
+        "hash_algorithm",
+        "content_hash",
+        "data_classification",
+        "export_policy",
+        "redaction_status"
+      ],
+      "properties": {
+        "ref_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_type": {
+          "enum": [
+            "frame",
+            "frame_group",
+            "video_clip",
+            "audio_clip",
+            "transcript",
+            "subtitle",
+            "ocr",
+            "script",
+            "user_annotation"
+          ]
+        },
+        "t_start_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t_end_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "object_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(?!https?://)(?!file://)(?!/)(?![A-Za-z]:[\\\\/]).+$",
+          "description": "Opaque internal identifier only; never a URL, filesystem path, signed URL, or credential."
+        },
+        "hash_algorithm": {
+          "const": "sha256"
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "data_classification": {
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        },
+        "export_policy": {
+          "enum": [
+            "no_export",
+            "redacted_only",
+            "authorized"
+          ]
+        },
+        "redaction_status": {
+          "enum": [
+            "not_required",
+            "pending",
+            "redacted",
+            "blocked"
+          ]
+        },
+        "excerpt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 500
+        }
+      }
+    },
+    "alignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "alignment_id",
+        "other_variant_id",
+        "other_timeline_id",
+        "other_timeline_schema_version",
+        "other_timeline_hash",
+        "change_type",
+        "node_ids",
+        "other_node_ids",
+        "confidence",
+        "review_status"
+      ],
+      "properties": {
+        "alignment_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "other_variant_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "other_timeline_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "other_timeline_schema_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "other_timeline_hash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "change_type": {
+          "enum": [
+            "unchanged",
+            "modified",
+            "inserted",
+            "deleted",
+            "moved"
+          ]
+        },
+        "node_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "other_node_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "review_status": {
+          "enum": [
+            "unreviewed",
+            "human_confirmed",
+            "human_corrected",
+            "disputed"
+          ]
+        }
+      }
+    },
+    "reviewSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewed_node_count",
+        "corrected_node_count",
+        "disputed_node_count"
+      ],
+      "properties": {
+        "reviewed_node_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "corrected_node_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "disputed_node_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reviewer_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

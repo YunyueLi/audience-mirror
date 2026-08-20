@@ -1,0 +1,253 @@
+{
+  "fixture_notice": "仅用于演示 Human Anchor 合同、撤回排除与校准界面；这些记录是合成数据，不代表真人研究结果。",
+  "anchors": [
+    {
+      "schema_version": "audience-mirror.human-anchor/v0.1",
+      "human_anchor_id": "synthetic-anchor-issue-001",
+      "experiment_id": "exp-workbench-demo",
+      "human_session_id": "synthetic-human-session-001",
+      "assignment_id": "synthetic-assignment-a-001",
+      "exposure_order": 0,
+      "counterbalance_cell": "a_only",
+      "participant_pseudonym": "synthetic-participant-001",
+      "consent_ref": "synthetic-consent:001",
+      "consent_status": "active",
+      "withdrawal": null,
+      "segment_id": "synthetic-fixture-segment",
+      "asset": {
+        "asset_id": "asset-public-fiction",
+        "variant_id": "variant-a",
+        "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rights_manifest_id": "rights-synthetic-fixture-v1"
+      },
+      "comparison_asset": null,
+      "data_handling": {
+        "data_classification": "internal",
+        "export_policy": "authorized",
+        "retention_class": "synthetic-repository-fixture",
+        "contains_personal_data": true,
+        "redaction_status": "redacted"
+      },
+      "instrument": {
+        "instrument_id": "synthetic-timestamp-issue-v1",
+        "instrument_type": "timestamp_issue",
+        "version": "1",
+        "scale_ref": null
+      },
+      "timeline": {
+        "timeline_id": "timeline-public-fiction-v1",
+        "timeline_hash": "833798cd908cd1918ae28768ee5611015d9a6aab4d198c4f78714a7069d3b00d",
+        "timeline_node_id": "event-2",
+        "t_start_ms": 55000,
+        "t_end_ms": 120000
+      },
+      "response": {
+        "metric_id": "issue",
+        "value": true,
+        "direction": "not_applicable",
+        "severity": "medium",
+        "issue_code": "confusion",
+        "summary": "合成锚点：第二段信息关系不清楚。",
+        "confidence": 0.8
+      },
+      "observed_at": "2026-08-20T00:00:00Z",
+      "provenance": {
+        "collection_system": "audience-mirror-synthetic-fixture",
+        "source_record_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+        "source_record_ref": "synthetic-source:001",
+        "coder_ref": null,
+        "coded_at": "2026-08-20T00:00:00Z"
+      },
+      "extensions": {"synthetic_fixture": true}
+    },
+    {
+      "schema_version": "audience-mirror.human-anchor/v0.1",
+      "human_anchor_id": "synthetic-anchor-scale-002",
+      "experiment_id": "exp-workbench-demo",
+      "human_session_id": "synthetic-human-session-002",
+      "assignment_id": "synthetic-assignment-a-002",
+      "exposure_order": 0,
+      "counterbalance_cell": "a_only",
+      "participant_pseudonym": "synthetic-participant-002",
+      "consent_ref": "synthetic-consent:002",
+      "consent_status": "active",
+      "withdrawal": null,
+      "segment_id": "synthetic-fixture-segment",
+      "asset": {
+        "asset_id": "asset-public-fiction",
+        "variant_id": "variant-a",
+        "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rights_manifest_id": "rights-synthetic-fixture-v1"
+      },
+      "comparison_asset": null,
+      "data_handling": {
+        "data_classification": "internal",
+        "export_policy": "authorized",
+        "retention_class": "synthetic-repository-fixture",
+        "contains_personal_data": true,
+        "redaction_status": "redacted"
+      },
+      "instrument": {
+        "instrument_id": "synthetic-continuous-rating-v1",
+        "instrument_type": "continuous_rating",
+        "version": "1",
+        "scale_ref": "synthetic-0-to-1"
+      },
+      "timeline": {
+        "timeline_id": "timeline-public-fiction-v1",
+        "timeline_hash": "833798cd908cd1918ae28768ee5611015d9a6aab4d198c4f78714a7069d3b00d",
+        "timeline_node_id": "event-2",
+        "t_start_ms": 55000,
+        "t_end_ms": 120000
+      },
+      "response": {
+        "metric_id": "confusion",
+        "value": 0.7,
+        "direction": "not_applicable",
+        "severity": "not_applicable",
+        "issue_code": null,
+        "summary": "合成锚点：0—1 困惑代理量示例。",
+        "confidence": 0.75
+      },
+      "observed_at": "2026-08-20T00:01:00Z",
+      "provenance": {
+        "collection_system": "audience-mirror-synthetic-fixture",
+        "source_record_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "source_record_ref": "synthetic-source:002",
+        "coder_ref": null,
+        "coded_at": "2026-08-20T00:01:00Z"
+      },
+      "extensions": {"synthetic_fixture": true}
+    },
+    {
+      "schema_version": "audience-mirror.human-anchor/v0.1",
+      "human_anchor_id": "synthetic-anchor-ab-003",
+      "experiment_id": "exp-workbench-demo",
+      "human_session_id": "synthetic-human-session-003",
+      "assignment_id": "synthetic-assignment-ab-003",
+      "exposure_order": 0,
+      "counterbalance_cell": "ab",
+      "participant_pseudonym": "synthetic-participant-003",
+      "consent_ref": "synthetic-consent:003",
+      "consent_status": "active",
+      "withdrawal": null,
+      "segment_id": "synthetic-fixture-segment",
+      "asset": {
+        "asset_id": "asset-public-fiction",
+        "variant_id": "variant-a",
+        "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rights_manifest_id": "rights-synthetic-fixture-v1"
+      },
+      "comparison_asset": {
+        "asset_id": "asset-public-fiction",
+        "variant_id": "variant-b",
+        "content_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "rights_manifest_id": "rights-synthetic-fixture-v1"
+      },
+      "data_handling": {
+        "data_classification": "internal",
+        "export_policy": "authorized",
+        "retention_class": "synthetic-repository-fixture",
+        "contains_personal_data": true,
+        "redaction_status": "redacted"
+      },
+      "instrument": {
+        "instrument_id": "synthetic-ab-choice-v1",
+        "instrument_type": "ab_choice",
+        "version": "1",
+        "scale_ref": null
+      },
+      "timeline": {
+        "timeline_id": "timeline-public-fiction-v1",
+        "timeline_hash": "833798cd908cd1918ae28768ee5611015d9a6aab4d198c4f78714a7069d3b00d",
+        "timeline_node_id": null,
+        "t_start_ms": 0,
+        "t_end_ms": 240000
+      },
+      "response": {
+        "metric_id": "ab_preference",
+        "value": "variant_a",
+        "direction": "variant_a",
+        "severity": "not_applicable",
+        "issue_code": null,
+        "summary": "合成锚点：版本 A 偏好示例。",
+        "confidence": 0.7
+      },
+      "observed_at": "2026-08-20T00:02:00Z",
+      "provenance": {
+        "collection_system": "audience-mirror-synthetic-fixture",
+        "source_record_hash": "3333333333333333333333333333333333333333333333333333333333333333",
+        "source_record_ref": "synthetic-source:003",
+        "coder_ref": null,
+        "coded_at": "2026-08-20T00:02:00Z"
+      },
+      "extensions": {"synthetic_fixture": true}
+    },
+    {
+      "schema_version": "audience-mirror.human-anchor/v0.1",
+      "human_anchor_id": "synthetic-anchor-withdrawn-004",
+      "experiment_id": "exp-workbench-demo",
+      "human_session_id": "synthetic-human-session-004",
+      "assignment_id": "synthetic-assignment-a-004",
+      "exposure_order": 0,
+      "counterbalance_cell": "a_only",
+      "participant_pseudonym": "synthetic-participant-004",
+      "consent_ref": "synthetic-consent:004",
+      "consent_status": "withdrawn",
+      "withdrawal": {
+        "withdrawn_at": "2026-08-20T00:04:00Z",
+        "analysis_excluded": true,
+        "disposition": "deleted",
+        "legal_basis": null,
+        "deletion_receipt_ref": "synthetic-deletion-receipt:004",
+        "invalidated_artifact_refs": ["synthetic-source:004"]
+      },
+      "segment_id": null,
+      "asset": {
+        "asset_id": "asset-public-fiction",
+        "variant_id": "variant-a",
+        "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rights_manifest_id": "rights-synthetic-fixture-v1"
+      },
+      "comparison_asset": null,
+      "data_handling": {
+        "data_classification": "internal",
+        "export_policy": "no_export",
+        "retention_class": "synthetic-deleted-fixture",
+        "contains_personal_data": true,
+        "redaction_status": "blocked"
+      },
+      "instrument": {
+        "instrument_id": "synthetic-timestamp-issue-v1",
+        "instrument_type": "timestamp_issue",
+        "version": "1",
+        "scale_ref": null
+      },
+      "timeline": {
+        "timeline_id": "timeline-public-fiction-v1",
+        "timeline_hash": "833798cd908cd1918ae28768ee5611015d9a6aab4d198c4f78714a7069d3b00d",
+        "timeline_node_id": "event-3",
+        "t_start_ms": 120000,
+        "t_end_ms": 180000
+      },
+      "response": {
+        "metric_id": "issue",
+        "value": true,
+        "direction": "not_applicable",
+        "severity": "high",
+        "issue_code": "dropoff",
+        "summary": "该合成记录已撤回，必须从分析中排除。",
+        "confidence": 0.9
+      },
+      "observed_at": "2026-08-20T00:03:00Z",
+      "provenance": {
+        "collection_system": "audience-mirror-synthetic-fixture",
+        "source_record_hash": "4444444444444444444444444444444444444444444444444444444444444444",
+        "source_record_ref": "synthetic-source:004",
+        "coder_ref": null,
+        "coded_at": "2026-08-20T00:03:00Z"
+      },
+      "extensions": {"synthetic_fixture": true}
+    }
+  ]
+}
