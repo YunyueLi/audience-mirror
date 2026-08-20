@@ -1,324 +1,194 @@
 ---
-name: Audience Mirror Media Environment
-description: Calibrated Projection Room：固定视口、可回放、可校准的多模态证据工作台。
-colors:
-  canvas-black: "#080a0d"
-  room-graphite: "#0d1116"
-  panel-graphite: "#11171d"
-  panel-raised: "#151c23"
-  panel-soft: "#0f141a"
-  aperture-black: "#050709"
-  tungsten-white: "#f1eee6"
-  tungsten-dim: "#c5c1b8"
-  muted-steel: "#a0a8b1"
-  faint-steel: "#838c97"
-  hairline: "#252d36"
-  hairline-strong: "#35404b"
-  signal-cyan: "#59d8e6"
-  signal-cyan-bright: "#80eaf2"
-  signal-cyan-deep: "#1b8494"
-  signal-cyan-wash: "rgb(89 216 230 / 10%)"
-  limit-amber: "#e2ad4f"
-  limit-amber-wash: "rgb(226 173 79 / 10%)"
-  danger-coral: "#e9746b"
-  success-mint: "#77d6b0"
-  ink-on-cyan: "#061114"
-typography:
-  brand:
-    fontFamily: 'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif'
-    fontSize: "13px"
-    fontWeight: 720
-    lineHeight: 1.2
-    letterSpacing: "-.015em"
-  headline:
-    fontFamily: 'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif'
-    fontSize: "12px"
-    fontWeight: 680
-    lineHeight: 1.2
-  body:
-    fontFamily: 'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif'
-    fontSize: "12px"
-    fontWeight: 400
-    lineHeight: 1.48
-  operator:
-    fontFamily: 'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif'
-    fontSize: "11px"
-    fontWeight: 650
-    lineHeight: 1.2
-  label:
-    fontFamily: 'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif'
-    fontSize: "10px"
-    fontWeight: 680
-    lineHeight: 1.2
-    letterSpacing: ".105em"
-  metadata:
-    fontFamily: 'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif'
-    fontSize: "9px"
-    fontWeight: 400
-    lineHeight: 1.48
-  mono:
-    fontFamily: '"SFMono-Regular", "Cascadia Code", Consolas, "Liberation Mono", monospace'
-    fontSize: "11px"
-    fontWeight: 650
-    lineHeight: 1
-  action:
-    fontFamily: 'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif'
-    fontSize: "12px"
-    fontWeight: 760
-    lineHeight: 1
-rounded:
-  micro: "4px"
-  cue: "5px"
-  control: "6px"
-  surface: "9px"
-  pill: "999px"
-spacing:
-  micro: "3px"
-  xs: "5px"
-  sm: "7px"
-  md: "9px"
-  lg: "12px"
-  shell: "14px"
-components:
-  primary-button:
-    backgroundColor: "{colors.signal-cyan}"
-    textColor: "{colors.ink-on-cyan}"
-    typography: "{typography.action}"
-    rounded: "{rounded.control}"
-    padding: "0 15px"
-    height: "40px"
-  secondary-button:
-    backgroundColor: "{colors.panel-raised}"
-    textColor: "{colors.tungsten-dim}"
-    typography: "{typography.body}"
-    rounded: "{rounded.control}"
-    padding: "0 11px"
-    height: "34px"
-  command-input:
-    backgroundColor: "{colors.aperture-black}"
-    textColor: "{colors.tungsten-white}"
-    typography: "{typography.body}"
-    rounded: "{rounded.control}"
-    padding: "0 11px"
-    height: "40px"
-  source-mode-selected:
-    backgroundColor: "{colors.panel-raised}"
-    textColor: "{colors.tungsten-white}"
-    typography: "{typography.label}"
-    rounded: "{rounded.micro}"
-    padding: "0 12px"
-    height: "34px"
-  status-tag:
-    backgroundColor: "{colors.panel-soft}"
-    textColor: "{colors.muted-steel}"
-    typography: "{typography.metadata}"
-    rounded: "{rounded.pill}"
-    padding: "3px 6px"
-  timeline-cue:
-    backgroundColor: "{colors.panel-soft}"
-    textColor: "{colors.tungsten-dim}"
-    typography: "{typography.label}"
-    rounded: "{rounded.cue}"
-    padding: "16px 8px 7px"
-    height: "78px"
-  timeline-cue-selected:
-    backgroundColor: "{colors.signal-cyan-wash}"
-    textColor: "{colors.tungsten-white}"
-    typography: "{typography.label}"
-    rounded: "{rounded.cue}"
-    padding: "16px 8px 7px"
-    height: "78px"
-  limitation-strip:
-    backgroundColor: "{colors.limit-amber-wash}"
-    textColor: "{colors.limit-amber}"
-    typography: "{typography.metadata}"
-    padding: "8px 11px"
-  pane-switch-active:
-    backgroundColor: "{colors.panel-raised}"
-    textColor: "{colors.signal-cyan-bright}"
-    typography: "{typography.label}"
-    rounded: "{rounded.micro}"
-    height: "34px"
-  trace-session:
-    backgroundColor: "{colors.panel-soft}"
-    textColor: "{colors.tungsten-dim}"
-    typography: "{typography.metadata}"
-    rounded: "{rounded.control}"
-    padding: "7px 9px"
-    height: "43px"
-  evidence-light-path:
-    textColor: "{colors.signal-cyan}"
-    width: "100%"
+name: Audience Mirror Interface System
+version: 0.3
+status: implemented-baseline
+defaultTheme: light
+sourceOfTruth:
+  - web/styles.css
+  - web/index.html
+  - web/app.js
 ---
 
-# Design System: Audience Mirror Media Environment
+# Audience Mirror Interface System
 
-## Overview
+## 1. 产品界面的职责
 
-**Creative North Star: "Calibrated Projection Room"**
+Audience Mirror 的界面是一间“可校准的放映与实验工作台”。它同时服务三件事：
 
-Calibrated Projection Room（direction seed `6ade60aa`）把 Audience Mirror 的 Media Environment 塑造成一间精密、克制的校准放映机房：近黑环境压低界面噪声，深石墨面板承载仪器结构，钨丝白保证证据可读，Signal Cyan 只点亮可操作的证据链。界面不是结果陈列墙，而是从素材、cue、观察到个体 Trace 与真人校准状态的可回放研究空间。
+1. 让素材成为视觉中心，用户先看见正在被体验的对象；
+2. 让每个聚合结论都能回到时间点、素材证据和个体记录；
+3. 明确区分素材事实、模型推断、预测代理量和真人校准，避免用视觉权威掩盖不确定性。
 
-桌面端以固定视口组织完整实验现场，三栏工作台与底部流程带同时保持上下文；局部面板自行滚动，页面不离开当前实验。窄屏切换为单面板操作，保留实验、放映台、证据和流程四个明确入口。整体密度来自专业仪器而非缩小后的营销页面，关键限制永远与当前证据并置。
+设计北极星是 **Evidence develops from noise / 证据从噪声中显影**。浅色模式是温暖、克制的编辑室与档案纸；深色模式是同一空间的夜间放映状态。两种主题中，视频孔径始终是最深、最重的视觉面。
 
-**Key Characteristics:**
+这套系统吸收了专业编辑软件的时间坐标、顶级 SaaS 的状态清晰度和 [Ice Works Showcase](https://github.com/MegD1/Ice-works-showcase) 的粒子显影／编辑式信息启发，但不复制其素材、字体、shader 或品牌形式。参考仓库的 `public/` 素材不在其源码许可范围内；Audience Mirror 只实现自己的 Canvas 2D 动效与信息语法。
 
-- 近黑、石墨与钨丝白构成稳定的放映机房材质。
-- 桌面固定视口三栏工作台，底部流程带持续呈现实验阶段与代理量。
-- Signal Cyan 证据光路是连接 cue 与精确 Claim 的签名组件。
-- 移动端一次只呈现一个工作面板，避免横向页面溢出。
-- 9–13px 的仪器级字号配合清晰明度分层，密度高但不牺牲证据可辨性。
+## 2. 不可破坏的体验原则
 
-## Colors
+- **视频第一。** 桌面工作台固定为约 65% 舞台、35% Inspector；Inspector 不得决定视频高度。真实视频按固有比例 `contain`，不裁切，不用封面图冒充视频。
+- **证据优先于总结。** 当前事件、时间码、观察、命中证据、分歧、反例和 Trace 必须在同一实验中可达。
+- **时间比例不造假。** 标尺、事件卡、曲线、选中游标和真实播放游标共用毫秒坐标。短事件仍保留至少 48px 命中宽度，必要时整条轨道横向滚动。
+- **代理量不伪装成人。** 困惑、注意、继续等默认写为未校准预测代理量；AI 观众数与真人数分开显示。
+- **编辑式层级。** 时间码、事件名、来源和证据状态采用非对称锁定排版；减少“卡片套卡片”，用留白、发丝线和对齐表达层级。
+- **动效只报告状态。** 没有氛围性循环、自动视差或无意义发光。`prefers-reduced-motion` 下信息仍完整，运动立即完成或完全取消。
+- **移动端是任务切换，不是桌面缩小。** 899px 以下一次只呈现设置、画面、证据或进度中的一个面板；页面不得横向溢出。
 
-色板以低亮度冷黑与深石墨建立“机房”，以钨丝白形成阅读层；两种有彩色都承担严格语义，不作为氛围装饰。
+## 3. Token 系统
 
-### Primary
+运行时 token 的唯一事实源是 `web/styles.css`。以下是稳定语义，具体数值可迭代但不可改变含义。
 
-- **Signal Cyan** (#59d8e6 / #80eaf2 / #1b8494 / rgb(89 216 230 / 10%)): 标记主操作、键盘焦点、选中 cue、证据引用、代理量证据条与动态证据光路。亮色用于 hover 和选中标签，深色用于结构边界，低透明洗色只用于当前证据状态。
+### 3.1 颜色
 
-### Secondary
+| Token 族 | 浅色含义 | 深色含义 | 使用限制 |
+| --- | --- | --- | --- |
+| `--page` / `--panel*` | 暖纸与白色工作面 | 冷黑与石墨工作面 | 构成空间，不表达状态 |
+| `--aperture` | 近黑视频孔径 | 更深的放映黑 | 所有主题中最重的面 |
+| `--ink*` / `--muted` / `--faint` | 四级文本层次 | 单独调校的夜间层次 | 不能用低对比文本承载唯一事实 |
+| `--accent*` | 深青色 | 高亮青色 | 只表示证据、选中或可执行动作 |
+| `--limit*` | 琥珀色 | 提亮琥珀色 | 只表示限制、授权和待校准边界 |
+| `--mint` | 已完成 | 已完成 | 必须配合文字或图标 |
+| `--coral` | 失败或错误 | 失败或错误 | 不用于普通提醒 |
+| `--slate-series` | 第二预测序列 | 第二预测序列 | 不与语义色竞争 |
 
-- **Limit Amber** (#e2ad4f / rgb(226 173 79 / 10%)): 只承载方法限制、远程处理边界、受限素材与尚待确认的能力状态；必须同时出现清楚文字，不能依赖色相独立传意。
+默认浅色值为暖纸 `#f5f3ee`、面板 `#ffffff`、孔径 `#0c1013`、正文 `#14171a`、证据青 `#0c7a89`。深色不是机械反相，使用页面 `#0a0d11`、面板 `#12181f`、孔径 `#04070a`、证据青 `#4fd0e0`。
 
-### Tertiary
+### 3.2 字体与数据
 
-- **Outcome Mint** (#77d6b0): 仅用于成功或已完成状态点与细窄进度标记。
-- **Failure Coral** (#e9746b): 仅用于失败状态与错误反馈，不用于普通警示。
+- 正文使用系统无衬线栈，优先匹配 Apple／Windows／中文系统字体，不引入受限商业字体。
+- 时间码、比例、哈希、Agent ID 和版本使用系统等宽栈，并启用 tabular numbers。
+- UI 正文字号 12–14px，事件与 Inspector 标题 15–21px；11px 仅用于仍有上下文的元数据。
+- 时间码是信息锚点，不是装饰标签。它应与事件名错位排列，形成可快速扫描的编辑式节奏。
 
-### Neutral
+### 3.3 空间、形状与触控
 
-- **Calibration Black** (#080a0d): 页面与整个房间的最深基底。
-- **Room Graphite** (#0d1116): 三栏工作台的统一机身。
-- **Panel Graphite** (#11171d / #151c23 / #0f141a): 命令条、可操作面板、选项浮层和局部状态的明度层级。
-- **Aperture Black** (#050709): 视频孔径、命令输入槽和需要最大聚焦的内容窗口。
-- **Tungsten White** (#f1eee6 / #c5c1b8): 标题、关键数值与主要证据文本；dim 版本用于常规说明，完整白只保留给最重要读数。
-- **Instrument Steel** (#a0a8b1 / #838c97): 控件标签与元数据；faint 只用于上下文仍可由位置恢复的次级信息。
-- **Machine Hairlines** (#252d36 / #35404b): 用 1px 结构线划分面板、表格、cue 与控件，strong 版本定义外框和交互边界。
+- 4px 基础网格；间距 token 为 4、6、8、10、12、16、20、28px。
+- 圆角只使用 4、8、10px 和状态胶囊；新增半径必须先解释新层级。
+- 鼠标与键盘可见控件最小触控区域为 44 × 44px；编辑时间轴事件为 48px 最小宽度。
+- 阴影只用于真正浮动的 Drawer、Popover、Toast、分段选择滑块和视频孔径。页面内证据块用发丝线归组。
 
-**The Signal Circuit Rule.** Signal Cyan 只表示证据或操作；任何不具备证据关系或操作含义的装饰都不得使用它。
+### 3.4 Motion
 
-**The Amber Boundary Rule.** Limit Amber 只表示限制、风险和授权边界，不与成功、选中或模型得分混用。
+| Token | 时长 | 含义 |
+| --- | ---: | --- |
+| `--dur-1` | 120ms | 颜色、边框和简单状态读取 |
+| `--dur-2` | 180ms | 小范围 disclosure 与颗粒淡入 |
+| `--dur-3` | 260ms | Drawer、Pane、Toast 等表面变化 |
+| `--dur-4` | 460ms | 证据光路交接 |
+| `--dur-5` | 700ms | 单次画面显影 |
 
-## Typography
+所有 motion 使用 `--ease`、`--ease-out` 或 `--ease-grain`。只有真正的未定进度可以循环；其他动画必须由用户动作或新证据到达触发，并自行终止。
 
-**Brand / Heading Font:** Inter 优先的系统无衬线栈（`brand`／`headline`）
-**Body Font:** Inter 优先的系统无衬线栈（`body`／`operator`）
-**Label / Mono Font:** 同一无衬线栈与 SFMono-Regular 优先的等宽栈（`label`／`metadata`／`mono`）
+## 4. 布局系统
 
-**Character:** 所有文字都像放映设备上的标注与研究记录：小、稳、直接。字重和明度承担层级，时间码、哈希、Agent ID 与精确比例才切换为等宽字体。
+### 4.1 桌面（1180px 及以上）
 
-### Hierarchy
+- 顶栏粘性停靠，包含品牌、画面／证据／进度跳转、本机状态、主题与设置。
+- 第二行是单行 Command Bar：链接／文件、输入、授权、参数和主动作共享一个平面。
+- 主工作台是 `minmax(0, 65fr) minmax(360px, 35fr)`。左侧包含视频、运输栏和同坐标时间轴；右侧 Inspector 粘性停靠并内部滚动。
+- 视频舞台高度为 `clamp(380px, 48vh, 620px)`，不为“首屏塞满信息”而压缩。
+- 流程、量表账本与校准状态位于主工作台之后，属于第三信息层。
 
-- **Brand** (weight 720, 13px, line-height 1.2): 品牌名与孔径占位的最高层级，不扩张成超大展示字。
-- **Headline** (weight 680, 12px, line-height 1.2): Inspector 标题、实验身份与局部内容标题。
-- **Body** (weight 400, 12px, line-height 1.48): 全局默认说明文本；关键工作区正文以 10–11px 的已实现上下文变体保持同一明度秩序。
-- **Operator** (weight 650, 11px, line-height 1.2): 关键读数、当前事件和紧凑操作信息。
-- **Label** (weight 680, 10px, line-height 1.2, letter-spacing .105em): 大写 rail label、区段标题和高密度表头。
-- **Metadata** (weight 400, 9px, line-height 1.48): 来源、分群、状态和辅助说明；仅装饰性刻度可降至 7px，不能承载独立事实。
-- **Mono** (weight 650, 11px, line-height 1): 时间码、数量、百分比、哈希、Environment／Timeline 版本与 Agent 标识。
+### 4.2 中窄屏（899–1179px）
 
-**The Instrument Type Rule.** 不以大字号制造权威；层级来自字重、明度、对齐和等宽数据节奏，所有可决策证据保持在 9px 以上的已实现可读层。
+按页面宽度保留单列阅读；画面仍优先，Inspector 进入自然文档流。不得重新生成横向页面滚动。
 
-## Layout
+### 4.3 移动端（899px 以下）
 
-桌面外壳占满 `100dvh`，最小高度为 640px，以 48px 顶栏、64px 命令条、弹性工作台和 108px 底部流程带组成四行，行间距为 9px，左右安全边距为 14px。工作台使用左 204px 实验轨、中部至少 420px 的弹性放映台、右侧 350–410px Inspector；宽度在 1260px 和 1040px 两级收紧。短桌面视口在 679px 高度以下将顶栏、命令条和流程带分别压缩为 42px、54px 和 84px。
+- 粘性 Pane Switch 提供“设置／画面／证据／进度”，一次显示一个任务面板。
+- 560px 以下品牌收敛为 AM，设置收敛为图标；系统状态继续可读，379px 以下才只保留状态点。
+- 视频按固有比例显示。9:16、1:1、4:3、16:9 和 2.39:1 均使用 `contain`。
+- 时间轴可独立横向滚动；页面本身保持零横向溢出。
 
-桌面页面本身锁定滚动。实验轨、Inspector 视图和 Trace 表在自己的面板内纵向滚动；cue 轨按事件时长横向滚动，并在溢出时隐藏无法正确对齐的装饰刻度。底部流程带在同一视口持续展示素材与权利、多模态事实层、顺序体验和真人校准四阶段。
+## 5. 组件目录
 
-899px 及以下进入单面板模式：粘性 pane switch 固定展示“实验／放映台／证据／流程”，一次只显示一个面板；页面恢复必要的纵向滚动，内部视图继续管理证据与表格溢出。560px 及以下缩短放映台、隐藏运输辅助信息并让主运行按钮占满一行，页面不得产生横向滚动。
+### 5.1 Foundation
 
-**The Fixed Room Rule.** 桌面必须在一个视口内同时保留实验轨、放映台、Inspector 和流程带；新增内容进入面板滚动或现有 tab，不得推高整页。
+| 组件 | 必需状态 | 契约 |
+| --- | --- | --- |
+| Button | default / hover / focus-visible / active / disabled / busy | busy 保留原标签并设置 `aria-busy`；主动作每个视图只保留一个 |
+| Icon Button | 同上 | 必须有可访问名称；触控区至少 44px |
+| Input / Select | empty / ready / focus / invalid / disabled | 错误必须有文字；不只变色 |
+| Segmented Control | idle / checked / focus | 使用原生 radio 或等价 ARIA；滑块阴影只解释选中层 |
+| Tabs | active / hover / focus / disabled | 支持方向键、Home、End；`aria-selected` 与面板同步 |
+| Disclosure | closed / open / focus | summary 可键盘触发，展开后焦点顺序自然 |
+| Toast | info / success / error | 不抢焦点；错误内容说明数据是否写入 |
+| Loading / Empty / Error | pending / none / failed / retry | Empty 教用户下一步；Error 保留安全重试路径 |
 
-**The Single-Pane Rule.** 窄屏只呈现当前任务面板，并用持久的四入口切换器保留全流程可达性。
+### 5.2 Product components
 
-## Elevation & Depth
+| 组件 | 用途 | 核心状态与规则 |
+| --- | --- | --- |
+| `CommandBar` | 链接或文件导入 | 支持 `⌘/Ctrl K`、授权门、参数和进度；窄屏文案主动缩短 |
+| `MediaStage` | 原视频或证据帧主舞台 | 真实媒体 `contain`；Canvas 不接收指针；控件始终可操作 |
+| `ApertureMetadata` | 时间码、素材分类、来源 | 时间与状态非对称编排；机密状态切换为限制色 |
+| `StageTransport` | 当前事件、前后事件、运行顺序体验 | 禁用边界明确；不会自动播放视频 |
+| `EvidenceTimeline` | 标尺、事件、代理曲线和游标 | 毫秒坐标统一；事件至少 48px；支持滚动、缩放、Home/End |
+| `Inspector` | 当前证据、逐段反应、个体记录、真人校准 | 方法限制常驻；每个结论可下钻；内部滚动不改变视频高度 |
+| `EvidenceClaim` | 命中证据与引用 | 展示 epistemic status、review status、时间点与来源哈希 |
+| `TraceSession` | Persona 的连续经历 | 展开后保持事件顺序、先前记忆、反例和动作，不把 Agent 发言伪装成人话 |
+| `ExperimentDeck` | 素材、事实层、顺序体验、校准进度 | 第三层信息；不与视频争夺首屏注意力 |
+| `MethodBoundary` | 模型、授权和校准限制 | 琥珀色只承担边界，内容必须可展开并可读 |
 
-深度主要来自相邻黑阶、1px 结构线和孔径明暗，不用重复卡片阴影。整块工作台使用一次结构性深影与背景分离；命令条使用更轻的环境影，主操作只带低强度青色投影。选项浮层、方法详情与 toast 可使用深影，因为它们确实离开当前平面。模糊仅用于移动 pane switch 和孔径 chip 的可读性保护，不形成大面积玻璃材质。
+### 5.3 状态属性
 
-### Shadow Vocabulary
+现有原生前端用 `data-state`、`aria-current`、`aria-selected`、`aria-pressed`、`aria-busy` 和 `hidden` 作为公共状态接口。样式不得依据按钮文字推断状态。将来组件化时也保持这套外部语义，以便视觉测试、辅助技术和自动化脚本复用。
 
-- **Room Isolation** (`0 18px 48px rgb(0 0 0 / 28%)`): 仅用于完整三栏工作台和真实浮层。
-- **Command Lift** (`0 8px 28px rgb(0 0 0 / 18%)`): 用于链接优先命令条，建立输入层与工作台的先后关系。
-- **Cyan Action Lift** (`0 6px 18px rgb(35 171 187 / 17%)`): 只用于主要青色操作按钮。
-- **Evidence Glow** (`0 0 9px rgb(89 216 230 / 55%)`): 只用于当前 cue 标记和短暂证据扫描反馈。
+## 6. 品牌动效语法
 
-**The Structural Depth Rule.** 阴影只解释层级或瞬时状态；静态证据容器依靠色调和结构线归组，不悬浮成卡片墙。
+### 6.1 Emulsion / 证据显影
 
-## Shapes
+`MediaStage` 内的 Canvas 2D 粒子只在初次实验、真实素材切换或证据画面切换后运行一次。点场向画面边界与视线轴凝聚，560–760ms 后完全透明并取消 `requestAnimationFrame`。
 
-机房结构以小圆角、薄边框和正交路径为主。全局面板使用 9px 圆角，控件与 Trace Session 使用 6px，cue 使用 5px，极小标签与 pane switch 项使用 4px；胶囊仅保留给系统状态和复核标签。视频孔径内部仍是硬朗矩形，通过四角 15px 校准框建立“可测量窗口”的轮廓。证据光路使用 1px 正交线与 9px 转角，不使用自由曲线或装饰性波形。
+性能边界：
 
-## Components
+- 单次最多 136 粒子；
+- DPR 上限 1.5；
+- 页面隐藏立即停止；
+- resize 只重测现有归一化坐标；
+- `pointer-events: none`；
+- `prefers-reduced-motion` 下 Canvas 不显示，JS 不启动帧循环；
+- 合成空态每个实验最多显影一次，不能在每个 cue 炫技。
 
-### Buttons
+### 6.2 Grain Shadow / 悬停颗粒影
 
-- **Shape:** 主要与次要操作都使用紧凑控制圆角（6px），不使用超大胶囊。
-- **Primary:** Signal Cyan 底、深色文字、40px 高、水平 padding 15px；放映台内的运行操作压缩到 28–30px 以适配运输条。
-- **Hover / Focus:** hover 切换为 bright cyan，active 下移 1px；键盘焦点统一使用 2px Signal Cyan 轮廓和低强度外晕。
-- **Secondary:** raised graphite 底、strong hairline 边框、34px 高；hover 仅将边框与文字转为 cyan，不产生额外抬升。
-- **Text / Evidence:** 无底色，Signal Cyan 文本；证据按钮保留细下划线，必须指向时间片、Observation 或 Trace。
+事件卡、命中证据与可下钻 Trace 只在 hover 或 focus-visible 时出现克制的点阵牵引。颗粒位于内容下层，不能降低文字对比；选中态不常驻发光。
 
-### Chips
+### 6.3 Evidence Light Path / 证据光路
 
-- **Status:** 小型等宽胶囊，透明或 soft graphite 背景、hairline 边框，用于复核状态和系统状态。
-- **Aperture:** 4px 圆角、半透明近黑底，时间码用 bright cyan；机密／受限分类切换为 Limit Amber。
-- **State:** chip 不承担主要操作，也不显示未经校准的强结论。
+桌面端用一条点状路径把当前事件连接到 Inspector 中的精确证据。选择或悬停时，单个 spark 沿线通过后静止。单面板模式、缺少两端证据或 reduced motion 下隐藏运动，证据关系仍由时间码和引用表达。
 
-### Cards / Containers
+## 7. 无障碍与质量门槛
 
-- **Corner Style:** 工作台、命令条和流程带使用 9px；内部 cue、流程步骤和 Trace Session 使用 5–6px。
-- **Background:** 通过 aperture、room、panel、raised 和 soft 五级黑阶建立层次。
-- **Shadow Strategy:** 只有完整工作台、命令条与真实浮层使用阴影；内部证据块保持平面。
-- **Border:** 所有可交互边界使用 1px hairline；外框与 hover 使用 strong hairline。
-- **Internal Padding:** 高频面板以 9–14px 为主，避免宽松卡片节奏破坏同屏证据量。
+- 所有交互使用语义元素；不以 `div` 模拟按钮。
+- 键盘焦点统一为 2px 可见轮廓；focus-visible 与 hover 提供等价信息。
+- Tabs、Drawer、Disclosure、Select 和 Toast 对照 WAI-ARIA 预期行为。
+- `hidden` 元素的计算样式必须为 `display: none`；加载层不允许残留遮挡。
+- 390px、512px、1242px、1440px、1584px、1920px 都必须无页面级横向溢出。
+- 16:9、9:16、1:1、4:3、2.39:1 视频比例都必须验证不裁切。
+- 浅色、深色、reduced motion、真实视频、合成空态和错误态都要进入截图回归。
+- 控制台零错误；`node --check web/app.js`、`git diff --check` 和全量测试通过后才可发布。
 
-### Inputs / Fields
+## 8. 组件库与未来实现选择
 
-- **Style:** 命令输入位于 40px 高的 Aperture Black 槽内；普通 select、number 与 search 使用 soft graphite 底、strong hairline 边框和 6px 圆角。
-- **Focus:** 2px Signal Cyan 内轮廓，外加 3px 低透明青色 halo；不通过背景大幅变色表达焦点。
-- **Error / Disabled:** disabled 保留结构但降至 `.42` opacity；错误通过 Coral 边框与明确文字同时说明。
+当前原型没有构建链，为了快速发布和可审计性使用原生 HTML/CSS/JS，不从 CDN 引入 UI 依赖。可运行的组件目录位于 `web/components.html`，与工作台共享 `web/styles.css` 的 Token 和基础组件；它覆盖 Button、Field、Tabs、Segmented Control、Media Stage、Evidence Claim、Timeline Cue、Trace Session、Toast 以及空／忙／失败／成功状态。未来进入多环境、多用户产品阶段时，建议迁移为“Audience Mirror 视觉层 + 无样式可访问 primitive”，而不是采购一套带强品牌皮肤的组件库。
 
-### Navigation
+- [Radix Primitives](https://www.radix-ui.com/primitives/docs/overview/accessibility)：优先参考 Dialog、Tabs、Tooltip、Scroll Area 的键盘、焦点与 WAI-ARIA 行为。
+- [Base UI](https://base-ui.com/react/overview/quick-start)：候选默认基础；单包、可 tree-shake、无样式，覆盖 Drawer、Toast、Field、Tabs 等主要 primitive。
+- [React Aria](https://react-aria.adobe.com/getting-started)：复杂集合、Selection、Press、Focus、虚拟化和国际化的行为参考；如果产品进入高密度表格／集合编辑，可优先选择。
+- [Motion](https://motion.dev/docs/react-accessibility)：若迁 React，只用于状态编排，并启用 reduced-motion 策略；Canvas 显影仍保持独立、可替换。
+- [Visx](https://visx.airbnb.tech/) 或 [Observable Plot](https://observablehq.com/plot/)：当时间轴和群体分布超出当前 SVG 基线时再评估。选择标准是可下钻、可访问与性能，不是图表数量。
 
-- **Desktop:** 顶栏只包含品牌、产品命题和系统能力状态；工作区不引入站点式导航。
-- **Inspector:** 四个等宽 tab 以 2px cyan 下划线表示当前视图，并支持方向键、Home 与 End。
-- **Mobile:** 四入口 pane switch 在 899px 以下出现并保持 sticky；active 项使用 raised graphite 与 bright cyan，同时更新 `aria-pressed`。
+迁移前提：交互复杂度确实超过原生基线，且能够建立 Storybook／视觉回归、类型化 token 和组件测试。第一选择是 Base UI 承担通用 primitive，React Aria 补充复杂集合与国际化，业务组件保持自主实现；Radix 作为行为对照，不同时叠加多套 primitive。不得为了“看起来像 SaaS”而先迁框架。
 
-### Timeline Cue
+## 9. 禁止项
 
-cue 以时长决定横向宽度，最小宽度 84px。默认使用 soft graphite、hairline 边框和 5px 圆角；选中态使用 cyan 深边、低透明 cyan 渐变、顶部 2px 发光标记和 `aria-current`。键盘与上一／下一运输控件都能改变当前 cue，并将其保持在可见轨道内。
+- 不把页面做成 KPI 卡片墙、营销落地页或通用深色 Dashboard。
+- 不让粒子、发光、玻璃、渐变承担无语义装饰。
+- 不用超小字号和压缩视频换取“一屏展示全部”。
+- 不用 Agent 数、模型分数或漂亮曲线制造真人代表性。
+- 不隐藏未校准、无真人、推断来源、反例或模型未覆盖区间。
+- 不复制参考产品的资产、商业字体、具体 shader 或商标性表达。
 
-### Methods & Limitations Strip
+## 10. 当前实现状态
 
-Inspector 顶部始终用低透明 amber 洗色与 amber 分隔线说明“预测代理量，不是现实人群预测”。详情浮层继续使用 amber 边界与深色背景；任何模型能力、素材外发和真人校准限制都必须在操作附近用文字展开。
-
-### Evidence Light Path
-
-证据光路是本系统的签名组件：桌面端从当前选中 cue 的底部出发，经一个观察 waypoint 沿正交路径到达 Inspector 中的精确 Claim anchor。线宽 1px、端点 3.5–4.5px，颜色固定为 Signal Cyan；选择 cue 时用 500ms 的单次描线反馈，静止后保留路径。`prefers-reduced-motion` 下立即呈现，不播放动画；单面板模式关闭光路，因为源与目标不同时可见。
-
-**The Evidence Light Path Rule.** 光路必须连接一个真实的当前 cue 与一个可核查 Claim；没有两端证据、在窄屏面板分离或 forced-colors 模式下都必须隐藏。
-
-### Trace Session
-
-每个 Persona 使用 43px 高的紧凑 disclosure：左侧是等宽 Agent ID 与分群，中部是按事件顺序的 channel strip，右侧是理解、困惑与继续代理量。展开体内部滚动并保留表头；来自反例或高反应链接的跳转会清空筛选、展开目标 Session、定位具体 Trace 并转移焦点。
-
-## Do's and Don'ts
-
-### Do:
-
-- **Do** 在桌面同一视口内保持实验轨、放映台、证据 Inspector 与流程带，并把溢出交给内部面板。
-- **Do** 让每个聚合值都能回到 cue、Observation、Persona Trace、来源状态和反例。
-- **Do** 把 Signal Cyan 限定为证据和操作，把 Limit Amber 限定为限制与授权边界。
-- **Do** 使用钨丝白、dim white、muted steel 与 faint steel 的明度层级维持 9–13px 密集排版的可读性。
-- **Do** 为所有键盘操作保留 2px 可见焦点，并在 reduced-motion 与 forced-colors 下提供等价状态。
-- **Do** 在 899px 以下切换为单面板，不隐藏实验、放映台、证据或流程中的任何一个入口。
-
-### Don't:
-
-- **Don't** 把工作台改成通用 KPI 卡片墙、营销落地页或以粒子和炫目曲线制造 AI 权威感。
-- **Don't** 让 Signal Cyan 或 Limit Amber 承担无语义装饰，也不要只靠颜色表达状态。
-- **Don't** 在桌面让 body 滚动，或把四个工作区顺序堆叠到视口之外。
-- **Don't** 用摘要遮蔽个体 Trace、反例、模型推断状态、零真人或无法判断项。
-- **Don't** 对每个内部容器添加阴影、玻璃模糊或大圆角；结构线和黑阶已经承担层级。
-- **Don't** 把 Agent 数、预测代理量或模型复核状态写成真人样本、真实注意或确定性业务预测。
+界面系统 0.3 基线已实现：默认浅色、独立深色、65/35 视频工作台、响应式单面板、真实比例视频、编辑式时间轴、最小事件命中宽度、Inspector 下钻、Canvas 显影、颗粒 hover、证据光路、Drawer、Toast、空态／错误态／忙碌态和 reduced-motion；组件目录可通过本机 `/components.html` 或公开静态路径独立审查。公开部署与本机工作台共享组件，但用 `static_public_demo` 明确只读状态。该状态说明组件与交互合同已运行，不代表所有未来 Environment 已经完成，也不代表用户研究或真人校准已经完成。

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "audience-mirror"
-version = "0.2.0a2"
+version = "0.2.0a3"
 description = "Open multimodal population experiments with evidence-linked traces and human calibration."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -59,4 +59,5 @@ where = ["src"]
 [tool.setuptools.data-files]
 "share/audience-mirror/schemas" = ["schemas/*.json"]
 "share/audience-mirror/fixtures/public-demo" = ["fixtures/public-demo/*.json"]
+"share/audience-mirror/fixtures/benchmarks" = ["fixtures/benchmarks/*.json"]
 "share/audience-mirror/web" = ["web/*.html", "web/*.css", "web/*.js"]

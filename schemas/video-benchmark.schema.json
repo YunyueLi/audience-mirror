@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://audience-mirror.dev/schemas/video-benchmark.schema.json",
+  "title": "Audience Mirror Public Video Benchmark",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "benchmark_id", "title", "asset", "construction", "questions", "limitations"],
+  "properties": {
+    "schema_version": {"const": "audience-mirror.video-benchmark/v0.1"},
+    "benchmark_id": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "source_url", "duration_ms", "content_hash", "license", "attribution", "media_included"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "source_url": {"type": "string", "format": "uri"},
+        "duration_ms": {"type": "integer", "minimum": 1},
+        "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "license": {"type": "string", "minLength": 1},
+        "license_url": {"type": "string", "format": "uri"},
+        "attribution": {"type": "string", "minLength": 1},
+        "media_included": {"const": false}
+      }
+    },
+    "construction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["created_at", "language", "annotation_status", "human_annotator_count", "source_evidence", "independent_second_review"],
+      "properties": {
+        "created_at": {"type": "string", "format": "date"},
+        "language": {"type": "string", "minLength": 1},
+        "annotation_status": {"enum": ["single_maintainer_draft", "double_checked", "frozen"]},
+        "human_annotator_count": {"type": "integer", "minimum": 1},
+        "source_evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "independent_second_review": {"type": "boolean"}
+      }
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/question"}
+    },
+    "limitations": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  },
+  "$defs": {
+    "timeEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["t_start_ms", "t_end_ms", "modalities", "source_type", "note"],
+      "properties": {
+        "t_start_ms": {"type": "integer", "minimum": 0},
+        "t_end_ms": {"type": "integer", "minimum": 1},
+        "modalities": {"type": "array", "minItems": 1, "items": {"enum": ["video", "audio", "text"]}},
+        "source_type": {"enum": ["maintainer_viewing", "platform_manual_caption", "frame_and_caption", "credits_ocr"]},
+        "note": {"type": "string", "minLength": 1}
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question_id", "category", "prompt", "answer_type", "reference", "evidence", "scoring", "difficulty", "tags"],
+      "properties": {
+        "question_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "category": {"enum": ["visual_fact", "ocr_text", "dialogue", "temporal_localization", "temporal_order", "cross_event"]},
+        "prompt": {"type": "string", "minLength": 1},
+        "answer_type": {"enum": ["short_text", "multiple_choice", "time_range", "ordered_choices", "boolean"]},
+        "choices": {"type": "array", "items": {"type": "string"}},
+        "reference": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "accepted_answers": {"type": "array", "minItems": 1, "items": {}},
+            "required_term_groups": {
+              "type": "array",
+              "minItems": 1,
+              "items": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+            },
+            "time_range_ms": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["t_start_ms", "t_end_ms"],
+              "properties": {
+                "t_start_ms": {"type": "integer", "minimum": 0},
+                "t_end_ms": {"type": "integer", "minimum": 1}
+              }
+            }
+          }
+        },
+        "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/timeEvidence"}},
+        "scoring": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["strategy"],
+          "properties": {
+            "strategy": {"enum": ["exact", "contains", "choice", "time_overlap", "ordered_exact", "required_terms"]},
+            "min_iou": {"type": "number", "minimum": 0, "maximum": 1},
+            "center_tolerance_ms": {"type": "integer", "minimum": 0},
+            "evidence_min_iou": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        "difficulty": {"enum": ["easy", "medium", "hard"]},
+        "tags": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

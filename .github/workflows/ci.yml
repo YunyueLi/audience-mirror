@@ -34,10 +34,19 @@ jobs:
       - name: Run zero-cost demo
         run: audience-mirror demo
 
+      - name: Export read-only static demo
+        run: |
+          audience-mirror export-static-demo --output /tmp/audience-mirror-static-demo.js
+          test -s /tmp/audience-mirror-static-demo.js
+          grep -q 'static_public_demo' /tmp/audience-mirror-static-demo.js
+
       - name: Validate generated traces
         run: >-
           audience-mirror validate traces artifacts/public-demo/deep-traces.json
           --timeline artifacts/public-demo/timeline.json
+
+      - name: Validate public video benchmark
+        run: audience-mirror benchmark validate fixtures/benchmarks/sintel-public-dev-v0.1.json
 
       - name: Verify standalone wheel resources
         run: |
@@ -50,3 +59,13 @@ jobs:
           /tmp/audience-mirror-wheel/bin/audience-mirror demo \
             --output /tmp/audience-mirror-wheel-smoke \
             --pool-size 12 --deep-count 2 --sweep-count 2 --projection-count 12
+          /tmp/audience-mirror-wheel/bin/audience-mirror benchmark validate \
+            "$GITHUB_WORKSPACE/fixtures/benchmarks/sintel-public-dev-v0.1.json"
+          test -f /tmp/audience-mirror-wheel/share/audience-mirror/web/components.html
+          test -f /tmp/audience-mirror-wheel/share/audience-mirror/web/static-demo.js
+          test -f /tmp/audience-mirror-wheel/share/audience-mirror/schemas/video-benchmark-stability.schema.json
+          test -f /tmp/audience-mirror-wheel/share/audience-mirror/schemas/blind-study.schema.json
+          /tmp/audience-mirror-wheel/bin/audience-mirror prepare-blind-study \
+            --timeline-a /tmp/audience-mirror-wheel/share/audience-mirror/fixtures/public-demo/timeline.json \
+            --participants 8 \
+            --output /tmp/audience-mirror-blind-smoke

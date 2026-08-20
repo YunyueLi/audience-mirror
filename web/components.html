@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" id="theme-color" content="#f5f3ee">
+  <meta name="description" content="Audience Mirror Interface System：设计 Token、基础组件、证据组件与状态契约。">
+  <title>Audience Mirror · Interface System</title>
+  <link rel="stylesheet" href="./styles.css?v=0.2.0-alpha.8">
+  <link rel="stylesheet" href="./components.css?v=0.2.0-alpha.8">
+  <script>
+    (() => {
+      let theme = "light";
+      try { theme = localStorage.getItem("audience-mirror-theme") === "dark" ? "dark" : "light"; } catch {}
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <script src="./components.js?v=0.2.0-alpha.8" defer></script>
+</head>
+<body class="system-body">
+  <a class="skip-link" href="#system-content">跳到组件目录</a>
+  <header class="system-head">
+    <a class="brand" href="./" aria-label="返回 Audience Mirror 工作台">
+      <svg class="brand-mark" width="26" height="26" viewBox="0 0 22 22" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="19" height="19" rx="6.5" fill="none" stroke="currentColor" stroke-opacity=".3"></rect>
+        <circle cx="11" cy="11" r="4.3" fill="none" stroke="currentColor" stroke-width="1.4"></circle>
+        <path d="M11 2.4v3.5M11 16.1v3.5M2.4 11h3.5M16.1 11h3.5" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-width="1.4" stroke-linecap="round"></path>
+      </svg>
+      <span>Audience Mirror</span>
+    </a>
+    <span class="system-divider" aria-hidden="true"></span>
+    <strong>Interface System</strong>
+    <span class="system-version">0.3 · implemented baseline</span>
+    <div class="system-head-actions">
+      <a class="secondary-button" href="./">打开工作台</a>
+      <button class="head-icon" type="button" id="system-theme" aria-label="切换到深色主题" title="切换到深色主题">
+        <svg class="glyph-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.1" fill="none" stroke="currentColor" stroke-width="1.4"></circle><path d="M8 1.2v1.9M8 12.9v1.9M1.2 8h1.9M12.9 8h1.9M3.2 3.2l1.35 1.35M11.45 11.45l1.35 1.35M12.8 3.2l-1.35 1.35M4.55 11.45L3.2 12.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>
+        <svg class="glyph-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.4 9.9A5.8 5.8 0 0 1 6.1 2.6a5.9 5.9 0 1 0 7.3 7.3Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="system-layout">
+    <aside class="system-index" aria-label="组件目录">
+      <p class="rail-label">目录</p>
+      <nav>
+        <a href="#principles">原则</a>
+        <a href="#tokens">Token</a>
+        <a href="#actions">动作与输入</a>
+        <a href="#navigation">导航与选择</a>
+        <a href="#evidence">证据组件</a>
+        <a href="#states">系统状态</a>
+      </nav>
+      <p class="system-index-note">这是运行中界面的组件契约，不是另一套品牌皮肤。所有示例与工作台共享同一份 Token 和交互语义。</p>
+    </aside>
+
+    <main class="system-content" id="system-content">
+      <section class="system-intro" id="principles">
+        <h1>一套为可核查实验而生的界面系统</h1>
+        <p>视频保持第一视觉重心；聚合判断必须返回时间点、素材证据和个体 Trace；颜色、动效与组件状态只承担明确语义。</p>
+        <dl class="system-principles">
+          <div><dt>画面</dt><dd><strong>视频第一</strong><span>真实比例、完整呈现、永不裁切。</span></dd></div>
+          <div><dt>证据</dt><dd><strong>结论可回放</strong><span>从聚合判断下钻到时间点与个体 Trace。</span></dd></div>
+          <div><dt>边界</dt><dd><strong>口径常驻</strong><span>预测代理量不伪装成真人结论。</span></dd></div>
+        </dl>
+      </section>
+
+      <section class="system-section" id="tokens">
+        <header class="system-section-head"><h2>Token</h2><p>语义先于数值；浅色与深色分别校准。</p></header>
+        <div class="token-grid" aria-label="核心颜色 Token">
+          <div style="--sample:var(--page)"><i></i><strong>Page</strong><code>--page</code></div>
+          <div style="--sample:var(--panel)"><i></i><strong>Panel</strong><code>--panel</code></div>
+          <div style="--sample:var(--aperture)"><i></i><strong>Aperture</strong><code>--aperture</code></div>
+          <div style="--sample:var(--accent)"><i></i><strong>Evidence</strong><code>--accent</code></div>
+          <div style="--sample:var(--limit)"><i></i><strong>Boundary</strong><code>--limit</code></div>
+          <div style="--sample:var(--coral)"><i></i><strong>Failure</strong><code>--coral</code></div>
+        </div>
+        <div class="type-specimen">
+          <div><span class="rail-label">Interface</span><p>判断必须沿证据光路返回事实。</p></div>
+          <div><span class="rail-label">Data</span><code>06:41 · cue-04 · 7f2d9a</code></div>
+        </div>
+      </section>
+
+      <section class="system-section" id="actions">
+        <header class="system-section-head"><h2>动作与输入</h2><p>每个状态可见、可读、可键盘操作。</p></header>
+        <div class="component-board">
+          <article class="component-cell">
+            <div class="component-meta"><strong>Button</strong><code>default · busy · disabled</code></div>
+            <div class="component-row">
+              <button class="primary-button" type="button">建立时间轴</button>
+              <button class="secondary-button" type="button">查看证据</button>
+              <button class="secondary-button" type="button" data-busy="true" aria-busy="true">正在分析</button>
+              <button class="secondary-button" type="button" disabled>不可用</button>
+              <button class="text-button" type="button">打开方法说明</button>
+              <button class="head-icon" type="button" aria-label="筛选证据" title="筛选证据">
+                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4h11M4.5 8h7M6.5 12h3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </article>
+          <article class="component-cell">
+            <div class="component-meta"><strong>Field</strong><code>ready · focus · invalid · disabled</code></div>
+            <div class="field-grid">
+              <label class="field"><span>实验名称</span><input value="公开长视频基线"></label>
+              <label class="field"><span>Provider</span><select><option>Codex Evidence Frames</option><option>Gemini Native Video</option></select></label>
+              <label class="field field-invalid"><span>素材链接</span><input aria-invalid="true" aria-describedby="lab-error" value="example.invalid"><small id="lab-error">请输入已授权的 HTTP(S) 视频链接。</small></label>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="system-section" id="navigation">
+        <header class="system-section-head"><h2>导航与选择</h2><p>选择状态同时暴露给视觉、键盘与辅助技术。</p></header>
+        <div class="component-board two-up">
+          <article class="component-cell">
+            <div class="component-meta"><strong>Tabs</strong><code>aria-selected</code></div>
+            <div class="lab-tabs" role="tablist" aria-label="证据视图">
+              <button type="button" role="tab" aria-selected="true">当前证据</button>
+              <button type="button" role="tab" aria-selected="false">逐段反应</button>
+              <button type="button" role="tab" aria-selected="false">个体 Trace</button>
+            </div>
+          </article>
+          <article class="component-cell">
+            <div class="component-meta"><strong>Segmented control</strong><code>native radio</code></div>
+            <div class="source-mode" role="radiogroup" aria-label="素材来源示例">
+              <label><input type="radio" name="lab-source" checked><span>链接</span></label>
+              <label><input type="radio" name="lab-source"><span>文件</span></label>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="system-section" id="evidence">
+        <header class="system-section-head"><h2>证据组件</h2><p>产品辨识度来自证据关系，不来自装饰。</p></header>
+        <div class="component-board evidence-board">
+          <article class="component-cell component-stage">
+            <div class="component-meta"><strong>Media stage</strong><code>source ratio · contain</code></div>
+            <div class="lab-aperture">
+              <div class="aperture-chips"><span class="chip chip-mono">06:41</span><span class="chip">公开素材</span></div>
+              <div class="lab-frame"><span>视频主舞台</span><i aria-hidden="true"></i></div>
+            </div>
+          </article>
+          <article class="component-cell">
+            <div class="component-meta"><strong>Evidence claim</strong><code>fact · inference · review</code></div>
+            <div class="claim-block" tabindex="0">
+              <p class="claim-reference">命中证据 · 06:41</p>
+              <strong>展示 10 年对比图表，强调长期主义。</strong>
+              <p>“看到长期曲线往上走，我更相信这是值得坚持的方向。”</p>
+              <small>机会捕捉者 P2 · 模型推断 · 待真人校准</small>
+            </div>
+          </article>
+          <article class="component-cell">
+            <div class="component-meta"><strong>Timeline cue</strong><code>time-proportional · 48px minimum</code></div>
+            <ol class="timeline-rail lab-timeline">
+              <li><button type="button"><span class="cue-time">00:00</span><strong>开场钩子</strong></button></li>
+              <li><button class="is-selected" type="button"><span class="cue-time">06:18</span><strong>核心观点 A</strong></button></li>
+              <li><button type="button"><span class="cue-time">07:53</span><strong>案例论证</strong></button></li>
+            </ol>
+          </article>
+          <article class="component-cell">
+            <div class="component-meta"><strong>Trace session</strong><code>ordered · drillable</code></div>
+            <details class="trace-session" open>
+              <summary><span><strong>机会捕捉者 P2</strong><small>3 个连续事件 · hash 已验证</small></span><span>展开</span></summary>
+              <div class="lab-trace"><code>06:18</code><p>先前记忆被保留；当前反应引用 cue-04 与证据帧，而非事后总结。</p></div>
+            </details>
+          </article>
+        </div>
+      </section>
+
+      <section class="system-section" id="states">
+        <header class="system-section-head"><h2>反馈与边界</h2><p>空、忙、失败与限制都说明下一步。</p></header>
+        <div class="state-grid">
+          <article data-state="empty"><span>Empty</span><strong>还没有真人锚点</strong><p>导入同任务、同版本的真人问卷，才能计算方向一致性和问题召回。</p></article>
+          <article data-state="loading" aria-busy="true"><span>Loading</span><strong>正在建立事实层</strong><p>本机正在抽帧和解析音轨；原视频不会默认外发。</p><i class="state-loader" aria-hidden="true"></i></article>
+          <article data-state="error"><span>Error</span><strong>平台链接无法解析</strong><p>登录或地区限制仍然生效。可重试，或改用已授权的本地文件。</p><button class="text-button" type="button">安全重试</button></article>
+          <article data-state="success"><span>Success</span><strong>Trace 完整</strong><p>事件顺序、模型指纹、种子和成本已写入可复现实验记录。</p></article>
+        </div>
+        <details class="methods-strip" open>
+          <summary><span>方法与局限</span><em>预测代理量 · 尚未真人校准</em></summary>
+          <div class="methods-sheet"><p>AI 观众数不等于真人样本量。当前困惑、注意和继续指标是基于模型反应的预测代理量；在同任务真人数据校准前，不作票房、收入或真实人群预测。</p></div>
+        </details>
+        <button class="secondary-button" type="button" id="show-system-toast">查看 Toast</button>
+      </section>
+    </main>
+  </div>
+
+  <div class="form-message" id="system-toast" role="status" aria-live="polite">
+    <span class="message-text">组件状态已同步到工作台语义。</span>
+    <button class="message-dismiss" type="button" aria-label="关闭提示">×</button>
+  </div>
+</body>
+</html>

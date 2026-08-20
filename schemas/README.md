@@ -6,8 +6,13 @@
 - timeline.schema.json：单一素材版本的分层多模态时间轴；
 - trace.schema.json：单一模拟 Agent Session 的不可变事件；
 - human-anchor.schema.json：与模拟 Trace 分离的匿名真人观察。
+- video-benchmark.schema.json：固定公开视频的题目、人工证据时间窗、标注状态与评分策略。
+- video-benchmark-stability.schema.json：同一模型、同一 Timeline 与同一可见模态下的重复运行稳定性；固定 `human_sample_size: 0`，并把逐字、参考得分、状态和证据漂移分开。
+- blind-study.schema.json：探索性真人盲测的预注册计划，冻结独立观看、结果盲法、匿名参与者槽位、A/B 反平衡、量表、撤回与研究者密钥隔离；计划槽位不等于已完成人数。
 
 `environment.schema.json` 已有 Media Timeline 参考实现和语义校验；Web／App／Game Environment Adapter 仍待实现。Asset／Rights、Audience／Persona、Experiment Manifest、Claim Ledger 和 Calibration Profile 目前仍是领域设计，不是完整可执行合同。进入私有试点前必须补成 Schema、正例 fixture、反例 fixture 和迁移规则。
+
+公开视频 Benchmark 另有 `audience-mirror benchmark validate`、`audience-mirror benchmark score` 与 `audience-mirror benchmark stability` 语义校验。稳定性命令拒绝混入不同模型、Timeline、策略或可见模态；公开题集只能标记真实的人工复核状态，单维护者草案不得写成已冻结或具备跨标注者一致性的测试集。
 
 ## JSON Schema 以外的语义校验
 

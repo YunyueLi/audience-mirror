@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://audience-mirror.dev/schemas/video-benchmark-stability.schema.json",
+  "title": "Audience Mirror Video Benchmark Stability Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "benchmark_id", "conditions", "scope", "reference_score", "abstentions", "repeatability", "runs", "questions", "limitations"],
+  "properties": {
+    "schema_version": {"const": "audience-mirror.video-benchmark-stability/v0.1"},
+    "benchmark_id": {"type": "string", "minLength": 1},
+    "conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model_id", "model_version", "strategy", "timeline_hash", "original_video_seen", "audio_seen"],
+      "properties": {
+        "provider": {"type": ["string", "null"]},
+        "model_id": {"type": ["string", "null"]},
+        "model_version": {"type": ["string", "null"]},
+        "strategy": {"type": ["string", "null"]},
+        "timeline_hash": {"type": ["string", "null"]},
+        "original_video_seen": {"type": ["boolean", "null"]},
+        "audio_seen": {"type": ["boolean", "null"]}
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runs", "questions", "agent_or_model_repetitions", "human_sample_size", "annotation_status"],
+      "properties": {
+        "runs": {"type": "integer", "minimum": 2},
+        "questions": {"type": "integer", "minimum": 1},
+        "agent_or_model_repetitions": {"type": "integer", "minimum": 2},
+        "human_sample_size": {"const": 0},
+        "annotation_status": {"type": ["string", "null"]}
+      }
+    },
+    "reference_score": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["macro_mean", "macro_min", "macro_max", "macro_population_stddev"],
+      "properties": {
+        "macro_mean": {"$ref": "#/$defs/unitInterval"},
+        "macro_min": {"$ref": "#/$defs/unitInterval"},
+        "macro_max": {"$ref": "#/$defs/unitInterval"},
+        "macro_population_stddev": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "abstentions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mean", "min", "max"],
+      "properties": {
+        "mean": {"type": "number", "minimum": 0},
+        "min": {"type": "integer", "minimum": 0},
+        "max": {"type": "integer", "minimum": 0}
+      }
+    },
+    "repeatability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_pairwise_agreement", "answer_pairwise_exact_agreement", "temporal_answer_mean_pairwise_iou", "evidence_mean_pairwise_iou",
+        "unstable_questions", "unstable_question_ids", "status_unstable_questions", "status_unstable_question_ids",
+        "verbatim_unstable_questions", "verbatim_unstable_question_ids", "reference_score_unstable_questions", "reference_score_unstable_question_ids",
+        "evidence_unstable_questions", "evidence_unstable_question_ids"
+      ],
+      "properties": {
+        "status_pairwise_agreement": {"$ref": "#/$defs/nullableUnitInterval"},
+        "answer_pairwise_exact_agreement": {"$ref": "#/$defs/nullableUnitInterval"},
+        "temporal_answer_mean_pairwise_iou": {"$ref": "#/$defs/nullableUnitInterval"},
+        "evidence_mean_pairwise_iou": {"$ref": "#/$defs/nullableUnitInterval"},
+        "unstable_questions": {"$ref": "#/$defs/count"},
+        "unstable_question_ids": {"$ref": "#/$defs/idList"},
+        "status_unstable_questions": {"$ref": "#/$defs/count"},
+        "status_unstable_question_ids": {"$ref": "#/$defs/idList"},
+        "verbatim_unstable_questions": {"$ref": "#/$defs/count"},
+        "verbatim_unstable_question_ids": {"$ref": "#/$defs/idList"},
+        "reference_score_unstable_questions": {"$ref": "#/$defs/count"},
+        "reference_score_unstable_question_ids": {"$ref": "#/$defs/idList"},
+        "evidence_unstable_questions": {"$ref": "#/$defs/count"},
+        "evidence_unstable_question_ids": {"$ref": "#/$defs/idList"}
+      }
+    },
+    "runs": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["index", "macro_score", "answered", "abstained", "latency_ms"],
+        "properties": {
+          "index": {"type": "integer", "minimum": 1},
+          "macro_score": {"$ref": "#/$defs/unitInterval"},
+          "answered": {"type": "integer", "minimum": 0},
+          "abstained": {"type": "integer", "minimum": 0},
+          "latency_ms": {"type": ["integer", "null"], "minimum": 0}
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question_id", "category", "answered_runs", "status_pairs", "status_agreement", "answer_pairs", "answer_agreement", "evidence_pairs", "mean_evidence_iou", "reference_score_mean", "reference_score_range"],
+        "properties": {
+          "question_id": {"type": "string", "minLength": 1},
+          "category": {"enum": ["visual_fact", "ocr_text", "dialogue", "temporal_localization", "temporal_order", "cross_event"]},
+          "answered_runs": {"$ref": "#/$defs/count"},
+          "status_pairs": {"$ref": "#/$defs/count"},
+          "status_agreement": {"$ref": "#/$defs/nullableUnitInterval"},
+          "answer_pairs": {"$ref": "#/$defs/count"},
+          "answer_agreement": {"$ref": "#/$defs/nullableUnitInterval"},
+          "evidence_pairs": {"$ref": "#/$defs/count"},
+          "mean_evidence_iou": {"$ref": "#/$defs/nullableUnitInterval"},
+          "reference_score_mean": {"$ref": "#/$defs/unitInterval"},
+          "reference_score_range": {"$ref": "#/$defs/unitInterval"}
+        }
+      }
+    },
+    "limitations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  },
+  "$defs": {
+    "unitInterval": {"type": "number", "minimum": 0, "maximum": 1},
+    "nullableUnitInterval": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "count": {"type": "integer", "minimum": 0},
+    "idList": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+  }
+}
