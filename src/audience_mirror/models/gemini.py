@@ -33,7 +33,8 @@ SYSTEM_TASK = """你是 Audience Mirror 的视频事实层提取器。完整观�
   ],
   "uncertainties": ["全局不确定点"]
 }
-segments 必须按时间排序、不得越界、不得包含片名外部知识。"""
+segments 必须按时间排序、首尾覆盖完整视频、相邻不重叠、不得越界、不得包含片名外部知识。
+请按观众能够形成一次新理解、情绪或决策的变化点切分，而不是逐镜头切分；通常输出 4—16 个事件。"""
 
 VIDEO_ANALYSIS_SCHEMA: dict[str, Any] = {
     "type": "object",

@@ -5,7 +5,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![CI](https://github.com/YunyueLi/audience-mirror/actions/workflows/ci.yml/badge.svg)](https://github.com/YunyueLi/audience-mirror/actions/workflows/ci.yml)
 
-**Developer Preview `v0.2.0-alpha.1`** — 真实视频纵向切片与开放合同预览；以 GitHub Pre-release 形式发布，但不是经过真人验证的预测产品。
+**Developer Preview `v0.2.0-alpha.2`** — 链接优先的真实视频实验、可回放顺序体验与开放合同预览；不是经过真人验证的预测产品。
 
 Audience Mirror 是一个开放的“现实之前人群实验层”：让异质 Persona 按顺序进入内容、软件、游戏或社会情境，形成体验、判断、选择并相互影响；每条结论都能回到环境状态、个体 Trace、实验条件和真人校准。这里的 Audience 指面对某项内容、产品、规则或世界的目标人群，不只指影视观众。
 
@@ -13,6 +13,10 @@ Audience Mirror is an open, pre-reality population experimentation platform.
 It simulates how heterogeneous people experience, judge, choose, and influence
 each other across multimodal environments, while keeping every result linked
 to inspectable traces, conditions, and human calibration status.
+
+![Audience Mirror 证据工作台](docs/assets/audience-mirror-workbench.png)
+
+上图使用仓库自带的合成 Timeline 与合成 Persona，不包含第三方媒体、真人数据或远程模型结果。
 
 **影视／IP 是 Audience Mirror 的首个验证环境，不是项目总边界。** 它先用内容体验验证多模态顺序体验与证据链；平台内核保持 Environment、Population、Experience、Decision、Interaction、Trace 和 Calibration 的通用抽象。当前状态为 **Conditional Go（有条件推进）**：值得用 2—4 周完成首个可运行且能与真人结果盲测的参考环境，尚不足以承诺准确预测票房、收入或现实人群比例。
 
@@ -32,7 +36,11 @@ to inspectable traces, conditions, and human calibration status.
   → 自包含证据报告
 ```
 
-真实视频路径已跑通：本地 MP4 解码与音轨抽取、关键帧／场景差分、Timeline、Environment Contract、Future-blind 顺序体验、个体 Trace、校准指标和交互式证据工作台。Gemini 原生整片视频 Adapter 与 Claude Code 结构化顺序推理 Adapter 已实现，但实际远程调用分别需要显式素材授权与有效的本地认证。本轮没有可用 Gemini Key，Claude Code OAuth 已过期，所以不能把 Provider 代码写成“真实模型结果已验证”。
+真实视频路径已跑通：本地 MP4 解码与音轨抽取、关键帧／场景差分、平台人工字幕、Timeline、Environment Contract、Future-blind 顺序体验、个体 Trace、校准指标和交互式证据工作台。Gemini 原生整片视频 Adapter、Codex 固定证据帧视觉基线、Codex CLI 与 Claude Code 结构化顺序推理 Adapter 均已实现；多模态结果会从稠密镜头证据重建为最多 16 个语义体验事件，Provider 未覆盖的时间窗会显式保留。平台链接存在人工 WebVTT 时，系统只选取一条有上限的字幕轨并按时间附加到事件；该证据不等同于经过核对的 ASR 或说话人识别。
+
+GPT-5.6 Sol／xhigh 已在公开合成 Timeline 上完成 1 Persona × 4 Event 的真实模型 Session。随后，Codex 视觉基线在公开合成 H.264 视频的 2 张真实解码帧上识别出画面颜色与计时文字变化，用 26,693 ms 生成 2 个带不确定性的语义事件；同一 Timeline 又完成 1 Persona × 2 Event 的真实顺序体验，2 次模型调用合计 34,571 ms，Trace 与 Timeline 合同全部通过。
+
+首个公开长片纵向闭环也已跑通：从 Blender Foundation 官方 YouTube 页面导入《Sintel》完整 888 秒影片，本地解码 21,313 帧并保留 148 张证据帧；Codex 按时间分层选取其中 12 张，用 127,779 ms 重建 12 个语义体验事件。1 个模型 Persona 随后按时间顺序完成 12 次 GPT-5.6 Sol／xhigh 调用，合计模型时延 252,507 ms，12 条 Trace 与 Timeline 合同全部通过。轨迹显示黑屏、世界展开、巨型生物对峙和片尾阶段存在不同的注意／困惑代理量，但这只是一个未校准合成 Persona 的可检查输出。固定帧路径没有发送原视频或音轨，不等于原生完整视频理解，也不证明真人预测效果。本轮仍没有可用 Gemini Key，不能把 Gemini 原生视频 Provider 代码写成“真实模型结果已验证”。
 
 两条路径都只证明工程合同和下钻链路可以工作，不证明虚拟用户能预测真人。
 
@@ -47,14 +55,14 @@ git clone https://github.com/YunyueLi/audience-mirror.git
 cd audience-mirror
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e .
+python -m pip install .
 audience-mirror demo
 ```
 
 安装真实媒体解析和本地工作台：
 
 ```bash
-python -m pip install -e '.[media,web]'
+python -m pip install '.[media,web]'
 
 # 把有权处理的本地视频转成可校验 Timeline
 audience-mirror ingest-video /path/to/public-or-authorized.mp4 \
@@ -69,27 +77,36 @@ audience-mirror environment-spec \
 audience-mirror serve --host 127.0.0.1 --port 8765
 ```
 
+Wheel 会携带合同 Schema、公开 Fixture 和工作台静态资源，安装后可脱离源码目录运行。默认把可写制品放在当前工作目录；可通过 `AUDIENCE_MIRROR_WORKSPACE=/path/to/workspace` 指定单独工作区。README 使用标准 wheel 安装，避免部分 macOS／Python 3.13 组合跳过 editable `.pth` 文件。
+
+工作台默认接受公开 HTTP(S) 视频直链，以及经用户确认有权测试的 YouTube、Bilibili 和抖音页面链接；本地文件上传为备用入口。公共直链在每次重定向时解析公共地址，并把真实连接固定到该次已验证 IP。平台页通过独立 `yt-dlp` Adapter 获取，分离音视频由 PyAV 在本地无转码合并，因此不要求单独安装系统级 FFmpeg；该 Adapter 仍属于外部网络信任边界，只适用于默认回环地址上的单用户原型，不应把当前服务直接暴露到不可信网络。平台登录、Cookie、地区和版权访问限制仍然生效。Source Receipt 不保存 Cookie、凭据、签名参数或通用 URL 路径，只允许保留 YouTube `v` 等明确允许的公开内容标识。实验索引、Timeline、Trace、校准和脱敏处理回执会从本地制品恢复，服务重启后可在“最近实验”中继续打开；这仍是单机文件持久化，不是多用户数据库。
+
 可选的原生视频模型路径必须显式授权远程处理：
 
 ```bash
-python -m pip install -e '.[gemini]'
+python -m pip install '.[gemini]'
 export GEMINI_API_KEY='...'
 audience-mirror analyze-video /path/to/authorized.mp4 \
   --timeline artifacts/my-video/timeline.json \
   --allow-remote-processing
 ```
 
-模型驱动的 Persona 顺序体验使用本机已认证的 Claude Code CLI，并默认限制 16 次逐事件调用：
+模型驱动的 Persona 顺序体验可使用本机已认证的 Codex CLI 或 Claude Code CLI，并默认限制 16 次逐事件调用。每次都必须显式确认发送 Timeline 事实、Persona 与此前记忆；原视频文件不会进入这一 Reasoner 调用：
 
 ```bash
 audience-mirror run-agent \
   --timeline artifacts/my-video/timeline.json \
+  --reasoner codex-cli \
+  --model gpt-5.6-sol \
+  --effort xhigh \
   --persona-count 2 \
   --max-model-calls 16 \
-  --max-budget-usd 0.25
+  --allow-remote-processing
 ```
 
-机密／受限素材默认拒绝发送到公有 Gemini Adapter；任何远程模型使用前仍须确认授权、保留、训练使用、地域和删除策略。
+运行同时写出 `traces.json` 与 `run-manifest.json`，后者区分计划／实际模型调用、会话结局、时延、可得成本信息、模型指纹和校准状态。Claude Code 路径可另加 `--max-budget-usd` 作为单次 CLI 调用上限。
+
+机密／受限素材默认拒绝发送到公有 Gemini Adapter 或 CLI Reasoner；任何远程模型使用前仍须确认授权、保留、训练使用、地域和删除策略。
 
 输出位于 `artifacts/public-demo/`：
 

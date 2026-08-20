@@ -16,10 +16,11 @@ from .environment import media_environment_spec, validate_environment_spec
 from .io import binary_file_sha256, read_json, write_json
 from .media.fusion import fuse_video_analysis
 from .media.ingest import VideoIngestConfig, ingest_video
-from .model_runtime import ModelSequentialRuntime
+from .model_runtime import ModelSequentialRuntime, build_sequential_run_manifest
 from .models.base import VideoAnalysisRequest
 from .models.gemini import GeminiVideoProvider
-from .reasoning import ClaudeCodeJsonReasoner
+from .reasoning import ClaudeCodeJsonReasoner, CodexCliJsonReasoner
+from .resources import resource_path
 from .universe import SyntheticPersonaUniverse
 from .validation import ContractValidationError, validate_timeline, validate_trace_stream
 
@@ -36,7 +37,10 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     demo = subparsers.add_parser("demo", help="Run the zero-cost public synthetic fixture")
-    demo.add_argument("--timeline", default="fixtures/public-demo/timeline.json")
+    demo.add_argument(
+        "--timeline",
+        default=str(resource_path("fixtures", "public-demo", "timeline.json")),
+    )
     demo.add_argument("--output", default="artifacts/public-demo")
     demo.add_argument("--seed", type=int, default=20260819)
     demo.add_argument("--pool-size", type=int, default=10_000)
@@ -83,9 +87,13 @@ def build_parser() -> argparse.ArgumentParser:
     run_agent = subparsers.add_parser("run-agent", help="Run real structured model calls over a Timeline sequentially")
     run_agent.add_argument("--timeline", required=True)
     run_agent.add_argument("--output", default="artifacts/model-run/traces.json")
-    run_agent.add_argument("--reasoner", choices=["claude-code"], default="claude-code")
-    run_agent.add_argument("--model", default="sonnet")
-    run_agent.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"], default="high")
+    run_agent.add_argument(
+        "--reasoner",
+        choices=["claude-code", "codex-cli"],
+        default="codex-cli",
+    )
+    run_agent.add_argument("--model", default="gpt-5.6-sol")
+    run_agent.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"], default="xhigh")
     run_agent.add_argument("--max-budget-usd", type=float, default=0.25)
     run_agent.add_argument(
         "--max-model-calls",
@@ -95,6 +103,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     run_agent.add_argument("--persona-count", type=int, default=1)
     run_agent.add_argument("--seed", type=int, default=20260820)
+    run_agent.add_argument(
+        "--allow-remote-processing",
+        action="store_true",
+        help="Confirm that Timeline observations and Persona context may be sent to the selected remote model",
+    )
 
     calibrate = subparsers.add_parser("calibrate", help="Compare Agent traces with consent-linked Human Anchors")
     calibrate.add_argument("--traces", required=True)
@@ -185,6 +198,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.command == "analyze-video":
             timeline = read_json(args.timeline)
             validate_timeline(timeline)
+            if not args.allow_remote_processing:
+                raise PermissionError(
+                    "allow-remote-processing 未确认；未把 Timeline 观察与 Persona 上下文发送给远程模型。"
+                )
+            if timeline["data_handling"]["data_classification"] not in {"public", "internal"}:
+                raise PermissionError(
+                    "Claude Code／Codex CLI 公有远程路由默认拒绝 confidential/restricted Timeline。"
+                )
             source = Path(args.path).expanduser().resolve()
             source_hash = binary_file_sha256(source)
             if source_hash != timeline["asset"]["content_hash"]:
@@ -223,6 +244,14 @@ def main(argv: Sequence[str] | None = None) -> int:
                 raise ValueError("max-model-calls must be positive")
             timeline = read_json(args.timeline)
             validate_timeline(timeline)
+            if not args.allow_remote_processing:
+                raise PermissionError(
+                    "allow-remote-processing 未确认；未把 Timeline 观察与 Persona 上下文发送给远程模型。"
+                )
+            if timeline["data_handling"]["data_classification"] not in {"public", "internal"}:
+                raise PermissionError(
+                    "Claude Code／Codex CLI 公有远程路由默认拒绝 confidential/restricted Timeline。"
+                )
             event_count = sum(node["level"] == "event" for node in timeline["nodes"])
             call_plan = event_count * args.persona_count
             if call_plan > args.max_model_calls:
@@ -241,17 +270,40 @@ def main(argv: Sequence[str] | None = None) -> int:
                 projection_count=pool_size,
             )
             universe = SyntheticPersonaUniverse(pool_size, args.seed)
-            reasoner = ClaudeCodeJsonReasoner(
-                model_id=args.model,
-                effort=args.effort,
-                max_budget_usd=args.max_budget_usd,
-            )
+            if args.reasoner == "claude-code":
+                reasoner = ClaudeCodeJsonReasoner(
+                    model_id=args.model,
+                    effort=args.effort,
+                    max_budget_usd=args.max_budget_usd,
+                )
+                effective_budget = args.max_budget_usd
+            else:
+                reasoner = CodexCliJsonReasoner(
+                    model_id=args.model,
+                    effort=args.effort,
+                )
+                effective_budget = None
             traces = ModelSequentialRuntime(reasoner).run_deep(
                 timeline,
-                universe.cohort(args.persona_count),
+                personas := universe.cohort(args.persona_count),
                 config,
             )
             write_json(args.output, traces)
+            manifest = build_sequential_run_manifest(
+                timeline=timeline,
+                personas=personas,
+                traces=traces,
+                config=config,
+                runtime_mode="model_sequential",
+                producer=ModelSequentialRuntime.producer,
+                code_version=ModelSequentialRuntime.code_version,
+                model_provider=reasoner.provider,
+                model_id=reasoner.model_id,
+                effort=args.effort,
+                max_budget_usd=effective_budget,
+            )
+            manifest_path = Path(args.output).with_name("run-manifest.json")
+            write_json(manifest_path, manifest)
             _print_json(
                 {
                     "ok": True,
@@ -261,6 +313,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "provider": reasoner.provider,
                     "model": reasoner.model_id,
                     "model_call_plan": call_plan,
+                    "actual_model_calls": manifest["counts"]["actual_model_calls"],
+                    "manifest": str(manifest_path),
                 }
             )
             return 0

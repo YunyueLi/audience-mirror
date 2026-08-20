@@ -3,4 +3,4 @@
 from .domain import Persona, RunConfig
 
 __all__ = ["Persona", "RunConfig"]
-__version__ = "0.2.0a1"
+__version__ = "0.2.0a2"

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from copy import deepcopy
+from datetime import UTC, datetime
 import json
 from typing import Any
 
@@ -11,7 +12,7 @@ from .domain import Persona, RunConfig
 from .hashing import event_fingerprint, fingerprint
 from .reasoning import JsonReasoner
 from .runtime import DeterministicMediaRuntime
-from .validation import validate_trace_stream
+from .validation import timeline_hash, validate_trace_stream
 
 
 REACTIONS = {
@@ -322,3 +323,81 @@ class ModelSequentialRuntime:
 
         validate_trace_stream(output, timeline)
         return output
+
+
+def build_sequential_run_manifest(
+    *,
+    timeline: dict[str, Any],
+    personas: list[Persona],
+    traces: list[dict[str, Any]],
+    config: RunConfig,
+    runtime_mode: str,
+    producer: str,
+    code_version: str,
+    model_provider: str | None = None,
+    model_id: str | None = None,
+    effort: str | None = None,
+    max_budget_usd: float | None = None,
+) -> dict[str, Any]:
+    """Build a reproducible receipt for one sequential experience run."""
+
+    sessions: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for trace in traces:
+        sessions[str(trace["session_id"])].append(trace)
+    outcomes: dict[str, int] = defaultdict(int)
+    for session_traces in sessions.values():
+        last = max(session_traces, key=lambda item: item["session_sequence_no"])
+        outcomes[str(last["state"]["session_status_after"])] += 1
+    event_count = sum(node.get("level") == "event" for node in timeline["nodes"])
+    estimated_costs = [
+        float(trace["cost"]["estimated_cost"])
+        for trace in traces
+        if isinstance(trace.get("cost", {}).get("estimated_cost"), (int, float))
+    ]
+    generated_at = datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    return {
+        "schema_version": "audience-mirror.run-manifest/v0.1",
+        "experiment_id": config.experiment_id,
+        "run_id": config.run_id,
+        "generated_at": generated_at,
+        "seed": config.seed,
+        "timeline_hash": timeline_hash(timeline),
+        "asset_content_hash": timeline["asset"]["content_hash"],
+        "persona_universe_hash": fingerprint([persona.snapshot_hash for persona in personas]),
+        "counts": {
+            "persona_pool_records": config.pool_size,
+            "deep_personas_requested": len(personas),
+            "deep_personas_started": len(sessions),
+            "deep_trace_events": len(traces),
+            "timeline_events": event_count,
+            "planned_model_calls": event_count * len(personas) if model_provider else 0,
+            "actual_model_calls": len(traces) if model_provider else 0,
+            "human_participants": 0,
+        },
+        "session_outcomes": dict(sorted(outcomes.items())),
+        "runtime": {
+            "producer": producer,
+            "version": code_version,
+            "mode": runtime_mode,
+            "model_provider": model_provider,
+            "model_id": model_id,
+            "effort": effort,
+        },
+        "budget": {
+            "max_budget_usd_per_call": max_budget_usd,
+            "estimated_cost_usd": round(sum(estimated_costs), 6) if estimated_costs else None,
+            "cost_estimate_complete": bool(traces) and len(estimated_costs) == len(traces),
+            "input_tokens": sum(int(trace.get("cost", {}).get("input_tokens") or 0) for trace in traces),
+            "output_tokens": sum(int(trace.get("cost", {}).get("output_tokens") or 0) for trace in traces),
+            "latency_ms_sum": sum(int(trace.get("cost", {}).get("latency_ms") or 0) for trace in traces),
+        },
+        "calibration_status": "uncalibrated",
+        "statistical_representativeness": False,
+        "data_policy": deepcopy(timeline["data_handling"]),
+        "limitations": [
+            "Agent quantity is not a human sample size.",
+            "Attention, emotion, comprehension and intent fields are uncalibrated proxy measurements.",
+            "A model-driven trace records simulated reactions, not observed human behaviour.",
+            "An abandoned session stops generating later event traces; planned and actual calls may differ.",
+        ],
+    }

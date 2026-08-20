@@ -38,3 +38,15 @@ jobs:
         run: >-
           audience-mirror validate traces artifacts/public-demo/deep-traces.json
           --timeline artifacts/public-demo/timeline.json
+
+      - name: Verify standalone wheel resources
+        run: |
+          python -m pip wheel . --no-deps --wheel-dir dist
+          python -m venv /tmp/audience-mirror-wheel
+          /tmp/audience-mirror-wheel/bin/python -m pip install dist/audience_mirror-*.whl
+          cd /tmp
+          /tmp/audience-mirror-wheel/bin/audience-mirror validate timeline \
+            "$GITHUB_WORKSPACE/fixtures/public-demo/timeline.json"
+          /tmp/audience-mirror-wheel/bin/audience-mirror demo \
+            --output /tmp/audience-mirror-wheel-smoke \
+            --pool-size 12 --deep-count 2 --sweep-count 2 --projection-count 12
